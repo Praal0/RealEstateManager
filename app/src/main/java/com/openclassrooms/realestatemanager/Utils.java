@@ -24,12 +24,20 @@ public class Utils {
     }
 
     /**
+     * Convert price of estate (Euros to Dollars)
+     */
+    public static int convertEurosToDollar(int euros){
+        return (int) Math.round(euros * 1.1772);
+    }
+
+    /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
      * @return
      */
     public static String getTodayDate(){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        //Return today date with format days/moth/years
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(new Date());
     }
 
