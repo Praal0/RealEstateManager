@@ -32,11 +32,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // EVENT BUS
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.2.0'
 
     // ROOM
     implementation 'androidx.room:room-runtime:2.3.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     annotationProcessor 'androidx.room:room-compiler:2.3.0'
 }
 repositories {

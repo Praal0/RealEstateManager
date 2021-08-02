@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-class Picture {
-    @Entity(foreignKeys = [ForeignKey(entity = Estate::class,
+class Image {
+    @Entity(tableName = "image",foreignKeys = [ForeignKey(entity = Estate::class,
         parentColumns = ["id"],
         childColumns = ["estateId"])])
     data class Image(@PrimaryKey(autoGenerate = true) val id:Long,
