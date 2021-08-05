@@ -11,18 +11,15 @@ import java.util.concurrent.Executor
 class EstateViewModel {
     //REPOSITORY
     private var mExecutor: Executor? = null
-    private lateinit var mImageDataSource: ImageDataRepository
     private lateinit var mEstateDataSource: EstateDataRepository
-    private lateinit var mLocationDataSource :LocationDataRepository
+
 
     // DATA
     private var mEstate: LiveData<List<FullEstate>>? = null
 
-    fun TaskViewModel(estateDataSource: EstateDataRepository, imageDataSource: ImageDataRepository,locationDataSource: LocationDataRepository, executor: Executor
+    fun EstateViewModel(estateDataSource: EstateDataRepository, executor: Executor
     ) {
         mEstateDataSource = estateDataSource
-        mImageDataSource = imageDataSource
-        mLocationDataSource = locationDataSource
         mExecutor = executor
     }
 
@@ -31,11 +28,11 @@ class EstateViewModel {
     }
 
     // --------------------
-    // IMAGE
+    // ESTATES
     // --------------------
 
-    fun getImages(estateId:Long): LiveData<List<Image>>{
-        return mImageDataSource.getImages(estateId)
+    fun getEstates(estateId:Long): LiveData<FullEstate>{
+        return mEstateDataSource.gesEstateByID(estateId)
     }
 
 

@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initialize()
@@ -54,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     // Initialisation variable
     private fun initialize() {
-        toolbar = findViewById(R.id.simple_toolbar)
+        toolbar = binding.includedToolbar.simpleToolbar
         drawer = binding.drawerLayout
     }
 

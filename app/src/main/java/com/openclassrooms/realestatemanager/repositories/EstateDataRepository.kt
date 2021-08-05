@@ -4,16 +4,17 @@ import android.database.Observable
 import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase
+import com.openclassrooms.realestatemanager.database.dao.EstateDao
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.FullEstate
 
-class EstateDataRepository (private val database: RealEstateDatabase) {
+class EstateDataRepository (private val estateDao: EstateDao) {
     fun getEstates(): LiveData<List<FullEstate>> {
-        return this.database.estateDao().getItems()
+        return this.estateDao.getItems()
     }
 
     fun gesEstateByID(estateID:Long) : LiveData<FullEstate>{
-        return this.database.estateDao().getItemsByID(estateID)
+        return this.estateDao.getItemsByID(estateID)
     }
 
     // --- CREATE ---
