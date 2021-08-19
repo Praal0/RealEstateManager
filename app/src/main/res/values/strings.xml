@@ -4,6 +4,5 @@
     <string name="search">Search</string>
     <string name="update">update</string>
     <string name="create">create</string>
-    <string name="navigation_drawer_open">drawer_open</string>
-    <string name="navigation_drawer_close">drawer_close</string>
+    <string name="valide_btn">valide_btn</string>
 </resources>
