@@ -7,8 +7,10 @@ import com.openclassrooms.realestatemanager.database.RealEstateDatabase
 import com.openclassrooms.realestatemanager.database.dao.EstateDao
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.FullEstate
+import javax.inject.Inject
 
-class EstateDataRepository (private val estateDao: EstateDao) {
+
+class EstateDataRepository @Inject constructor(private val estateDao: EstateDao)  {
     fun getEstates(): LiveData<List<FullEstate>> {
         return this.estateDao.getItems()
     }
@@ -17,7 +19,6 @@ class EstateDataRepository (private val estateDao: EstateDao) {
         return this.estateDao.getItemsByID(estateID)
     }
 
-    // --- CREATE ---
 
 }
 

@@ -1,39 +1,24 @@
 package com.openclassrooms.realestatemanager.viewModel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.openclassrooms.realestatemanager.model.FullEstate
-import com.openclassrooms.realestatemanager.model.Image
 import com.openclassrooms.realestatemanager.repositories.EstateDataRepository
-import com.openclassrooms.realestatemanager.repositories.ImageDataRepository
-import com.openclassrooms.realestatemanager.repositories.LocationDataRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+
 import java.util.concurrent.Executor
+import javax.inject.Inject
 
-class EstateViewModel {
-    //REPOSITORY
-    private var mExecutor: Executor? = null
-    private lateinit var mEstateDataSource: EstateDataRepository
-
-
-    // DATA
-    private var mEstate: LiveData<List<FullEstate>>? = null
-
-    fun EstateViewModel(estateDataSource: EstateDataRepository, executor: Executor
-    ) {
-        mEstateDataSource = estateDataSource
-        mExecutor = executor
-    }
-
-    fun init() {
-        if (mEstate == null) mEstate = mEstateDataSource.getEstates()
-    }
+@HiltViewModel
+class EstateViewModel  @Inject constructor (private val estateDataSource: EstateDataRepository): ViewModel() {
 
     // --------------------
     // ESTATES
     // --------------------
+    fun getEstates() = estateDataSource.getEstates()
 
-    fun getEstates(estateId:Long): LiveData<FullEstate>{
-        return mEstateDataSource.gesEstateByID(estateId)
-    }
+    fun getEstateByID(estateId:Long): LiveData<FullEstate> = estateDataSource.gesEstateByID(estateId)
+
 
 
 

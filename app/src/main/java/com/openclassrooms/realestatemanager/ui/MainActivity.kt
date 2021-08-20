@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
@@ -31,33 +32,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun configureAndShowMasterFragment() {
         // Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        masterFragment = getSupportFragmentManager().findFragmentById(com.openclassrooms.realestatemanager.R.id.frame_layout_main) as MasterFragment?
+        masterFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_main) as MasterFragment?
 
         //A - We only add DetailFragment in Tablet mode (If found frame_layout_detail)
         if (masterFragment == null ) {
             masterFragment = MasterFragment()
             supportFragmentManager.beginTransaction()
-                .add(com.openclassrooms.realestatemanager.R.id.frame_layout_main, masterFragment!!)
+                .add(R.id.frame_layout_main, masterFragment!!)
                 .commit()
         }
     }
 
     private fun configureAndShowDetailFragment() {
         //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        detailFragment = supportFragmentManager.findFragmentById(com.openclassrooms.realestatemanager.R.id.frame_layout_detail) as DetailFragment?
+        detailFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_detail) as DetailFragment?
 
-        if (detailFragment == null && findViewById<View?>(com.openclassrooms.realestatemanager.R.id.frame_layout_detail) != null) {
+        if (detailFragment == null && findViewById<View?>(R.id.frame_layout_detail) != null) {
             //Create new main fragment
             detailFragment = DetailFragment()
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
-                .add(com.openclassrooms.realestatemanager.R.id.frame_layout_detail, detailFragment!!)
+                .add(R.id.frame_layout_detail, detailFragment!!)
                 .commit()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(com.openclassrooms.realestatemanager.R.menu.activity_main_menu, menu)
+        menuInflater.inflate(R.menu.activity_main_menu, menu)
         return super.onCreateOptionsMenu(menu)
 
     }
