@@ -42,7 +42,8 @@
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
         app:rippleColor="@color/colorAccent"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck"
+        android:contentDescription="TODO" />
 
 
 </RelativeLayout>

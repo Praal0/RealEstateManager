@@ -9,6 +9,8 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
+import android.content.Intent
+import com.openclassrooms.realestatemanager.ui.add.AddActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -63,8 +65,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * For click on fab for create new estate
+     */
     fun onClickFab() {
-        binding.fabBtn.setOnClickListener {  }
+        binding.fabBtn.setOnClickListener {
+            val fabIntent = Intent(applicationContext, AddActivity::class.java)
+            startActivity(fabIntent)
+        }
     }
 
     // Initialisation variable

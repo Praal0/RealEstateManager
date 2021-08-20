@@ -1,10 +1,10 @@
 package com.openclassrooms.realestatemanager.model
 
 import android.content.ContentValues
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Entity
 data class Estate(@PrimaryKey(autoGenerate = true)
