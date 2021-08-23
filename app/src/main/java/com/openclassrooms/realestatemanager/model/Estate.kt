@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.model
 
-import android.content.ContentValues
-import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
@@ -21,7 +19,7 @@ data class Estate(@PrimaryKey(autoGenerate = true)
                   var schools:Boolean,
                   var highway:Boolean,
                   var estateStatute: String?,
-                  var entryDate: Date,
+                  var entryDate: Date?,
                   var soldDate: Date?,
                   var estateAgent: String?){
 
@@ -30,3 +28,9 @@ data class Estate(@PrimaryKey(autoGenerate = true)
         false,false,"",Date(),null,"")
 
 }
+
+private val ESTATE_HOUSE = Estate(
+    1, "house", 100000.00, 50000, 2, 1, 2, "true",
+    true, true, false, false, "false", null, null, "John Doe"
+)
+

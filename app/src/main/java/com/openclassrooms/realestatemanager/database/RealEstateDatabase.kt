@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.openclassrooms.realestatemanager.database.dao.EstateDao
 import com.openclassrooms.realestatemanager.database.dao.ImageDao
 import com.openclassrooms.realestatemanager.database.dao.LocationDao
@@ -23,14 +24,29 @@ abstract class RealEstateDatabase : RoomDatabase() {
         fun getInstance(context: Context):RealEstateDatabase{
             if (INSTANCE == null){
                 synchronized(this){
-                    INSTANCE = Room.databaseBuilder(context.applicationContext,RealEstateDatabase::class.java,"RealEstateDatabase.db").build()
+                    INSTANCE = Room.databaseBuilder(context.applicationContext,
+                        RealEstateDatabase::class.java,
+                        "RealEstateDatabase.db")
+                        .addCallback(object : Callback() {
+                            override fun onCreate(db: SupportSQLiteDatabase) {
+                                super.onCreate(db)
+
+                            }
+                        })
+                        .build()
                 }
             }
             return INSTANCE as RealEstateDatabase
         }
 
+
         fun destroyInstance(){
             INSTANCE = null
         }
+
+
+
+        val PREPOPULATE_DATA = listOf(Estate(1, "house", 100000.00, 50000, 2, 1, 2, "true",
+            true, true, false, false, "false", null, null, "John Doe"))
     }
 }

@@ -5,26 +5,29 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.FullEstate
 
 @Dao
 interface EstateDao {
-    @Query("SELECT Estate.*,Location.* FROM Estate INNER JOIN Location ON Estate.id = Location.estateId ")
-    fun getItems(): LiveData<List<FullEstate>>
+    @Query("SELECT * FROM Estate")
+    fun getEstates(): LiveData<List<Estate>>
 
-    @Query("SELECT Estate.*,Location.* FROM Estate INNER JOIN Location ON Estate.id = Location.estateId  WHERE Estate.id = :index")
-    fun getItemsWithCursor(index:Long): Cursor
-
-    @RawQuery
-    fun getItemsBySearch(query: SupportSQLiteQuery) : LiveData<List<FullEstate>>
-
-    @Query("SELECT Estate.*,Location.* FROM Estate INNER JOIN Location ON Estate.id = Location.estateId  WHERE Estate.id = :index")
-    fun getItemsByID(index:Long) : LiveData<FullEstate>
+    @Query("SELECT * FROM Estate WHERE id = :mandateNumberID")
+    fun getEstate(mandateNumberID: Long): LiveData<Estate>
 
     @Insert
-    fun insertItem(estate: Estate) : Long
+    fun insertEstate(estate: Estate): Long
 
     @Update
-    fun updateItem(estate: Estate) :Int
+    fun updateEstate(estate: Estate): Int
+
+    @Query("DELETE FROM Estate WHERE id = :mandateNumberID")
+    fun deleteItem(mandateNumberID: Long): Int
+
+    @RawQuery(observedEntities = [Estate::class])
+    fun getSearchEstate(query: SupportSQLiteQuery): LiveData<List<Estate>>
+
+    //For ContentProvider
+    @Query("SELECT * FROM Estate WHERE id = :mandateNumberID")
+    fun getEstateWithCursor(mandateNumberID: Long): Cursor
 
 }
