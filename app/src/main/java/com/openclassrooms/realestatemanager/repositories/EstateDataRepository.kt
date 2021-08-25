@@ -8,11 +8,11 @@ import javax.inject.Inject
 
 class EstateDataRepository @Inject constructor(private val estateDao: EstateDao)  {
     fun getEstates(): LiveData<List<Estate>> {
-        return this.estateDao.getItems()
+        return this.estateDao.getEstates()
     }
 
     fun gesEstateByID(estateID:Long) : LiveData<Estate>{
-        return this.estateDao.getItemsByID(estateID)
+        return this.estateDao.getEstate(estateID)
     }
 
 
