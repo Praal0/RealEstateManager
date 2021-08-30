@@ -11,8 +11,10 @@ import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
 import android.content.Intent
 import com.openclassrooms.realestatemanager.ui.add.AddActivity
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -28,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         onClickFab()
         configureAndShowMasterFragment()
         configureAndShowDetailFragment()
-
         setSupportActionBar(toolbar)
     }
 

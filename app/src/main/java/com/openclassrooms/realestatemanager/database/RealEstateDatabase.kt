@@ -1,7 +1,9 @@
 package com.openclassrooms.realestatemanager.database
 
+import android.content.ContentValues
 import android.content.Context
 import androidx.room.Database
+import androidx.room.OnConflictStrategy
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -19,6 +21,7 @@ abstract class RealEstateDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
 
     companion object {
+        @Volatile
         private var INSTANCE: RealEstateDatabase? = null
 
         fun getInstance(context: Context):RealEstateDatabase{
@@ -30,8 +33,24 @@ abstract class RealEstateDatabase : RoomDatabase() {
                         .addCallback(object : Callback() {
                             override fun onCreate(db: SupportSQLiteDatabase) {
                                 super.onCreate(db)
-
-                            }
+                                val contentValues = ContentValues()
+                                contentValues.put("id",1)
+                                contentValues.put("estateType","House")
+                                contentValues.put("surface",3000)
+                                contentValues.put("roomNumber",3)
+                                contentValues.put("bathroomNumber",3)
+                                contentValues.put("bedroomNumber",4)
+                                contentValues.put("desc","Affichage du détails")
+                                contentValues.put("address","11 avenu du sent")
+                                contentValues.put("postalCode",69000)
+                                contentValues.put("city","Lyon")
+                                contentValues.put("parks",true)
+                                contentValues.put("shops",true)
+                                contentValues.put("schools",true)
+                                contentValues.put("highway",false)
+                                contentValues.put("estateStatute","Ace")
+                                contentValues.put("estateAgent","Luc Dewit")
+                                db.insert("estates", OnConflictStrategy.IGNORE,contentValues)                          }
                         })
                         .build()
                 }
@@ -39,14 +58,5 @@ abstract class RealEstateDatabase : RoomDatabase() {
             return INSTANCE as RealEstateDatabase
         }
 
-
-        fun destroyInstance(){
-            INSTANCE = null
-        }
-
-
-
-        val PREPOPULATE_DATA = listOf(Estate(1, "house", 100000.00, 50000, 2, 1, 2, "true",
-            true, true, false, false, "false", null, null, "John Doe"))
     }
 }

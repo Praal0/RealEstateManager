@@ -20,7 +20,7 @@ class MasterAdapter(private val result :List<Estate>) :RecyclerView.Adapter<Mast
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val view: View = inflater.inflate(R.layout.fragment_master_item, parent, false)
-        return MasterViewHolder(view,)
+        return MasterViewHolder(view)
     }
 
     fun getEstate(position: Int): Estate? {

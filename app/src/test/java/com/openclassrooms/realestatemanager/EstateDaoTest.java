@@ -24,19 +24,15 @@ public class EstateDaoTest {
 
     //For Data
     private RealEstateDatabase estateDatabase;
-    //DATA SET for test
-    private static long MANDATE_NUMBER_ID = 1;
 
-
-    private static Estate ESTATE_HOUSE = new Estate(1, "house", 100000.00,
-            50000, 2, 1, 2, "true",
-            true, true,false,false,"false",null
-            ,null,"John Doe");
+    private static Estate ESTATE_HOUSE = new Estate(1, "house", 100000.00,null,
+            3,3,50000, "Sublime maison", "1", 2, "true",
+            true, true,false,false,"false","John Doe");
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
-    public void initDb() throws Exception {
+    public void initDb() {
         try {
             this.estateDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().getTargetContext(),
                     RealEstateDatabase.class)
@@ -48,7 +44,7 @@ public class EstateDaoTest {
     }
 
     @After
-    public void closeDb() throws Exception {
+    public void closeDb() {
         estateDatabase.close();
     }
 

@@ -28,7 +28,7 @@ public class Utils {
      * Convert price of estate (Euros to Dollars)
      */
     public static int convertEurosToDollar(int euros){
-        return (int) Math.round(euros * 1.1772);
+        return (int) Math.round(euros * 1.177);
     }
 
     /**

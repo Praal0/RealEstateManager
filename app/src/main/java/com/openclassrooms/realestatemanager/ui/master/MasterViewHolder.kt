@@ -6,20 +6,22 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterBinding
 import com.openclassrooms.realestatemanager.model.Estate
 
-class MasterViewHolder(itemView: View,val binding: FragmentMasterBinding) : RecyclerView.ViewHolder(itemView) {
+class MasterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val listPhoto : AppCompatImageView? = null
-    val photoSold : AppCompatImageView? = null
-    val estateType : AppCompatEditText? = null
-    val city : AppCompatEditText? = null
-    val price : AppCompatEditText? = null
-
+    private var listPhoto : ImageView = itemView.findViewById(R.id.list_photo)
+    private var photoSold : ImageView = itemView.findViewById(R.id.list_photo_sold)
+    private var estateType : TextView = itemView.findViewById(R.id.estateType)
+    private var city : TextView = itemView.findViewById(R.id.city)
+    private var price : TextView = itemView.findViewById(R.id.price)
 
 
     fun updateWithData(estate: Estate) {
-
+        city.text = estate.city
+        price.text = estate.price.toString()
+        estateType.text = estate.estateType
     }
 }
