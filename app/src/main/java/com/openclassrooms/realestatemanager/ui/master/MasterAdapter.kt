@@ -1,39 +1,57 @@
 package com.openclassrooms.realestatemanager.ui.master
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding
 import com.openclassrooms.realestatemanager.model.Estate
-import java.util.*
 
-class MasterAdapter(private val result :List<Estate>) :RecyclerView.Adapter<MasterViewHolder>() {
+class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapter<MasterViewHolder>() {
 
 
-    // FOR DATA
-    private val mResults: List<Estate>? = result
+    interface MasterItemListener{
+        fun onClickedCharacter(characterId: Int)
+    }
+
+    private val items = ArrayList<Estate>()
+
+    fun setItems(items: ArrayList<Estate>) {
+        this.items.clear()
+        this.items.addAll(items)
+        notifyDataSetChanged()
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MasterViewHolder {
-        val context = parent.context
-        val inflater = LayoutInflater.from(context)
-        val view: View = inflater.inflate(R.layout.fragment_master_item, parent, false)
-        return MasterViewHolder(view)
+        val binding: FragmentMasterItemBinding = FragmentMasterItemBinding.inflate(LayoutInflater.from(parent.context),
+            parent, false)
+        return MasterViewHolder(binding, result)
     }
 
-    fun getEstate(position: Int): Estate? {
-        return mResults?.get(position)
+    override fun onBindViewHolder(holder: MasterViewHolder, position: Int) = holder.bind(items[position])
+
+    override fun getItemCount(): Int = items.size
+}
+
+class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, private val listener: MasterAdapter.MasterItemListener)
+    : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener{
+
+    private lateinit var estate: Estate
+
+    init {
+        itemBinding.root.setOnClickListener(this)
     }
 
-    override fun onBindViewHolder(holder: MasterViewHolder, position: Int) {
-        mResults?.get(position)?.let{ holder.updateWithData(it) }
+    @SuppressLint("SetTextI18n")
+    fun bind(item: Estate) {
+        this.estate = item
+
     }
 
-    override fun getItemCount(): Int {
-        var itemCount = 0
-        if (mResults != null) itemCount = mResults.size
-        return itemCount
+    override fun onClick(v: View?) {
+        listener.onClickedCharacter(estate.id)
     }
+
 }

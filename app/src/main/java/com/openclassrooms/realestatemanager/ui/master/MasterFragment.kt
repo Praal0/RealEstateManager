@@ -2,9 +2,12 @@ package com.openclassrooms.realestatemanager.ui.master
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
@@ -13,40 +16,39 @@ import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MasterFragment : Fragment() {
+class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
 
-    private var fragmentListBinding: FragmentMasterBinding? = null
-    // List
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var binding: FragmentMasterBinding
     private lateinit var adapter: MasterAdapter
-
     private val estateViewModel: EstateViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true)
-        val rootView = inflater.inflate(R.layout.fragment_master, container, false)
-        recyclerView = rootView.findViewById(R.id.recyclerViewEstate)
-        recyclerView.setHasFixedSize(true)
-        val layoutManager = LinearLayoutManager(context)
-        recyclerView.layoutManager = layoutManager
-
-        return rootView
+        binding = FragmentMasterBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        configureViewModel()
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
     }
 
-    private fun configureViewModel() {
-        activity?.let { ViewModelProvider(it) }?.get(EstateViewModel::class.java)?.getEstates()
+    private fun setupRecyclerView() {
+        adapter = MasterAdapter(this)
+        binding.recyclerViewEstate.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewEstate.adapter = adapter
     }
+
+
+
+    override fun onClickedCharacter(characterId: Int) {
+        findNavController().navigate(
+            R.id.action_charactersFragment_to_characterDetailFragment,
+            bundleOf("id" to characterId)
+        )
+    }
+
+
 }
