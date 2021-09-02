@@ -1,7 +1,7 @@
 package com.openclassrooms.realestatemanager
 
-import com.openclassrooms.realestatemanager.Util.Utils.convertDollarToEuro
-import com.openclassrooms.realestatemanager.Util.Utils.convertEurosToDollar
+import com.openclassrooms.realestatemanager.utils.Utils.convertDollarToEuro
+import com.openclassrooms.realestatemanager.utils.Utils.convertEurosToDollar
 import org.junit.Assert
 import org.junit.Test
 

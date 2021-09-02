@@ -8,22 +8,22 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.openclassrooms.realestatemanager.database.dao.EstateDao
-import com.openclassrooms.realestatemanager.database.dao.ImageDao
+import com.openclassrooms.realestatemanager.database.dao.PictureDao
 import com.openclassrooms.realestatemanager.database.dao.LocationDao
 import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.Image
+import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model.Location
 
-@Database(entities = [(Estate::class), (Image::class), (Location::class)],version = 1, exportSchema = false)
+
+private var INSTANCE: RealEstateDatabase? = null
+
+@Database(entities = [(Estate::class), (Picture::class), (Location::class)],version = 1, exportSchema = false)
 abstract class RealEstateDatabase : RoomDatabase() {
     abstract fun estateDao(): EstateDao
-    abstract fun imageDao(): ImageDao
+    abstract fun pictureDao(): PictureDao
     abstract fun locationDao(): LocationDao
 
     companion object {
-        @Volatile
-        private var INSTANCE: RealEstateDatabase? = null
-
         fun getInstance(context: Context):RealEstateDatabase{
             if (INSTANCE == null){
                 synchronized(this){
@@ -50,7 +50,7 @@ abstract class RealEstateDatabase : RoomDatabase() {
                                 contentValues.put("highway",false)
                                 contentValues.put("estateStatute","Ace")
                                 contentValues.put("estateAgent","Luc Dewit")
-                                db.insert("estates", OnConflictStrategy.IGNORE,contentValues)                          }
+                                db.insert("estates", OnConflictStrategy.IGNORE,contentValues) }
                         })
                         .build()
                 }

@@ -6,4 +6,6 @@
     <string name="create">create</string>
     <string name="valide_btn">valide_btn</string>
     <string name="location">Location</string>
+    <string name="error_when_creating_the_estate">error when creating estate</string>
+    <string name="error_when_creating_the_property">"creating estate error "</string>
 </resources>

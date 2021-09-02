@@ -12,7 +12,7 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
 
 
     interface MasterItemListener{
-        fun onClickedCharacter(characterId: Int)
+        fun onClickedCharacter(characterId: Long)
     }
 
     private val items = ArrayList<Estate>()
@@ -21,6 +21,7 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()
+
     }
 
 
@@ -47,7 +48,9 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
     @SuppressLint("SetTextI18n")
     fun bind(item: Estate) {
         this.estate = item
-
+        itemBinding.city.text = item.city
+        itemBinding.estateType.text = item.estateType
+        itemBinding.price.text = item.price.toString()
     }
 
     override fun onClick(v: View?) {
