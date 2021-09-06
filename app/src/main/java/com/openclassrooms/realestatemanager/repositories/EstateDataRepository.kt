@@ -1,38 +1,64 @@
 package com.openclassrooms.realestatemanager.repositories
 
 import androidx.lifecycle.LiveData
-import com.openclassrooms.realestatemanager.database.dao.EstateDao
-import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.Picture
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
+import com.openclassrooms.realestatemanager.database.dao.EstateDAO
+import com.openclassrooms.realestatemanager.models.Estate
 import javax.inject.Inject
 
 
 class EstateDataRepository @Inject constructor(
-    private val estateDao: EstateDao
+    private val estateDAO: EstateDAO
     ) {
     fun getEstates(): LiveData<List<Estate>> {
-        return this.estateDao.getEstates()
+        return this.estateDAO.getEstates()
     }
 
     fun gesEstateByID(estateID:Long) : LiveData<Estate>{
-        return this.estateDao.getEstate(estateID)
+        return this.estateDAO.getEstate(estateID)
     }
 
+    /**
+     * Create
+     *
+     * @param estate
+     */
     // --- CREATE ---
-    fun createEstate(estate: Estate, pictureList: ArrayList<Picture>) {
-        estateDao.createEstate(estate, pictureList)
+    fun createEstate(estate: Estate) {
+        estateDAO.insertEstate(estate)
     }
 
+    /**
+     * Delete
+     *
+     * @param mandateEstateID
+     * */
+    fun deleteEstate(mandateEstateID: Long) {
+        estateDAO.deleteItem(mandateEstateID)
+    }
+
+
+    /**
+     * Update
+     *
+     * @param estate
+     */
     // --- UPDATE ---
     fun updateEstate(estate: Estate) {
-        estateDao.updateEstate(estate)
+        estateDAO.updateEstate(estate)
     }
 
-    fun updateEstateAndPictures(estate: Estate, pictureList: ArrayList<Picture>){
-        estateDao.updateEstateAndPictures(estate, pictureList)
+    /**
+     * For Search
+     *
+     * @param queryString
+     * @param args
+     * @return
+     */
+    fun getSearchEstate(queryString: String?, args: List<Any?>): LiveData<List<Estate>> {
+        val query: SupportSQLiteQuery = SimpleSQLiteQuery(queryString, args.toTypedArray())
+        return estateDAO.getSearchEstate(query)
     }
 
 

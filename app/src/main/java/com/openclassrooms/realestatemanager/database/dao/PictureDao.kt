@@ -4,17 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
-import com.openclassrooms.realestatemanager.model.Picture
+import com.openclassrooms.realestatemanager.models.PhotoDescription
 
 @Dao
 interface PictureDao {
 
     @Query("SELECT * FROM PICTURE WHERE estateId = :estateId")
-    fun getPicture(estateId:Long): LiveData<List<Picture>>
+    fun getPicture(estateId:Long): LiveData<List<PhotoDescription>>
 
     @Insert
-    fun insertPicture(picture: Picture) : Long
+    fun insertPicture(photoDescription: PhotoDescription) : Long
 
     @Query("DELETE FROM PICTURE WHERE estateId = :estateId")
     fun deleteAllPictureFromEstate(estateId:Long): Int

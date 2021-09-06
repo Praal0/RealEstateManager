@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -121,7 +122,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="550dp"
         app:boxStrokeColor="@color/colorAccent"
-        app:startIconDrawable="@drawable/baseline_house"
+        app:startIconDrawable="@drawable/hou"
         app:startIconTint="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -188,10 +189,9 @@
         android:layout_marginEnd="20dp"
         android:layout_toEndOf="@id/input_surface"
         android:drawableStart="@drawable/baseline_place"
-        android:text="@string/location"
+        android:text="Location"
         android:textColor="#000000"
-        android:textStyle="bold|italic">
-    </androidx.appcompat.widget.AppCompatTextView>
+        android:textStyle="bold|italic"></androidx.appcompat.widget.AppCompatTextView>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_address"
@@ -229,7 +229,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_postalCode"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:hint="Postal Code"
             android:paddingBottom="8dp"
             android:textColor="#000000"
@@ -250,7 +250,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_city"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:hint="City"
             android:paddingBottom="8dp"
             android:textAllCaps="true"

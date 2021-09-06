@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding
-import com.openclassrooms.realestatemanager.model.Estate
+import com.openclassrooms.realestatemanager.models.Estate
 
 class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapter<MasterViewHolder>() {
 

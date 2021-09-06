@@ -2,25 +2,22 @@ package com.openclassrooms.realestatemanager.database
 
 import android.content.ContentValues
 import android.content.Context
-import androidx.room.Database
-import androidx.room.OnConflictStrategy
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.openclassrooms.realestatemanager.database.dao.EstateDao
-import com.openclassrooms.realestatemanager.database.dao.PictureDao
+import com.openclassrooms.realestatemanager.database.converters.PhotoDescriptionConverter
+import com.openclassrooms.realestatemanager.database.converters.UriListConverter
+import com.openclassrooms.realestatemanager.database.dao.EstateDAO
 import com.openclassrooms.realestatemanager.database.dao.LocationDao
-import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.Picture
-import com.openclassrooms.realestatemanager.model.Location
+import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.models.Location
 
 
 private var INSTANCE: RealEstateDatabase? = null
 
-@Database(entities = [(Estate::class), (Picture::class), (Location::class)],version = 1, exportSchema = false)
+@Database(entities = [(Estate::class), (Location::class)],version = 1, exportSchema = false)
+@TypeConverters(UriListConverter::class, PhotoDescriptionConverter::class)
 abstract class RealEstateDatabase : RoomDatabase() {
-    abstract fun estateDao(): EstateDao
-    abstract fun pictureDao(): PictureDao
+    abstract fun estateDao(): EstateDAO
     abstract fun locationDao(): LocationDao
 
     companion object {

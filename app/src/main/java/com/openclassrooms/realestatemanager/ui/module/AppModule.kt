@@ -3,11 +3,9 @@ package com.openclassrooms.realestatemanager.ui.module
 import android.app.Application
 import android.content.Context
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase
-import com.openclassrooms.realestatemanager.database.dao.EstateDao
-import com.openclassrooms.realestatemanager.database.dao.PictureDao
+import com.openclassrooms.realestatemanager.database.dao.EstateDAO
 import com.openclassrooms.realestatemanager.database.dao.LocationDao
 import com.openclassrooms.realestatemanager.repositories.EstateDataRepository
-import com.openclassrooms.realestatemanager.repositories.PictureDataRepository
 import com.openclassrooms.realestatemanager.repositories.LocationDataRepository
 import dagger.Module
 import dagger.Provides
@@ -28,21 +26,14 @@ class AppModule  : Application() {
     }
 
     @Provides
-    fun provideEstateDao(realEstateDatabase: RealEstateDatabase): EstateDao = realEstateDatabase.estateDao()
-
-    @Provides
-    fun provideImageDao(realEstateDatabase: RealEstateDatabase): PictureDao = realEstateDatabase.pictureDao()
+    fun provideEstateDao(realEstateDatabase: RealEstateDatabase): EstateDAO = realEstateDatabase.estateDao()
 
     @Provides
     fun provideLocationDao(realEstateDatabase: RealEstateDatabase): LocationDao = realEstateDatabase.locationDao()
 
     @Singleton
     @Provides
-    fun provideEstateRepository(localDataSource: EstateDao) = EstateDataRepository(localDataSource)
-
-    @Singleton
-    @Provides
-    fun provideImageRepository(localDataSource: PictureDao) = PictureDataRepository(localDataSource)
+    fun provideEstateRepository(localDataSource: EstateDAO) = EstateDataRepository(localDataSource)
 
     @Singleton
     @Provides

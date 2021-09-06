@@ -2,8 +2,7 @@ package com.openclassrooms.realestatemanager.repositories
 
 import androidx.lifecycle.LiveData
 import com.openclassrooms.realestatemanager.database.dao.LocationDao
-import com.openclassrooms.realestatemanager.model.Location
-import javax.inject.Inject
+import com.openclassrooms.realestatemanager.models.Location
 
 
 class LocationDataRepository(private val locationDao: LocationDao) {
