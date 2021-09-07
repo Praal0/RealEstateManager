@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterBinding
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
@@ -24,7 +28,8 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMasterBinding.inflate(inflater, container, false)
-        return binding.root
+        val view: View = binding.getRoot()
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,8 +40,8 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
 
     private fun setupRecyclerView() {
         adapter = MasterAdapter(this)
-        binding.recyclerViewEstate.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewEstate.adapter = adapter
+        binding.fragmentListRV.layoutManager = LinearLayoutManager(requireContext())
+        binding.fragmentListRV.adapter = adapter
     }
 
     private fun setupObservers() {
@@ -46,9 +51,11 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
         })
     }
 
-
-    override fun onClickedCharacter(characterId: Long) {
-
+    override fun onClickedEstate(estateId: Long) {
+        findNavController().navigate(
+            R.id.action_masterFragment_to_detailFragment,
+            bundleOf("id" to estateId)
+        )
     }
 
 

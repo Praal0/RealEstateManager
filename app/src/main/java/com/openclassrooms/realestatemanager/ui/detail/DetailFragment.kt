@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.utils.Resource
+import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import java.util.*
 
 
 /**
@@ -40,26 +42,28 @@ class DetailFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.estate.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                Resource.Status.SUCCESS -> {
-                    bindEstate(it.data!!)
-                }
-
-                Resource.Status.ERROR ->
-                    Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
-            }
+            binding.etMandate.setText(it.id.toString());
+            binding.etMandate.isEnabled = false
+            binding.etSurface.setText(it.surface.toString());
+            binding.etSurface.isEnabled = false
+            binding.etDescription.setText(it.description)
+            binding.etDescription.isEnabled = false
+            binding.etRooms.setText(it.rooms.toString())
+            binding.etRooms.isEnabled = false
+            binding.etBathrooms.setText(it.bathrooms.toString())
+            binding.etBathrooms.isEnabled = false
+            binding.etBedrooms.setText(it.bedrooms.toString())
+            binding.etBedrooms.isEnabled = false
+            binding.etAddress.setText(it.address)
+            binding.etAddress.isEnabled = false
+            binding.etPostalCode.setText(it.postalCode.toString())
+            binding.etPostalCode.isEnabled = false
+            binding.etCity.setText(it.city)
+            binding.etCity.isEnabled = false
         })
     }
 
-    private fun bindEstate(estate: Estate) {
-        binding.etDescription.text = estate.desc
-        binding.etBathrooms.text = estate.bathroomNumber.toString()
-        binding.etBedrooms.text = estate.bedroomNumber.toString()
-        binding.etPostalCode.text = estate.postalCode.toString()
-        binding.etAddress.text = estate.address
-        binding.etCity.text = estate.city
-        binding.etSurface.text = estate.surface.toString()
-    }
+
 
 
 }

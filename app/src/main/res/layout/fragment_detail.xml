@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/tools">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_mandate"
@@ -29,8 +28,8 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/photo_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="140dp"
         android:background="@drawable/baseline_camera_alt_black_48dp" />
@@ -45,11 +44,12 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/camera_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="250dp"
-        android:background="@drawable/baseline_camera_black_48dp" />
+        android:background="@drawable/baseline_camera_black_48dp"
+        map:ignore="SpeakableTextPresentCheck" />
 
     <FrameLayout
         android:layout_width="160dp"
@@ -122,7 +122,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="550dp"
         app:boxStrokeColor="@color/colorAccent"
-        app:startIconDrawable="@drawable/hou"
+        app:startIconDrawable="@drawable/baseline_house"
         app:startIconTint="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -233,7 +233,8 @@
             android:hint="Postal Code"
             android:paddingBottom="8dp"
             android:textColor="#000000"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            map:ignore="TouchTargetSizeCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -268,5 +269,4 @@
         android:clickable="true"
         android:focusable="true"
         map:liteMode="true" />
-
 </RelativeLayout>

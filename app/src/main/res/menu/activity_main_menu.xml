@@ -3,22 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/add_btn"
+        android:icon="@drawable/ic_baseline_add_24"
+        android:title="Add"
+        app:showAsAction="ifRoom">
+
+    </item>
+    <item
         android:id="@+id/search_btn"
         android:icon="@drawable/baseline_search_white"
-        app:showAsAction="ifRoom"
-        android:title="Search">
-    </item>
-
-    <item
-        android:id="@+id/map_btn"
-        android:icon="@drawable/ic_baseline_map_24"
-        app:showAsAction="ifRoom"
-        android:title="Map">
-
-    </item>
-
-
-
+        android:title="Search"
+        app:showAsAction="ifRoom"></item>
 
 
 </menu>

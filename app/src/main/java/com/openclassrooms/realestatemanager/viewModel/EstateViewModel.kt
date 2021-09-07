@@ -1,11 +1,13 @@
 package com.openclassrooms.realestatemanager.viewModel
 
-import androidx.hilt.lifecycle.ViewModelInject
+
 import androidx.lifecycle.ViewModel
 import com.openclassrooms.realestatemanager.repositories.EstateDataRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-
-class EstateViewModel @ViewModelInject constructor (private val estateDataSource: EstateDataRepository): ViewModel() {
+@HiltViewModel
+class EstateViewModel @Inject constructor (private val estateDataSource: EstateDataRepository): ViewModel() {
 
     // --------------------
     // ESTATES

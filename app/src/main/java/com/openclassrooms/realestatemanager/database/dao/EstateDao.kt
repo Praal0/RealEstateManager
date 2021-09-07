@@ -4,9 +4,7 @@ import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.openclassrooms.realestatemanager.database.RealEstateDatabase
 import com.openclassrooms.realestatemanager.models.Estate
-import com.openclassrooms.realestatemanager.models.PhotoDescription
 
 @Dao
 interface EstateDAO {

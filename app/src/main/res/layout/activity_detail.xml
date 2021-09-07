@@ -4,28 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.detail.DetailActivity">
 
     <include
-        android:id="@+id/included_toolbar"
         layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_fragment_frameLayout" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <FrameLayout
-            android:id="@+id/frame_layout_main"
+            android:id="@+id/detail_fragment_frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="675dp"
-            android:layout_marginTop="?attr/actionBarSize" />
+            android:layout_height="wrap_content" />
 
-    </LinearLayout>
-
+    </ScrollView>
 
 </RelativeLayout>
