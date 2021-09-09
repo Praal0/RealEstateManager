@@ -16,7 +16,7 @@ interface EstateDAO {
     @Query("SELECT * FROM Estate WHERE id = :mandateNumberID")
     fun getEstate(mandateNumberID: Long): LiveData<Estate>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEstate(estate: Estate): Long
 
     @Update

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterBinding
+import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,12 +23,35 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
     private lateinit var binding: FragmentMasterBinding
     private lateinit var adapter: MasterAdapter
     private val estateViewModel: EstateViewModel by viewModels()
+    var test = Estate(
+        1,
+        "house",
+        200,
+        4,
+        2,
+        1,
+        200,
+        100000.00,
+        "Très belle maison",
+        "2 rue du Pont",
+        66000,
+        "Perpignan",
+        true,
+        false,
+        false,
+        true,
+        true,
+        1601510400000L,
+        "",
+        "Karine Danjard"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMasterBinding.inflate(inflater, container, false)
+        estateViewModel.insertEstates(test)
         val view: View = binding.getRoot()
         return view
     }
@@ -45,9 +69,8 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
     }
 
     private fun setupObservers() {
-        estateViewModel.estates.observe(viewLifecycleOwner, Observer {
+        estateViewModel.getEstates().observe(viewLifecycleOwner, Observer {
              adapter.setItems(ArrayList(it.size))
-
         })
     }
 

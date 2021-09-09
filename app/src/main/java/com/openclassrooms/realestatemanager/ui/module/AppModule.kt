@@ -12,17 +12,22 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule  : Application() {
+object AppModule  : Application() {
     @Provides
     @Singleton
     fun provideAppDatabase (@ApplicationContext appContext : Context) : RealEstateDatabase {
-        return RealEstateDatabase.getInstance(appContext)
+        return RealEstateDatabase.getInstance(appContext as Application, provideExecutor())
     }
+
+    @Provides
+    fun provideExecutor() = Executors.newFixedThreadPool(4)
 
     @Provides
     fun provideEstateDao(realEstateDatabase: RealEstateDatabase): EstateDAO = realEstateDatabase.estateDao()

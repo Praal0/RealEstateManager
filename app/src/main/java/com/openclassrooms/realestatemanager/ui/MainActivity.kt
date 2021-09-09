@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +15,7 @@ import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
+import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -22,6 +24,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val estateViewModel: EstateViewModel by viewModels()
     private lateinit var toolbar : Toolbar
     private var detailFragment: DetailFragment? = null
     private var masterFragment: MasterFragment? = null
@@ -35,12 +38,13 @@ class MainActivity : AppCompatActivity() {
         configureAndShowMasterFragment()
         configureAndShowDetailFragment()
         setSupportActionBar(toolbar)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val intent: Intent = Objects.requireNonNull(intent)
         val estateDetail = intent.getSerializableExtra("estate") as Estate?
-        idEstate = if (estateDetail != null) estateDetail.id else 0
+        idEstate = estateDetail?.id ?:
         return when (item.getItemId()) {
             R.id.edit_btn -> {
                 if (idEstate > 0) {
@@ -65,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         if (masterFragment == null ) {
             masterFragment = MasterFragment()
             supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_main, masterFragment!!)
+                .add(R.id.frame_layout_main, masterFragment)
                 .commit()
         }
     }
@@ -93,6 +97,7 @@ class MainActivity : AppCompatActivity() {
     // Initialisation variable
     private fun initialize() {
         toolbar = binding.includedToolbar.simpleToolbar
+
     }
 
 }

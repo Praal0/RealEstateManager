@@ -25,21 +25,20 @@ class AddEditActivity : AppCompatActivity() {
         val view: View = activityAddBinding!!.getRoot()
         setContentView(view)
 
-        estateEdit = intent.getLongExtra("iDEstate", idEstate);
+        estateEdit = intent.getLongExtra("iDEstate", idEstate)
 
-        estateFormBinding!!.videoView.setVisibility(View.INVISIBLE);
-        if(estateEdit == 0L) {
-            Objects.requireNonNull(estateFormBinding!!.deleteVideo).setVisibility(View.INVISIBLE);
-        }
 
         onClickPhotoBtn()
         //for title toolbar
         val ab: ActionBar? = supportActionBar
-        if (estateEdit == 0L) {
-            Objects.requireNonNull(ab)?.setTitle("Create Estate")
-        } else {
-            Objects.requireNonNull(ab)?.setTitle("Edit Estate")
+        ab?.let {
+            if (estateEdit == 0L) {
+                it.setTitle("Create Estate")
+            } else {
+                it.setTitle("Edit Estate")
+            }
         }
+
     }
 
     /**
@@ -64,9 +63,6 @@ class AddEditActivity : AppCompatActivity() {
      * For click on video btn
      */
     fun onClickVideoBtn() {
-        estateFormBinding!!.cameraBtn.setOnClickListener(View.OnClickListener {
-
-        })
 
     }
 }

@@ -27,6 +27,7 @@ class DetailActivity : AppCompatActivity() {
         val view: View = activityDetailBinding!!.root
         setContentView(view)
 
+
         this.configureToolbar()
         this.configureUpButton()
         this.configureAndShowDetailFragment()
