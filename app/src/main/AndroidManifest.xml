@@ -21,6 +21,12 @@
             android:name=".ui.createAndEditEstate.AddEditActivity"
             android:exported="true" />
         <activity
+            android:name=".ui.createAndEditEstate.AddEditActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.createAndEditEstate.AddEditActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.detail.DetailActivity"
             android:exported="true" />
         <activity
@@ -28,6 +34,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

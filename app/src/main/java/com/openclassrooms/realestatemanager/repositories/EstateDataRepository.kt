@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.repositories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -25,8 +26,14 @@ class EstateDataRepository @Inject constructor(
      * @param estate
      */
     // --- CREATE ---
-    fun createEstate(estate: Estate) {
-        estateDAO.insertEstate(estate)
+    suspend fun createEstate(estate: Estate) {
+        try {
+            estateDAO.insertEstate(estate)
+        } catch (cause: Throwable) {
+            // If anything throws an exception, inform the caller
+            Log.e("Error","Cannot Insert")
+        }
+
     }
 
     /**
@@ -61,7 +68,13 @@ class EstateDataRepository @Inject constructor(
         return estateDAO.getSearchEstate(query)
     }
 
-
-
 }
+
+/**
+ * Thrown when there was a error fetching a new title
+ *
+ * @property message user ready error message
+ * @property cause the original cause of this exception
+ */
+class TitleRefreshError(message: String, cause: Throwable?) : Throwable(message, cause)
 

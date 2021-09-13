@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
@@ -69,9 +68,7 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
     }
 
     private fun setupObservers() {
-        estateViewModel.getEstates().observe(viewLifecycleOwner, Observer {
-             adapter.setItems(ArrayList(it.size))
-        })
+        this.estateViewModel.getEstates().observe(this, this::updateEstateList);
     }
 
     override fun onClickedEstate(estateId: Long) {
@@ -79,6 +76,14 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
             R.id.action_masterFragment_to_detailFragment,
             bundleOf("id" to estateId)
         )
+    }
+
+    /**
+     * for update estate list
+     * @param estates
+     */
+    private fun updateEstateList(estates: List<Estate>?) {
+        if (estates != null) adapter.updateData(estates)
     }
 
 

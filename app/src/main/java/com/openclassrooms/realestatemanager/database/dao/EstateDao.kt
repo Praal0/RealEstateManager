@@ -17,7 +17,7 @@ interface EstateDAO {
     fun getEstate(mandateNumberID: Long): LiveData<Estate>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertEstate(estate: Estate): Long
+    suspend fun insertEstate(estate: Estate): Long
 
     @Update
     fun updateEstate(estate: Estate): Int

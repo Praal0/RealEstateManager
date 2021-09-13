@@ -8,18 +8,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding
 import com.openclassrooms.realestatemanager.models.Estate
 
+
 class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapter<MasterViewHolder>() {
+
 
 
     interface MasterItemListener{
         fun onClickedEstate(EstateId: Long)
     }
 
-    private val items = ArrayList<Estate>()
+    private var items = ArrayList<Estate>()
 
-    fun setItems(items: ArrayList<Estate>) {
-        this.items.clear()
-        this.items.addAll(items)
+
+
+    /**
+     * For update estate list
+     *
+     * @param estateList
+     */
+    fun updateData(estateList: List<Estate?>) {
+        items = estateList as ArrayList<Estate>
         notifyDataSetChanged()
     }
 
