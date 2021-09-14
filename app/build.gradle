@@ -93,6 +93,9 @@ dependencies {
     implementation "org.robolectric:robolectric:4.4"
     testImplementation 'org.robolectric:robolectric:4.4'
 
+    //Navigation Component
+    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
 
     // Coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"

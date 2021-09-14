@@ -12,6 +12,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.utils.Resource
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 
@@ -20,6 +21,7 @@ import java.util.*
  * Use the [DetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
 
     private lateinit var binding: FragmentDetailBinding
@@ -28,10 +30,10 @@ class DetailFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View {
         binding = FragmentDetailBinding.inflate(inflater, container, false)
-        return binding.root
+        val view: View = binding.getRoot()
+        return view;
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

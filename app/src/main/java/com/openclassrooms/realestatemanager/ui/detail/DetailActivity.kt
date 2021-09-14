@@ -1,12 +1,12 @@
 package com.openclassrooms.realestatemanager.ui.detail
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityDetailBinding
 import com.openclassrooms.realestatemanager.models.Estate
@@ -14,12 +14,13 @@ import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivi
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import java.util.*
 
+
 class DetailActivity : AppCompatActivity() {
 
     private var activityDetailBinding: ActivityDetailBinding? = null
-    private val detailFragment: DetailFragment? = null
-    private val estate: Estate? = null
-    private val estateViewModel: EstateViewModel by viewModels()
+    private  var detailFragment: DetailFragment? = null
+    private var estate: Estate? = null
+    //private val estateViewModel: EstateViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +29,7 @@ class DetailActivity : AppCompatActivity() {
         setContentView(view)
 
 
-        this.configureToolbar()
-        this.configureUpButton()
         this.configureAndShowDetailFragment()
-        //for title toolbar
-        val ab = supportActionBar
-        Objects.requireNonNull(ab)?.setTitle("Estate Description")
     }
 
     /**
@@ -58,14 +54,33 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun configureAndShowDetailFragment() {
-        TODO("Not yet implemented")
+        //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
+        detailFragment = supportFragmentManager.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment?
+
+        if (detailFragment == null) {
+            //Create new main fragment
+            detailFragment = DetailFragment()
+            //Add it to FrameLayout container
+            supportFragmentManager.beginTransaction()
+                .add(R.id.detail_fragment_frameLayout, detailFragment!!)
+                .commit()
+        }
     }
 
-    private fun configureUpButton() {
-        TODO("Not yet implemented")
+    override fun onResume() {
+        super.onResume()
+        // Call update method here because we are sure that DetailFragment is visible
+        updateDetailUiForFragment()
     }
 
-    private fun configureToolbar() {
-        TODO("Not yet implemented")
+    /**
+     * For data for tablet
+     */
+    private fun updateDetailUiForFragment() {
+        val intentTablet = Objects.requireNonNull(this).intent
+        estate = intentTablet.getSerializableExtra("estate") as Estate?
+        Log.d("estateDetail", "estateDetail$estate")
     }
+
+
 }

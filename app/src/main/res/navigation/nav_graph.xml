@@ -9,8 +9,12 @@
         android:name="com.openclassrooms.realestatemanager.ui.master.MasterFragment"
         android:label="MasterFragment" >
         <action
-            android:id="@+id/action_masterFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            android:id="@+id/detail_action"
+            app:destination="@id/detailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/detailFragment"

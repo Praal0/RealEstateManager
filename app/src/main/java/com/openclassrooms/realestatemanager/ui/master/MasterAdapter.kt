@@ -11,8 +11,6 @@ import com.openclassrooms.realestatemanager.models.Estate
 
 class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapter<MasterViewHolder>() {
 
-
-
     interface MasterItemListener{
         fun onClickedEstate(EstateId: Long)
     }
@@ -41,6 +39,10 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
     override fun onBindViewHolder(holder: MasterViewHolder, position: Int) = holder.bind(items[position])
 
     override fun getItemCount(): Int = items.size
+
+    fun getEstates(position: Int): Estate {
+        return this.items[position]
+    }
 }
 
 class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, private val listener: MasterAdapter.MasterItemListener)
