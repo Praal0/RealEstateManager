@@ -6,18 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterBinding
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.ui.MainActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
-import com.openclassrooms.realestatemanager.utils.ItemClickSupport
+import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,60 +23,13 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
 
     private lateinit var binding: FragmentMasterBinding
     private lateinit var adapter: MasterAdapter
-    private val estateViewModel: EstateViewModel by viewModels()
-    var test = Estate(
-        1,
-        "house",
-        200,
-        4,
-        2,
-        1,
-        200,
-        100000.00,
-        "Très belle maison",
-        "2 rue du Pont",
-        66000,
-        "Perpignan",
-        true,
-        false,
-        false,
-        true,
-        true,
-        1601510400000L,
-        "",
-        "Karine Danjard"
-    )
-
-    var test2 = Estate(
-        2,
-        "flat",
-        200,
-        4,
-        2,
-        1,
-        200,
-        1050.00,
-        "Très belle maison",
-        "2 rue du Pont",
-        66000,
-        "Perpignan",
-        true,
-        false,
-        false,
-        true,
-        true,
-        1601510400000L,
-        "",
-        "Karine Danjard"
-    )
+    val estateViewModel: EstateViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMasterBinding.inflate(inflater, container, false)
-        estateViewModel.insertEstates(test)
-        estateViewModel.insertEstates(test2)
         val view: View = binding.getRoot()
         return view
     }
@@ -98,20 +47,22 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
     }
 
     private fun setupObservers() {
-        this.estateViewModel.getEstates().observe(viewLifecycleOwner, this::updateEstateList);
+        this.estateViewModel.getEstates().observe(viewLifecycleOwner, this::updateEstateList)
     }
 
     override fun onClickedEstate(estateId: Long) {
-        val options = navOptions {
-            anim {
-                enter = R.anim.slide_in_right
-                exit = R.anim.slide_out_left
-                popEnter = R.anim.slide_in_left
-                popExit = R.anim.slide_out_right
-            }
+        estateViewModel.setCurrentEstate(estateId)
+        if (!Utils.isTablet(this.context)){
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("estate", estateId)
+            Log.d("bundleRV", "estate$estateId")
+            startActivity(intent)
+        }else{
+            Log.d("bundleListFragment", "bundleFragment$estateId")
+            val intent = Intent(context, MainActivity::class.java)
+            intent.putExtra("estate", estateId)
+            startActivity(intent)
         }
-
-        Navigation.createNavigateOnClickListener(R.id.detail_action, bundleOf("id" to estateId))
     }
 
     /**
@@ -121,6 +72,4 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
     private fun updateEstateList(estates: List<Estate>?) {
         if (estates != null) adapter.updateData(estates)
     }
-
-
 }

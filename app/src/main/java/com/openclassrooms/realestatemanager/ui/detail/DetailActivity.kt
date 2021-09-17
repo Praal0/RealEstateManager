@@ -12,15 +12,15 @@ import com.openclassrooms.realestatemanager.databinding.ActivityDetailBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
-
+@AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
 
     private var activityDetailBinding: ActivityDetailBinding? = null
-    private  var detailFragment: DetailFragment? = null
+    private lateinit var detailFragment: DetailFragment
     private var estate: Estate? = null
-    //private val estateViewModel: EstateViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,17 +54,11 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun configureAndShowDetailFragment() {
-        //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        detailFragment = supportFragmentManager.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment?
+        //Create new main fragment
+        detailFragment = DetailFragment()
+        //Add it to FrameLayout container
+        supportFragmentManager.beginTransaction().add(R.id.detail_fragment_frameLayout, detailFragment).commit()
 
-        if (detailFragment == null) {
-            //Create new main fragment
-            detailFragment = DetailFragment()
-            //Add it to FrameLayout container
-            supportFragmentManager.beginTransaction()
-                .add(R.id.detail_fragment_frameLayout, detailFragment!!)
-                .commit()
-        }
     }
 
     override fun onResume() {
@@ -78,7 +72,7 @@ class DetailActivity : AppCompatActivity() {
      */
     private fun updateDetailUiForFragment() {
         val intentTablet = Objects.requireNonNull(this).intent
-        estate = intentTablet.getSerializableExtra("estate") as Estate?
+        estate = intentTablet.getSerializableExtra("estateId") as Estate?
         Log.d("estateDetail", "estateDetail$estate")
     }
 

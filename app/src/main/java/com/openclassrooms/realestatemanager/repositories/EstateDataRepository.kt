@@ -31,7 +31,7 @@ class EstateDataRepository @Inject constructor(
             estateDAO.insertEstate(estate)
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
-            Log.e("Error","Cannot Insert")
+            Log.e("EstateDataRepository","Cannot Insert")
         }
 
     }

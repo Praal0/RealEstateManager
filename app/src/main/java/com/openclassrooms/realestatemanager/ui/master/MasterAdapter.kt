@@ -17,8 +17,6 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
 
     private var items = ArrayList<Estate>()
 
-
-
     /**
      * For update estate list
      *
@@ -40,9 +38,6 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
 
     override fun getItemCount(): Int = items.size
 
-    fun getEstates(position: Int): Estate {
-        return this.items[position]
-    }
 }
 
 class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, private val listener: MasterAdapter.MasterItemListener)

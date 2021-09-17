@@ -11,6 +11,7 @@ import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.Intent
+import androidx.navigation.fragment.NavHostFragment
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 
 
@@ -19,8 +20,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toolbar : Toolbar
-    private var detailFragment: DetailFragment? = null
-    private var masterFragment: MasterFragment? = null
+    private lateinit var detailFragment: DetailFragment
+    private lateinit var masterFragment: MasterFragment
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,26 +34,21 @@ class MainActivity : AppCompatActivity() {
         configureAndShowMasterFragment()
         configureAndShowDetailFragment()
         setSupportActionBar(toolbar)
-
     }
 
     private fun configureAndShowMasterFragment() {
         //A - We only add DetailFragment in Tablet mode (If found frame_layout_detail)
-        if (masterFragment == null ) {
-            masterFragment = MasterFragment()
-            supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_main, masterFragment!!)
-                .commit()
-        }
+        masterFragment = MasterFragment()
+        supportFragmentManager.beginTransaction().add(R.id.frame_layout_main, masterFragment).commit()
     }
 
     private fun configureAndShowDetailFragment() {
-        if (detailFragment == null && findViewById<View?>(R.id.frame_layout_detail) != null) {
+        if (findViewById<View?>(R.id.frame_layout_detail) != null) {
             //Create new main fragment
             detailFragment = DetailFragment()
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_detail, detailFragment!!)
+                .add(R.id.frame_layout_detail, detailFragment)
                 .commit()
         }
     }
@@ -73,14 +71,7 @@ class MainActivity : AppCompatActivity() {
 
     // Initialisation variable
     private fun initialize() {
-        // Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        masterFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_main) as MasterFragment?
-
-        //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        detailFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_detail) as DetailFragment?
-
         toolbar = binding.includedToolbar.simpleToolbar
-
     }
 
 }
