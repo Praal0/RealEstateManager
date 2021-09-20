@@ -7,10 +7,10 @@
     tools:context=".ui.detail.DetailActivity">
 
     <include
+        android:id="@+id/included_toolbar_detail"
         layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/detail_fragment_frameLayout" />
+        android:layout_height="wrap_content" />
 
     <ScrollView
         android:layout_width="match_parent"

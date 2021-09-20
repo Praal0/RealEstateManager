@@ -50,9 +50,11 @@
         android:elevation="15dp"
         android:focusable="true"
         android:src="@drawable/baseline_add_white"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
         app:rippleColor="@color/colorAccent"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck"
+        android:contentDescription="TODO" />
 
 
 </RelativeLayout>

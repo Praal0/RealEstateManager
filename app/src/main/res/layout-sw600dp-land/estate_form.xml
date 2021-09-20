@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,7 +17,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_mandate"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -34,12 +34,12 @@
                 android:inputType="none"
                 android:paddingBottom="8dp"
                 android:singleLine="true"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_estate"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -49,7 +49,7 @@
             android:nextFocusDown="@id/input_surface"
             app:boxStrokeColor="@color/colorAccent">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_Estate"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
@@ -59,13 +59,13 @@
                 android:hint="Estate Type"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_surface"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_mandate"
@@ -87,13 +87,13 @@
                 android:inputType="number"
                 android:paddingBottom="8dp"
                 android:singleLine="true"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_rooms"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_estate"
@@ -116,13 +116,13 @@
                 android:hint="Rooms"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_bedrooms"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/input_surface"
@@ -143,13 +143,13 @@
                 android:hint="Bedrooms"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_bathrooms"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_rooms"
@@ -171,12 +171,12 @@
                 android:hint="Bathrooms"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_ground"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_bedrooms"
@@ -194,12 +194,12 @@
                 android:inputType="number"
                 android:paddingBottom="8dp"
                 android:singleLine="true"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_price"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_bathrooms"
@@ -221,12 +221,12 @@
                 android:inputType="number"
                 android:paddingBottom="7dp"
                 android:singleLine="true"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_description"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -254,7 +254,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_address"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -277,13 +276,13 @@
                 android:inputType="textPostalAddress"
                 android:paddingBottom="8dp"
                 android:singleLine="true"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_postalCode"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_address"
@@ -303,12 +302,12 @@
                 android:inputType="number"
                 android:paddingBottom="8dp"
                 android:singleLine="true"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_city"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_address"
@@ -330,7 +329,8 @@
                 android:paddingBottom="8dp"
                 android:singleLine="true"
                 android:textAllCaps="true"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -351,6 +351,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="530dp"
             android:buttonTint="@color/colorPrimary"
+            android:minHeight="48dp"
             android:text="Schools"
             android:textSize="@dimen/size_checkbox_text" />
 
@@ -361,6 +362,7 @@
             android:layout_marginStart="110dp"
             android:layout_marginTop="530dp"
             android:buttonTint="@color/colorPrimary"
+            android:minHeight="48dp"
             android:text="Stores"
             android:textSize="@dimen/size_checkbox_text" />
 
@@ -371,6 +373,7 @@
             android:layout_marginStart="190dp"
             android:layout_marginTop="530dp"
             android:buttonTint="@color/colorPrimary"
+            android:minHeight="48dp"
             android:text="Park"
             android:textSize="@dimen/size_checkbox_text" />
 
@@ -381,6 +384,7 @@
             android:layout_marginStart="265dp"
             android:layout_marginTop="530dp"
             android:buttonTint="@color/colorPrimary"
+            android:minHeight="48dp"
             android:text="Restaurants"
             android:textSize="@dimen/size_checkbox_text" />
 
@@ -404,12 +408,12 @@
             android:layout_marginTop="586dp"
             android:layout_toEndOf="@+id/status"
             android:buttonTint="@color/colorPrimary"
+            android:minHeight="48dp"
             android:text="Sold"
             android:textSize="@dimen/size_checkbox_text" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_upOfSaleDate"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_postalCode"
@@ -435,7 +439,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_soldDate"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_upOfSaleDate"
@@ -463,7 +466,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_agent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -484,16 +486,18 @@
                 android:hint="Real Estate Agent Name"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="@dimen/size_edit_text" />
+                android:textSize="@dimen/size_edit_text"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/photo_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="720dp"
-            android:background="@drawable/baseline_add_a_photo_black_48dp" />
+            android:background="@drawable/baseline_add_a_photo_black_48dp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_photo"
@@ -505,11 +509,12 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/camera_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="850dp"
-            android:background="@drawable/baseline_camera_black_48dp" />
+            android:background="@drawable/baseline_camera_black_48dp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <FrameLayout
             android:layout_width="160dp"
@@ -533,7 +538,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="180dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/delete">
+            android:background="@drawable/delete"
+            tools:ignore="SpeakableTextPresentCheck">
 
         </androidx.appcompat.widget.AppCompatImageButton>
 
@@ -545,12 +551,15 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="30dp"
+            android:background="@color/colorGray"
             android:clickable="true"
             android:elevation="15dp"
             android:focusable="true"
-            android:src="@drawable/baseline_done_black_24dp"
+            android:src="@drawable/baseline_check"
+            app:backgroundTint="@color/colorPrimary"
             app:fabSize="normal"
-            app:rippleColor="@color/colorAccent" />
+            app:rippleColor="@color/colorAccent"
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </RelativeLayout>
 

@@ -8,4 +8,36 @@
     <string name="location">Location</string>
     <string name="error_when_creating_the_estate">error when creating estate</string>
     <string name="error_when_creating_the_property">"creating estate error "</string>
+
+
+
+    <string-array name="ROOMS">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5 et +</item>
+    </string-array>
+
+    <string-array name="BEDROOMS">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5 et +</item>
+    </string-array>
+
+    <string-array name="BATHROOMS">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4 et +</item>
+    </string-array>
+
+    <string-array name="AGENT">
+        <item>Karine Danjard</item>
+        <item>John Doe</item>
+        <item>Octave Dupont</item>
+    </string-array>
 </resources>

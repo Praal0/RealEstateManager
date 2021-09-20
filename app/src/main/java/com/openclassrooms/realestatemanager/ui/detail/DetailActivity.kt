@@ -3,32 +3,33 @@ package com.openclassrooms.realestatemanager.ui.detail
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityDetailBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
-import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
 
-    private var activityDetailBinding: ActivityDetailBinding? = null
+    private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var detailFragment: DetailFragment
+    private lateinit var toolbar : Toolbar
     private var estate: Estate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityDetailBinding = ActivityDetailBinding.inflate(layoutInflater)
-        val view: View = activityDetailBinding!!.root
+        val view: View = activityDetailBinding.root
         setContentView(view)
-
-
+        initialize()
+        setSupportActionBar(toolbar)
         this.configureAndShowDetailFragment()
     }
 
@@ -65,6 +66,17 @@ class DetailActivity : AppCompatActivity() {
         super.onResume()
         // Call update method here because we are sure that DetailFragment is visible
         updateDetailUiForFragment()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.description_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+
+    }
+
+    // Initialisation variable
+    private fun initialize() {
+        toolbar = activityDetailBinding.includedToolbarDetail.simpleToolbar
     }
 
     /**
