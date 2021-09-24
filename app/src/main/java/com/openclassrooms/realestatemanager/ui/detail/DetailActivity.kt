@@ -21,6 +21,7 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var detailFragment: DetailFragment
     private lateinit var toolbar : Toolbar
+    private  var estateId : Long  = 0
     private var estate: Estate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +44,7 @@ class DetailActivity : AppCompatActivity() {
         //Handle actions on menu items
         return when (item.itemId) {
             R.id.edit_btn -> {
-                val idEstate: Long? = estate?.id
+                val idEstate: Long = estateId
                 val editIntent = Intent(this, AddEditActivity::class.java)
                 editIntent.putExtra("iDEstate", idEstate)
                 Log.d("editEstate", "editEstate$idEstate")
@@ -80,11 +81,11 @@ class DetailActivity : AppCompatActivity() {
     }
 
     /**
-     * For data for tablet
+     * For data for tablet and other
      */
     private fun updateDetailUiForFragment() {
         val intentTablet = Objects.requireNonNull(this).intent
-        estate = intentTablet.getSerializableExtra("estateId") as Estate?
+        estateId = intentTablet.getLongExtra("estate",0)
         Log.d("estateDetail", "estateDetail$estate")
     }
 

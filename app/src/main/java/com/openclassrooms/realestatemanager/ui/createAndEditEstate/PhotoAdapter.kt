@@ -1,0 +1,76 @@
+package com.openclassrooms.realestatemanager.ui.createAndEditEstate
+
+import android.net.Uri
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
+import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
+import com.bumptech.glide.request.RequestOptions
+import com.openclassrooms.realestatemanager.databinding.ActivityAddPhotoItemBinding
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
+
+
+class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
+
+    private val glide: RequestManager? = null
+    private val mPhotoList: List<Uri> = ArrayList<Uri>()
+    private val mPhotoDescription: List<String> = ArrayList()
+    private val estateEdit: Long = 0
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
+        val binding: ActivityAddPhotoItemBinding = ActivityAddPhotoItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PhotoViewHolder(binding.root)
+    }
+
+    override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
+        //For photo description with photo
+        var photoUri: Uri? = null
+        var photoDescription = ""
+        if (mPhotoList.size > position) {
+            photoUri = mPhotoList[position]
+        }
+        if (mPhotoDescription.size > position) {
+            photoDescription = mPhotoDescription[position]
+        }
+        try {
+            glide?.let { holder.updateWithDetails(photoUri, it, photoDescription, estateEdit) }
+        } catch (e: Exception) {
+            e.message
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return mPhotoList.size
+    }
+
+}
+
+class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    private val activityAddPhotoItemBinding: ActivityAddPhotoItemBinding? = null
+    /**
+     * For update with data
+     *
+     * @param photoList
+     * @param glide
+     * @param photoDescription
+     * @param estateEdit
+     */
+    fun updateWithDetails(photoList: Uri?, glide: RequestManager, photoDescription: String?, estateEdit: Long) {
+        activityAddPhotoItemBinding?.photoDescription?.setText(photoDescription)
+        activityAddPhotoItemBinding?.let {
+            glide.load(photoList).apply(RequestOptions.centerCropTransform())
+                .into(it.photoImage)
+        }
+        //for delete image display in Edit and Not in create
+        if (estateEdit == 0L) {
+            activityAddPhotoItemBinding?.deleteImage?.visibility = View.INVISIBLE
+        } else {
+            activityAddPhotoItemBinding?.deleteImage?.visibility = View.VISIBLE
+        }
+    }
+
+}

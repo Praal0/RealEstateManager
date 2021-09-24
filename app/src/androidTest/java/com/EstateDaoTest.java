@@ -11,6 +11,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase;
 import com.openclassrooms.realestatemanager.models.Estate;
+import com.openclassrooms.realestatemanager.models.PhotoDescription;
+import com.openclassrooms.realestatemanager.models.UriList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,11 +28,15 @@ public class EstateDaoTest {
     //For Data
     private RealEstateDatabase estateDatabase;
 
-    private static Estate ESTATE_HOUSE = new Estate(1, "house", 200, 4, 2, 1, 200, 100000.00, "Très belle maison", "2 rue du Pont", 66000, "Perpignan", true, false,
-            false, true, true, 1601510400000L,"", "Karine Danjard");
+    private static UriList uriListTest = new UriList();
+    private static PhotoDescription descriptionTest = new PhotoDescription();
 
-    private static Estate ESTATE_FLAT = new Estate(2, "flat", 80, 2, 1, 1, 0, 50000.00, "Very nice flat", "5 rue longue", 66000, "Perpignan", false, true,
-            true, true, true,1601510400000L,"","John Doe");
+    private static Estate ESTATE_HOUSE = new Estate(1,1, "house", 200, 4, 2, 1, 200, 100000.00, "Très belle maison", "2 rue du Pont", 66000, "Perpignan", true, false,
+            false, true, true, 1601510400000L,"", "Karine Danjard",uriListTest,descriptionTest,uriListTest);
+
+    private static Estate ESTATE_FLAT = new Estate(1,2, "flat", 80, 2, 1, 1, 0, 50000.00, "Very nice flat", "5 rue longue", 66000, "Perpignan", false, true,
+            true, true, true,1601510400000L,"","John Doe", uriListTest,descriptionTest,uriListTest);
+
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
@@ -50,8 +56,8 @@ public class EstateDaoTest {
     @Test
     public void insertAndGetEstate() throws InterruptedException {
         //adding demo
-        this.estateDatabase.estateDao().insertEstate(ESTATE_HOUSE);
-        this.estateDatabase.estateDao().insertEstate(ESTATE_FLAT);
+        //estateDatabase.estateDao().insertEstate(ESTATE_HOUSE);
+        //estateDatabase.estateDao().insertEstate(ESTATE_FLAT);
         //test
         List<Estate> estateList = LiveDataTestUtil.getValue(this.estateDatabase.estateDao().getEstates());
         assertEquals(2, estateList.size());

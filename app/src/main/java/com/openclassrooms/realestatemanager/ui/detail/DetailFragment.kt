@@ -29,9 +29,6 @@ class DetailFragment : Fragment() {
 
     private lateinit var binding: FragmentDetailBinding
     private val viewModel: EstateViewModel by viewModels()
-    private var estateDetailId: Long = 0
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -24,7 +24,6 @@
             android:layout_marginTop="70dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -47,7 +46,7 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_Estate"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
@@ -71,7 +70,6 @@
             android:nextFocusUp="@id/input_mandate"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:suffixText="m²"
             app:suffixTextColor="#000000">
 
@@ -96,7 +94,6 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <AutoCompleteTextView
@@ -122,7 +119,6 @@
             android:layout_marginTop="190dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <AutoCompleteTextView
@@ -149,7 +145,6 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <AutoCompleteTextView
@@ -197,7 +192,6 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true"
             app:suffixText="$"
             app:suffixTextColor="#000000">
@@ -226,7 +220,6 @@
             app:counterEnabled="true"
             app:counterMaxLength="400"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -251,7 +244,6 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -276,7 +268,6 @@
             android:layout_marginTop="540dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -301,7 +292,6 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -378,7 +368,7 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/available_radiobtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -397,7 +387,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="710dp"
             app:boxStrokeColor="@color/colorAccent"
-            app:startIconDrawable="@drawable/baseline_date_range_black_48dp">
+            app:startIconDrawable="@drawable/baseline_date_range_black">
 
 
             <com.google.android.material.textfield.TextInputEditText
@@ -423,9 +413,8 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/baseline_date_range_black_48dp">
+            app:startIconDrawable="@drawable/baseline_date_range_black">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/soldDate"
@@ -449,7 +438,6 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
-            app:helperText="Required"
             app:helperTextEnabled="true">
 
             <AutoCompleteTextView

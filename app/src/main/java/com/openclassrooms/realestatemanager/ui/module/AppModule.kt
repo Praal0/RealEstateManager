@@ -23,7 +23,7 @@ object AppModule  : Application() {
     @Provides
     @Singleton
     fun provideAppDatabase (@ApplicationContext appContext : Context) : RealEstateDatabase {
-        return RealEstateDatabase.getInstance(appContext as Application, provideExecutor())
+        return RealEstateDatabase.getInstance(appContext as Application)
     }
 
     @Provides
