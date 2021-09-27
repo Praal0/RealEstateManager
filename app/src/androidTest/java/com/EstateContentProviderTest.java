@@ -69,7 +69,7 @@ public class EstateContentProviderTest {
 
         private ContentValues generateEstate() {
         final ContentValues values = new ContentValues();
-
+        values.put("numMandat",1);
         values.put("estateType", "House");
         values.put("surface", 100);
         values.put("rooms", 3);

@@ -32,5 +32,8 @@ interface EstateDAO {
     @Query("SELECT * FROM Estate WHERE numMandat = :mandateNumberID")
     fun getEstateWithCursor(mandateNumberID: Long): Cursor?
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertEstateProvider(estate: Estate): Long
+
 
 }

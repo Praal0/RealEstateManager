@@ -48,18 +48,17 @@
             android:nextFocusDown="@id/input_surface"
             app:boxStrokeColor="@color/colorAccent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/et_Estate"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
-                android:hint="Estate Type"
+                android:hint="Rooms"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="@dimen/size_edit_text"
-                tools:ignore="TouchTargetSizeCheck" />
+                android:textSize="@dimen/size_edit_text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

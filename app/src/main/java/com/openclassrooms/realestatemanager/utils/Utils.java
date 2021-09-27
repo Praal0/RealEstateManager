@@ -10,6 +10,7 @@ import android.widget.Toolbar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -55,11 +56,15 @@ public class Utils {
     public static Boolean isInternetAvailable(Context context){
         //        WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         //         return wifi.isWifiEnabled();
-
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = Objects.requireNonNull(connMgr).getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public static String longDateToString(long dateLong) {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return dateFormat.format(dateLong);
     }
 
     public static boolean isTablet(Context context) {

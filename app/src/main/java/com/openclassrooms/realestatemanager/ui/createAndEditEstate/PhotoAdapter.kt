@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
 
     private val glide: RequestManager? = null
-    private val mPhotoList: List<Uri> = ArrayList<Uri>()
+    private val mPhotoList: List<Uri> = ArrayList()
     private val mPhotoDescription: List<String> = ArrayList()
     private val estateEdit: Long = 0
 
@@ -45,6 +45,26 @@ class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
 
     override fun getItemCount(): Int {
         return mPhotoList.size
+    }
+
+    /**
+     * for set photolist in adapter
+     *
+     * @param photos
+     */
+    fun setPhotoList(photos: List<Uri?>?) {
+        mPhotoList
+
+
+    }
+
+    /**
+     * For set photoDescription in adapter
+     *
+     * @param photoDescription
+     */
+    fun setPhotoDescription(photoDescription: List<String?>?) {
+        notifyDataSetChanged()
     }
 
 }

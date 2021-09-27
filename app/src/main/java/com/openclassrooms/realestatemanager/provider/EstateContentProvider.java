@@ -70,10 +70,10 @@ public class EstateContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        if (getContext() != null) {
+        if (getContext() != null){
             final long id = RealEstateDatabase.Companion.getInstance(getContext()).estateDao()
-                    .insertEstate(Estate.class.fromContentValues(contentValues));
-            if (id != 0) {
+                    .insertEstateProvider(Estate.Companion.fromContentValues(contentValues));
+            if (id != 0){
                 getContext().getContentResolver().notifyChange(uri, null);
                 return ContentUris.withAppendedId(uri, id);
             }
@@ -113,7 +113,7 @@ public class EstateContentProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         if (getContext() != null) {
             final int count = RealEstateDatabase.Companion
-                    .getInstance(getContext()).estateDao().updateEstate(Estate.(contentValues));
+                    .getInstance(getContext()).estateDao().updateEstate(Estate.Companion.fromContentValues(contentValues));
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         }

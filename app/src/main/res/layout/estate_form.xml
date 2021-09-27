@@ -47,15 +47,17 @@
             android:layout_marginEnd="20dp"
             app:boxStrokeColor="@color/colorAccent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/et_Estate"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:hint="Estate Type"
+                android:clickable="false"
+                android:focusable="true"
+                android:focusableInTouchMode="false"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="12sp"
-                tools:ignore="TouchTargetSizeCheck" />
+                android:textSize="12sp"  />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -498,7 +500,8 @@
             <VideoView
                 android:id="@+id/videoView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:visibility="visible" />
         </FrameLayout>
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -510,7 +513,8 @@
             android:layout_marginStart="180dp"
             android:layout_marginTop="25dp"
             android:background="@drawable/delete"
-            tools:ignore="SpeakableTextPresentCheck">
+            tools:ignore="SpeakableTextPresentCheck"
+            tools:visibility="visible">
 
         </androidx.appcompat.widget.AppCompatImageButton>
 

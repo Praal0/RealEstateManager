@@ -32,6 +32,7 @@ class DetailActivity : AppCompatActivity() {
         initialize()
         setSupportActionBar(toolbar)
         this.configureAndShowDetailFragment()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     /**
@@ -43,6 +44,11 @@ class DetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         //Handle actions on menu items
         return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+
             R.id.edit_btn -> {
                 val idEstate: Long = estateId
                 val editIntent = Intent(this, AddEditActivity::class.java)
@@ -60,7 +66,6 @@ class DetailActivity : AppCompatActivity() {
         detailFragment = DetailFragment()
         //Add it to FrameLayout container
         supportFragmentManager.beginTransaction().add(R.id.detail_fragment_frameLayout, detailFragment).commit()
-
     }
 
     override fun onResume() {
