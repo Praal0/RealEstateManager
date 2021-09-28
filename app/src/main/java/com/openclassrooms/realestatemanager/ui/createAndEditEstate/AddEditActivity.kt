@@ -22,9 +22,12 @@ import android.widget.DatePicker
 import android.widget.MediaController
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
@@ -32,7 +35,6 @@ import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.PhotoDescription
 import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
-import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.*
@@ -57,6 +59,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mDateFormat: SimpleDateFormat? = null
     private var mSoldDate: DatePickerDialog? = null
     private var estateEdit: Long = 0
+    private var mError = false
 
     private val idEstate: Long = 0
     private lateinit var currentPhotoPath : String
@@ -78,6 +81,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
+
+        if(estateEdit==0L) {
+            estateFormBinding.deleteVideo.visibility = INVISIBLE
+        }
+
         val view: View = activityAddBinding.root
         setContentView(view)
         methodRequiresTwoPermission()
@@ -87,6 +95,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         onClickOpenCamera()
         onClickBtnDeleteVideo()
         onClickVideoBtn()
+        clickFabButton()
 
         //Set title toolbar
         setToolbar()
@@ -112,10 +121,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.rvPhoto.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.adapter = adapter
         viewModel.getEstate(estateEdit).observe(this,this::updateUIFromEdit)
+
     }
 
     private fun updateUIFromEdit(estate: Estate) {
-        estateFormBinding.etMandate.setText(estate.numMandat.toString())
+        /*estateFormBinding.etMandate.setText(estate.numMandat.toString())
         estateFormBinding.etEstate.setText(estate.agentName)
         estateFormBinding.etSurface.setText(estate.surface.toString())
         estateFormBinding.etDescription.setText(estate.description)
@@ -146,7 +156,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 estateFormBinding.videoView.visibility = View.VISIBLE
                 estateFormBinding.videoView.setVideoURI(Uri.parse(videoStr))
             }
-        }
+        }*/
 
     }
 
@@ -339,15 +349,15 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     var photoFile: File? = null
                     try {
                         photoFile = createImageFile()
+
                     } catch (ex: IOException) {
                         ex.message?.let { Log.e("PhotoFileException", it) }
                     }
                     //Continue only if the file was successfully created
                     if (photoFile != null) {
-                        photoUri = FileProvider.getUriForFile(applicationContext, "com.openclassrooms.realestatemanager.provider", photoFile)
+                        photoUri = FileProvider.getUriForFile(applicationContext, "com.openclassrooms.realestatemanager", photoFile)
                         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                         Log.d("PhotoUri", "photoUri =" + photoUri);
-
                         startActivityForResult(takePicture, 1);
                     }
                 }
@@ -418,10 +428,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     val contentUri = Objects.requireNonNull(data).data
                     val timeStamp = SimpleDateFormat("ddMMyyyy", Locale.FRANCE).format(Date())
                     val imageFileName = "JPEG" + timeStamp + "." + contentUri?.let { getFileExt(it) }
-                    Log.d(
-                        "Test uri gallery",
-                        "onActivityResult : Gallery Image Uri:$imageFileName"
-                    )
+                    Log.d("Test uri gallery", "onActivityResult : Gallery Image Uri:$imageFileName")
 
                     //For save image in internal storage
                     var fOut: FileOutputStream? = null
@@ -545,5 +552,125 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         val mime = MimeTypeMap.getSingleton()
         return mime.getExtensionFromMimeType(contentResolver.getType(contentUri))
     }
+
+    /**
+     * Click Validate button and verification
+     */
+
+    fun clickFabButton(){
+        estateFormBinding.validateFabBtn.setOnClickListener {
+            //For description photo in recyclerView
+            val photoDescriptionList: ArrayList<String> = ArrayList()
+            for (i in photoText.photoDescription.indices) {
+                val editText: AppCompatEditText? = activityAddBinding.includeForm.rvPhoto.layoutManager?.findViewByPosition(i)?.findViewById(R.id.photo_description)
+                val desc = editText?.text.toString()
+                photoDescriptionList.add(desc)
+            }
+            validateTextView(estateFormBinding.inputMandate)
+            validateTextView(estateFormBinding.inputEstate)
+            validateTextView(estateFormBinding.inputSurface)
+            validateTextView(estateFormBinding.inputRooms)
+            validateTextView(estateFormBinding.inputBedrooms)
+            validateTextView(estateFormBinding.inputBathrooms)
+            validateTextView(estateFormBinding.inputGround)
+            validateTextView(estateFormBinding.inputPrice)
+            validateTextView(estateFormBinding.inputDescription)
+            validateTextView(estateFormBinding.inputAddress)
+            validateTextView(estateFormBinding.inputGround)
+            validateTextView(estateFormBinding.inputPostalCode)
+            validateTextView(estateFormBinding.inputCity)
+
+
+            if (mError){
+                return@setOnClickListener
+            }
+            if (!soldDatedRequired()){
+                return@setOnClickListener
+            }
+            saveEstates()
+        }
+    }
+
+    private fun validateTextView(inputValue: TextInputLayout): String? {
+        val tmpValue = inputValue.editText?.text.toString()
+        return if (tmpValue.isEmpty()) {
+            inputValue.error = getText(R.string.require)
+            mError = true
+            null
+        } else {
+            inputValue.error = null
+            tmpValue
+        }
+    }
+
+
+
+    private fun saveEstates() {
+
+        val estate = Estate(1,
+            1L,
+            "house",
+            200,
+            4,
+            2,
+            1,
+            200,
+            100000.00,
+            "Très belle maison",
+            "2 rue du Pont",
+            66000,
+            "Perpignan",
+            true,
+            false,
+            false,
+            true,
+            true,
+            1601510400000L,
+            "",
+            "Karine Danjard",
+            photo,
+            photoText,
+            video)
+
+        Log.d("saveEstate", "saveEstate$estate")
+
+        if (estateEdit == 0L) {
+            this.viewModel.insertEstates(estate)
+            Snackbar.make(
+                activityAddBinding.root,
+                "Your new Estate is created",
+                Snackbar.LENGTH_SHORT
+            )
+                .addCallback(object : Snackbar.Callback() {
+                    override fun onDismissed(snackbar: Snackbar, event: Int) {
+                        super.onDismissed(snackbar, event)
+                        finish()
+                    }
+                })
+                .show()
+        } else {
+            this.viewModel.updateEstate(estate)
+            Snackbar.make(activityAddBinding.root, "Your new Estate is updated", Snackbar.LENGTH_SHORT)
+                .addCallback(object : Snackbar.Callback() {
+                    override fun onDismissed(snackbar: Snackbar, event: Int) {
+                        super.onDismissed(snackbar, event)
+                        finish()
+                    }
+                }).show()
+        }
+    }
+
+    fun soldDatedRequired() : Boolean
+    {
+        val soldDateInput = estateFormBinding.inputSoldDate.editText?.text.toString()
+        if (soldDateInput.isEmpty() && estateFormBinding.availableRadiobtn.isChecked){
+            estateFormBinding.soldDate.error = R.string.require.toString()
+            return false
+        }
+        return true
+
+    }
+
+
 
 }

@@ -7,7 +7,7 @@ import java.io.Serializable
 
 @Entity(tableName = "estate")
 data class Estate(@PrimaryKey(autoGenerate = true) val id: Long,
-                  val numMandat:Long,
+                  val numMandat:Long?,
                   var estateType:String?,
                   var surface: Int?,
                   var rooms:Int?,
@@ -26,7 +26,7 @@ data class Estate(@PrimaryKey(autoGenerate = true) val id: Long,
                   var sold:Boolean,
                   var upOfSaleDate: Long?,
                   var soldDate:String?,
-                  var agentName:String,
+                  var agentName:String?,
                   var photoList: UriList,
                   var photoDescription : PhotoDescription,
                   var video:UriList
@@ -41,7 +41,6 @@ data class Estate(@PrimaryKey(autoGenerate = true) val id: Long,
          */
         fun  fromContentValues(values: ContentValues): Estate {
             val estate = Estate()
-
             if (values.containsKey("estateType")) estate.estateType = values.getAsString("estateType")
             if (values.containsKey("surface")) estate.surface = values.getAsInteger("surface")
             if (values.containsKey("rooms")) estate.rooms = values.getAsInteger("rooms")

@@ -36,7 +36,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     /**
-     * For edit button
+     * For edit button and return button
      *
      * @param item
      * @return
@@ -55,7 +55,7 @@ class DetailActivity : AppCompatActivity() {
                 editIntent.putExtra("iDEstate", idEstate)
                 Log.d("editEstate", "editEstate$idEstate")
                 startActivity(editIntent)
-                true
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }

@@ -15,6 +15,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        buildConfigField("String", "API_KEY", OC_P7_Google_Maps_Sdk_key)
+        resValue 'string', 'google_map_key', OC_P7_Google_Maps_Sdk_key
 
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_11
@@ -67,6 +69,7 @@ dependencies {
 
     //For Map Google
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation "com.google.android.gms:play-services-location:18.0.0"
 
     //Hilt
     implementation 'com.google.dagger:hilt-android:2.38.1'
@@ -125,6 +128,8 @@ dependencies {
 
 
 }
+
+
 
 // Allow references to generated code
 kapt {

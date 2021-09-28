@@ -23,9 +23,15 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
     fun insertEstates(estate: Estate) {
         viewModelScope.launch {
             estateDataSource.createEstate(estate)
-            delay(1_000)
+            delay(1000)
         }
+    }
 
+    fun updateEstate(estate: Estate){
+        viewModelScope.launch {
+            estateDataSource.updateEstate(estate)
+            delay(1000)
+        }
     }
 
      var currentEstate : LiveData<Estate>? = null

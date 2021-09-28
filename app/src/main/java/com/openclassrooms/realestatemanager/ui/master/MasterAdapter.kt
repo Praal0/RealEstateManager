@@ -54,7 +54,7 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
         this.estate = item
         itemBinding.city.text = item.city
         itemBinding.estateType.text = item.estateType
-        itemBinding.price.text = item.price.toString()
+        itemBinding.price.text = "$"+item.price.toString()
     }
 
     override fun onClick(v: View?) {
