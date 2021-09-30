@@ -63,14 +63,14 @@ public class EstateContentProviderTest {
                     assertThat(cursor, notNullValue());
                     assertThat(cursor.getCount(), is(1));
                     assertThat(cursor.moveToFirst(), is(true));
-                    assertThat(cursor.getString(cursor.getColumnIndexOrThrow("estateType")), is ("House"));
-                    mContentResolver.delete(Objects.requireNonNull(estateUri), null, null);
+                    assertThat(cursor.getString(cursor.getColumnIndexOrThrow("estateType")), is ("house"));
+                    mContentResolver.delete(estateUri, null, null);
         }
 
         private ContentValues generateEstate() {
         final ContentValues values = new ContentValues();
         values.put("numMandat",1);
-        values.put("estateType", "House");
+        values.put("estateType", "house");
         values.put("surface", 100);
         values.put("rooms", 3);
         values.put("bedrooms", 2);

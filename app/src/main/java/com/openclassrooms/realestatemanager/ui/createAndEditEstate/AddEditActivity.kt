@@ -20,6 +20,7 @@ import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.MediaController
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
@@ -28,6 +29,7 @@ import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
@@ -35,6 +37,7 @@ import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.PhotoDescription
 import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
+import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.*
@@ -61,10 +64,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var estateEdit: Long = 0
     private var mError = false
 
+    private var latestTmpUri: Uri? = null
     private val idEstate: Long = 0
     private lateinit var currentPhotoPath : String
-    private var selectedImage : Bitmap? = null
-    private var listPhoto: List<Uri>? = null
+    private  var selectedImage : Bitmap? = null
+    private var listPhoto: MutableList<Uri>? = null
     private lateinit var adapter: PhotoAdapter
     private var photoUri: Uri? = null
     private val photo = UriList()
@@ -106,6 +110,25 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     }
 
+    // Initialisation variable
+    private fun initialize() {
+        listPhoto = ArrayList()
+        toolbar = estateFormBinding.includedToolbarAdd.simpleToolbar
+        estateFormBinding.deleteVideo.visibility = INVISIBLE
+        estateFormBinding.videoView.visibility = INVISIBLE
+    }
+
+    private fun setToolbar() {
+        setSupportActionBar(toolbar)
+        val ab: androidx.appcompat.app.ActionBar? = supportActionBar
+        if (estateEdit == 0L) {
+            ab?.setTitle("Create Estate")
+        } else {
+            ab?.setTitle("Edit Estate")
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -120,13 +143,16 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         adapter = PhotoAdapter()
         estateFormBinding.rvPhoto.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.adapter = adapter
-        viewModel.getEstate(estateEdit).observe(this,this::updateUIFromEdit)
+
+        if(estateEdit!=0L) {
+            viewModel.getEstate(estateEdit).observe(this,this::updateUIFromEdit)
+        }
 
     }
 
     private fun updateUIFromEdit(estate: Estate) {
-        /*estateFormBinding.etMandate.setText(estate.numMandat.toString())
-        estateFormBinding.etEstate.setText(estate.agentName)
+        estateFormBinding.etMandate.setText(estate.numMandat.toString())
+        estateFormBinding.etEstate.setText(estate.estateType)
         estateFormBinding.etSurface.setText(estate.surface.toString())
         estateFormBinding.etDescription.setText(estate.description)
         estateFormBinding.etRooms.setText(estate.rooms.toString().replace("5 et +", "5"), false)
@@ -141,7 +167,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.boxPark.isChecked = estate.park
         estateFormBinding.boxRestaurants.isChecked = estate.restaurants
         estateFormBinding.boxStores.isChecked = estate.stores
-        estateFormBinding.availableRadiobtn.isChecked = estate.sold
+        estateFormBinding.availableCheckbtn.isChecked = estate.sold
         estateFormBinding.upOfSaleDate.setText(estate.upOfSaleDate?.let { Utils.longDateToString(it) })
         estateFormBinding.soldDate.setText(estate.soldDate)
         estateFormBinding.etAgent.setText(estate.agentName, false)
@@ -150,26 +176,23 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             listPhoto
         }
 
-        if (!estate.video.photoList.isEmpty()){
+        if (estate.video.photoList.isNotEmpty()){
             for (videoStr in estate.video.photoList) {
                 estateFormBinding.deleteVideo.visibility = View.VISIBLE
                 estateFormBinding.videoView.visibility = View.VISIBLE
                 estateFormBinding.videoView.setVideoURI(Uri.parse(videoStr))
+                //for video in edit
+                estateFormBinding.videoView.requestFocus()
+                val mediaController = MediaController(this)
+                estateFormBinding.videoView.setMediaController(mediaController)
+                mediaController.setAnchorView(estateFormBinding.videoView)
+                estateFormBinding.videoView.start()
             }
-        }*/
-
-    }
-
-    private fun setToolbar() {
-        setSupportActionBar(toolbar)
-        val ab: androidx.appcompat.app.ActionBar? = supportActionBar
-        if (estateEdit == 0L) {
-            ab?.setTitle("Create Estate")
-        } else {
-            ab?.setTitle("Edit Estate")
         }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     }
+
+
 
     /**
      * for date picker
@@ -222,14 +245,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
      */
     private fun factoryAdapter(resId: Int): ArrayAdapter<String?> {
         return ArrayAdapter(this, R.layout.dropdown_menu_popup_item, resources.getStringArray(resId))
-    }
-
-    // Initialisation variable
-    private fun initialize() {
-        listPhoto = ArrayList()
-        toolbar = estateFormBinding.includedToolbarAdd.simpleToolbar
-        estateFormBinding.deleteVideo.visibility = INVISIBLE
-        estateFormBinding.videoView.visibility = INVISIBLE
     }
 
     /**
@@ -316,6 +331,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             if (options[item] == "Take Video") {
                 val takeVideo = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                 startActivityForResult(takeVideo, PICK_VIDEO_CAMERA)
+                //getTmpFileUri().let { uri ->
+                //resultLauncher.launch(uri) }
+
             } else if (options[item] == "Choose Video") {
                 val pickVideo = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.INTERNAL_CONTENT_URI)
                 startActivityForResult(pickVideo, PICK_VIDEO_GALLERY)
@@ -343,7 +361,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         builder.setItems(options) { dialog, item ->
             if (options[item].equals("Take Photo")) {
                 val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(takePicture, 1);
                 if (takePicture.resolveActivity(packageManager) != null) {
                     //Create the File where the photo should go var photoFile: File? = null
                     var photoFile: File? = null
@@ -355,10 +372,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     }
                     //Continue only if the file was successfully created
                     if (photoFile != null) {
-                        photoUri = FileProvider.getUriForFile(applicationContext, "com.openclassrooms.realestatemanager", photoFile)
-                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                        Log.d("PhotoUri", "photoUri =" + photoUri);
-                        startActivityForResult(takePicture, 1);
+                        photoUri = FileProvider.getUriForFile(applicationContext, "com.openclassrooms.realestatemanager.provider", photoFile)
+                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                        Log.d("PhotoUri", "photoUri =" + photoUri)
+                        startActivityForResult(takePicture, 1)
                     }
                 }
             } else if (options[item].equals("Choose from Gallery")) {
@@ -413,6 +430,31 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
      * @param resultCode
      * @param data
      */
+
+
+
+
+    val resultLauncher = registerForActivityResult(ActivityResultContracts.CaptureVideo()){ isSucess ->
+        if (isSucess){
+            latestTmpUri?.let { uri ->
+                val recordedVideoPath: String? = uri.let { getPath(it) }
+                recordedVideoPath?.let { Log.d("recordedVideoPaht", it) }
+                recordedVideoPath?.let { saveVideoToInternalStorage(it) }
+                estateFormBinding.videoView.setVideoURI(uri)
+                estateFormBinding.videoView.requestFocus()
+                estateFormBinding.videoView.visibility = View.VISIBLE
+                estateFormBinding.deleteVideo.visibility = View.VISIBLE
+                val mediaController = MediaController(this)
+                estateFormBinding.videoView.setMediaController(mediaController)
+                mediaController.setAnchorView(estateFormBinding.videoView)
+                estateFormBinding.videoView.start()
+                video.photoList.add(uri.toString())
+            }
+        }
+    }
+
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_CANCELED) {
@@ -423,11 +465,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     adapter.setPhotoList(listPhoto)
                 }
             }
-            if (requestCode == PICK_IMAGE_GALLERY && data != null && data.data != null) {
+            if (requestCode == PICK_IMAGE_GALLERY && data != null && data.getData() != null) {
                 if (resultCode == RESULT_OK) {
-                    val contentUri = Objects.requireNonNull(data).data
+                    val contentUri = data.data
                     val timeStamp = SimpleDateFormat("ddMMyyyy", Locale.FRANCE).format(Date())
-                    val imageFileName = "JPEG" + timeStamp + "." + contentUri?.let { getFileExt(it) }
+                    val imageFileName = "JPEG" + timeStamp + "." + getFileExt(contentUri)
                     Log.d("Test uri gallery", "onActivityResult : Gallery Image Uri:$imageFileName")
 
                     //For save image in internal storage
@@ -449,6 +491,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
+                    contentUri?.let { listPhoto?.add(it) }
                     photo.photoList.add(contentUri.toString())
                     photoText.photoDescription.add("")
                     adapter.setPhotoList(listPhoto)
@@ -547,10 +590,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         }
     }
 
-    private fun getFileExt(contentUri: Uri): String? {
+    private fun getFileExt(contentUri: Uri?): String? {
         val contentResolver = contentResolver
         val mime = MimeTypeMap.getSingleton()
-        return mime.getExtensionFromMimeType(contentResolver.getType(contentUri))
+        return mime.getExtensionFromMimeType(contentUri?.let { contentResolver.getType(it) })
     }
 
     /**
@@ -582,6 +625,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
 
             if (mError){
+                mError = false
                 return@setOnClickListener
             }
             if (!soldDatedRequired()){
@@ -598,36 +642,48 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             mError = true
             null
         } else {
+            mError = false
             inputValue.error = null
             tmpValue
         }
     }
 
+    private fun getTmpFileUri(): Uri {
+        val tmpFile = File.createTempFile("tmp_image_file", ".mp4", cacheDir).apply {
+            createNewFile()
+            deleteOnExit()
+        }
+        return FileProvider.getUriForFile(applicationContext, "${BuildConfig.APPLICATION_ID}.provider", tmpFile)
+    }
 
 
     private fun saveEstates() {
 
-        val estate = Estate(1,
-            1L,
-            "house",
-            200,
-            4,
-            2,
-            1,
-            200,
-            100000.00,
-            "Très belle maison",
-            "2 rue du Pont",
-            66000,
-            "Perpignan",
-            true,
-            false,
-            false,
-            true,
-            true,
-            1601510400000L,
-            "",
-            "Karine Danjard",
+        var price: String = estateFormBinding.etPrice.text.toString()
+        var estateType: String = estateFormBinding.etMandate.text.toString()
+        var upOfSaleDate : String = estateFormBinding.upOfSaleDate.text.toString()
+
+        val estate = Estate(0,
+            estateType.toLong(),
+            estateFormBinding.etEstate.text.toString(),
+            Integer.parseInt(estateFormBinding.etSurface.text.toString()),
+            Integer.parseInt(estateFormBinding.etRooms.text.toString()),
+            Integer.parseInt(estateFormBinding.etBedrooms.text.toString()),
+            Integer.parseInt(estateFormBinding.etBathrooms.text.toString()),
+            Integer.parseInt(estateFormBinding.etGround.text.toString()),
+            price.toDouble(),
+            estateFormBinding.etDescription.text.toString(),
+            estateFormBinding.etAddress.text.toString(),
+            Integer.parseInt(estateFormBinding.etPostalCode.text.toString()),
+            estateFormBinding.etCity.text.toString(),
+            estateFormBinding.boxSchools.isChecked,
+            estateFormBinding.boxStores.isChecked,
+            estateFormBinding.boxPark.isChecked,
+            estateFormBinding.boxRestaurants.isChecked,
+            estateFormBinding.availableCheckbtn.isChecked,
+            null,
+            estateFormBinding.soldDate.text.toString(),
+            estateFormBinding.etAgent.text.toString(),
             photo,
             photoText,
             video)
@@ -663,7 +719,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     fun soldDatedRequired() : Boolean
     {
         val soldDateInput = estateFormBinding.inputSoldDate.editText?.text.toString()
-        if (soldDateInput.isEmpty() && estateFormBinding.availableRadiobtn.isChecked){
+        if (soldDateInput.isEmpty() && estateFormBinding.availableCheckbtn.isChecked){
             estateFormBinding.soldDate.error = R.string.require.toString()
             return false
         }

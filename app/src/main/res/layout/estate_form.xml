@@ -51,13 +51,13 @@
                 android:id="@+id/et_Estate"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
-                android:hint="Estate Type"
                 android:clickable="false"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
+                android:hint="Estate Type"
                 android:inputType="none"
                 android:paddingBottom="8dp"
-                android:textSize="12sp"  />
+                android:textSize="12sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -377,7 +377,7 @@
             android:textStyle="bold" />
 
         <CheckBox
-            android:id="@+id/available_radiobtn"
+            android:id="@+id/available_checkbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="100dp"

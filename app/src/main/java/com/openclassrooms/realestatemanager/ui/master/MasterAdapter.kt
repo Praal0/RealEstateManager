@@ -58,7 +58,7 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
     }
 
     override fun onClick(v: View?) {
-        listener.onClickedEstate(estate.id)
+        listener.onClickedEstate(estate.numMandat)
     }
 
 }

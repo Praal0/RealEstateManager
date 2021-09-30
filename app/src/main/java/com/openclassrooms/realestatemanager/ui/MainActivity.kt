@@ -11,9 +11,7 @@ import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.Intent
-import android.util.Log
 import android.view.MenuItem
-import androidx.navigation.fragment.NavHostFragment
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.map.MapsActivity
 
@@ -87,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.map_btn -> {
-                val mapIntent = Intent(this, MapsActivity::class.java)
+                val mapIntent = Intent(this,  MapsActivity::class.java)
                 startActivity(mapIntent)
                 return true
             }

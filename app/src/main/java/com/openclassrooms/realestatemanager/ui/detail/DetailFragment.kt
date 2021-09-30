@@ -11,13 +11,12 @@ import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import java.util.*
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import android.view.View.INVISIBLE
+import android.widget.MediaController
 import dagger.hilt.android.AndroidEntryPoint
 import com.openclassrooms.realestatemanager.models.Estate
-
-
-
-
 
 /**
  * A simple [Fragment] subclass.
@@ -49,7 +48,7 @@ class DetailFragment : Fragment() {
         Log.d("estateDetailId", "estateDetailId$estateDetailId")
         estateDetailId?.let {
             viewModel.getEstate(it).observe(viewLifecycleOwner, Observer {
-                binding.etMandate.setText(it.id.toString());
+                binding.etMandate.setText(it.numMandat.toString());
                 binding.etMandate.isEnabled = false
                 binding.etSurface.setText(it.surface.toString());
                 binding.etSurface.isEnabled = false
@@ -67,6 +66,18 @@ class DetailFragment : Fragment() {
                 binding.etPostalCode.isEnabled = false
                 binding.etCity.setText(it.city)
                 binding.etCity.isEnabled = false
+                binding.videoView.requestFocus()
+                if (it.video.photoList.isNotEmpty()){
+                    for (videoStr in it.video.photoList) {
+                        binding.videoView.setVideoURI(Uri.parse(videoStr))
+                        val mediaController = MediaController(this.context)
+                        binding.videoView.setMediaController(mediaController)
+                        mediaController.setAnchorView(binding.videoView)
+                        binding.videoView.start()
+                    }
+                }else{
+                    binding.videoView.visibility = INVISIBLE
+                }
             })
         }
     }

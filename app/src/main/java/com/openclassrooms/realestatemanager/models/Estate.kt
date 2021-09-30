@@ -7,7 +7,7 @@ import java.io.Serializable
 
 @Entity(tableName = "estate")
 data class Estate(@PrimaryKey(autoGenerate = true) val id: Long,
-                  val numMandat:Long?,
+                  val numMandat:Long,
                   var estateType:String?,
                   var surface: Int?,
                   var rooms:Int?,
@@ -59,7 +59,6 @@ data class Estate(@PrimaryKey(autoGenerate = true) val id: Long,
             if (values.containsKey("upOfSaleDate")) estate.upOfSaleDate = values.getAsLong("upOfSaleDate")
             if (values.containsKey("soldDate")) estate.soldDate = values.getAsString("soldDate")
             if (values.containsKey("agentName")) estate.agentName = values.getAsString("agentName")
-
             return estate
         }
     }
