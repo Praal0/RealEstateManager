@@ -9,7 +9,8 @@
     android:paddingHorizontal="20dp"
     app:cardPreventCornerOverlap="false"
     app:strokeColor="@color/colorPrimaryDark"
-    app:strokeWidth="3dp">
+    app:strokeWidth="3dp"
+    android:theme="@style/Theme.MaterialComponents.Light">
 
     <RelativeLayout
         android:layout_width="match_parent"

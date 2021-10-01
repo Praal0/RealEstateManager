@@ -13,7 +13,7 @@ class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
 
     private val glide: RequestManager? = null
     private val mPhotoList: MutableList<Uri> = ArrayList()
-    private val mPhotoDescription: List<String> = ArrayList()
+    private val mPhotoDescription: MutableList<String> = ArrayList()
     private val estateEdit: Long = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -58,8 +58,9 @@ class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
      *
      * @param photoDescription
      */
-    fun setPhotoDescription(photoDescription: List<String?>?) {
-
+    fun setPhotoDescription(photoDescription: Collection<String>) {
+        mPhotoDescription.clear()
+        mPhotoDescription.addAll(photoDescription)
         notifyDataSetChanged()
     }
 

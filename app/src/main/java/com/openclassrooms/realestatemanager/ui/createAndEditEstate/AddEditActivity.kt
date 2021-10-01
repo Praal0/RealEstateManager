@@ -176,6 +176,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             listPhoto
         }
 
+        listPhoto?.let { adapter.setPhotoList(it) };
+        adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+        photo.photoList.addAll(estate.photoList.photoList);
+
         if (estate.video.photoList.isNotEmpty()){
             for (videoStr in estate.video.photoList) {
                 estateFormBinding.deleteVideo.visibility = View.VISIBLE
@@ -610,6 +614,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 val desc = editText?.text.toString()
                 photoDescriptionList.add(desc)
             }
+
             validateTextView(estateFormBinding.inputMandate)
             validateTextView(estateFormBinding.inputEstate)
             validateTextView(estateFormBinding.inputSurface)
