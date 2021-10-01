@@ -363,6 +363,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 if (takePicture.resolveActivity(packageManager) != null) {
                     //Create the File where the photo should go var photoFile: File? = null
+
                     var photoFile: File? = null
                     try {
                         photoFile = createImageFile()
@@ -372,10 +373,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     }
                     //Continue only if the file was successfully created
                     if (photoFile != null) {
-                        photoUri = FileProvider.getUriForFile(applicationContext, "com.openclassrooms.realestatemanager.provider", photoFile)
-                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-                        Log.d("PhotoUri", "photoUri =" + photoUri)
-                        startActivityForResult(takePicture, 1)
+                        photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.openclassrooms.realestatemanager.provider", photoFile);
+                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                        Log.d("PhotoUri", "photoUri =" + photoUri);
+                        startActivityForResult(takePicture, 1);
                     }
                 }
             } else if (options[item].equals("Choose from Gallery")) {
@@ -462,7 +463,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 if (resultCode == RESULT_OK) {
                     photo.photoList.add(photoUri.toString())
                     photoText.photoDescription.add("")
-                    adapter.setPhotoList(listPhoto)
+                    listPhoto?.let { adapter.setPhotoList(it)}
                 }
             }
             if (requestCode == PICK_IMAGE_GALLERY && data != null && data.getData() != null) {
@@ -494,7 +495,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     contentUri?.let { listPhoto?.add(it) }
                     photo.photoList.add(contentUri.toString())
                     photoText.photoDescription.add("")
-                    adapter.setPhotoList(listPhoto)
+                    listPhoto?.let { adapter.setPhotoList(it) }
                 }
             }
             if (requestCode == PICK_VIDEO_CAMERA && data != null && data.data != null) {

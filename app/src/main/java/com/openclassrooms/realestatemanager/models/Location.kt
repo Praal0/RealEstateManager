@@ -11,7 +11,6 @@ import androidx.room.PrimaryKey
 data class Location(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "locationId") var id:Long,
                     var address:String?,
                     var additionalAddress:String?,
-                    var sector:String?,
                     var city:String?,
                     var zipCode:String?,
                     var country:String?,

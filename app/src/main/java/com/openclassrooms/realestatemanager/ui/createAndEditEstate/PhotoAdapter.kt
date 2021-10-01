@@ -6,18 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.databinding.ActivityAddPhotoItemBinding
-import java.lang.Exception
-import java.util.*
-import kotlin.collections.ArrayList
-
 
 class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
 
     private val glide: RequestManager? = null
-    private val mPhotoList: List<Uri> = ArrayList()
+    private val mPhotoList: MutableList<Uri> = ArrayList()
     private val mPhotoDescription: List<String> = ArrayList()
     private val estateEdit: Long = 0
 
@@ -52,10 +47,10 @@ class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
      *
      * @param photos
      */
-    fun setPhotoList(photos: List<Uri?>?) {
-        mPhotoList
-
-
+    fun setPhotoList(photos: Collection<Uri>) {
+        mPhotoList.clear()
+        mPhotoList.addAll(photos)
+        notifyDataSetChanged()
     }
 
     /**
@@ -64,6 +59,7 @@ class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
      * @param photoDescription
      */
     fun setPhotoDescription(photoDescription: List<String?>?) {
+
         notifyDataSetChanged()
     }
 

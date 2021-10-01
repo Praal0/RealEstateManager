@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding
 import com.openclassrooms.realestatemanager.models.Estate
 
@@ -55,6 +56,13 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
         itemBinding.city.text = item.city
         itemBinding.estateType.text = item.estateType
         itemBinding.price.text = "$"+item.price.toString()
+        //for estate sold
+        if (estate.sold) {
+            itemBinding.listPhotoSold.setImageResource(R.drawable.sold)
+        }else {
+            itemBinding.listPhotoSold.setImageResource(0)
+        }
+
     }
 
     override fun onClick(v: View?) {
