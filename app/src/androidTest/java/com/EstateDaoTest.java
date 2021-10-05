@@ -56,8 +56,8 @@ public class EstateDaoTest {
     @Test
     public void insertAndGetEstate() throws InterruptedException {
         //adding demo
-        //estateDatabase.estateDao().insertEstate(ESTATE_HOUSE);
-        //estateDatabase.estateDao().insertEstate(ESTATE_FLAT);
+        estateDatabase.estateDao().insertEstateTest(ESTATE_HOUSE);
+        estateDatabase.estateDao().insertEstateTest(ESTATE_FLAT);
         //test
         List<Estate> estateList = LiveDataTestUtil.getValue(this.estateDatabase.estateDao().getEstates());
         assertEquals(2, estateList.size());

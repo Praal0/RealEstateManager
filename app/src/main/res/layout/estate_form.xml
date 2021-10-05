@@ -525,7 +525,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="30dp"
             android:clickable="true"
             android:elevation="15dp"
             android:focusable="true"
@@ -533,7 +533,7 @@
             app:backgroundTint="@color/colorPrimary"
             app:fabSize="normal"
             app:rippleColor="@color/colorAccent"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck" />
 
     </RelativeLayout>
 

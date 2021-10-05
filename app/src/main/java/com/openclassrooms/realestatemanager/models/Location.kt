@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
     parentColumns = ["id"],
     childColumns = ["estateId"])])
 data class Location(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "locationId") var id:Long,
+                    var longitude : Double?,
+                    var latitude : Double?,
                     var address:String?,
-                    var additionalAddress:String?,
                     var city:String?,
                     var zipCode:String?,
-                    var country:String?,
                     var estateId:Long)

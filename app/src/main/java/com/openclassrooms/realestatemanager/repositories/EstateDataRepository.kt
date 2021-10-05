@@ -16,7 +16,7 @@ class EstateDataRepository @Inject constructor(
         return this.estateDAO.getEstates()
     }
 
-    fun gesEstateByID(estateID:Long) : LiveData<Estate>{
+    fun getEstateByID(estateID:Long) : LiveData<Estate>{
         return this.estateDAO.getEstate(estateID)
     }
 

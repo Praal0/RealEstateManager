@@ -10,13 +10,16 @@ import androidx.lifecycle.Observer
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import java.util.*
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.view.View.INVISIBLE
 import android.widget.MediaController
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import dagger.hilt.android.AndroidEntryPoint
-import com.openclassrooms.realestatemanager.models.Estate
+import com.google.android.gms.maps.MapView
+import io.reactivex.disposables.Disposable
+
 
 /**
  * A simple [Fragment] subclass.
@@ -24,10 +27,14 @@ import com.openclassrooms.realestatemanager.models.Estate
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class DetailFragment : Fragment() {
+class DetailFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentDetailBinding
     private val viewModel: EstateViewModel by viewModels()
+    private val mapView: MapView? = null
+    private var map: GoogleMap? = null
+    private val mDisposable: Disposable? = null
+    private val completeAddress: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +54,7 @@ class DetailFragment : Fragment() {
         val estateDetailId = intentDetail?.getLongExtra("estate",0)
         Log.d("estateDetailId", "estateDetailId$estateDetailId")
         estateDetailId?.let {
-            viewModel.getEstate(it).observe(viewLifecycleOwner, Observer {
+            viewModel.getEstateById(it).observe(viewLifecycleOwner, Observer {
                 binding.etMandate.setText(it.numMandat.toString());
                 binding.etMandate.isEnabled = false
                 binding.etSurface.setText(it.surface.toString());
@@ -82,7 +89,9 @@ class DetailFragment : Fragment() {
         }
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
 
+    }
 
 
 }

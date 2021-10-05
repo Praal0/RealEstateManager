@@ -43,13 +43,12 @@
             android:layout_marginTop="70dp"
             android:layout_marginEnd="4dp"
             android:background="#1D6200EE"
-            android:hint="Description"
             android:minHeight="48dp"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="17sp"
             android:textStyle="italic|bold"
-            tools:ignore="TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
     </RelativeLayout>
 

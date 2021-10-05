@@ -22,6 +22,7 @@ import android.widget.DatePicker
 import android.widget.MediaController
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
@@ -34,19 +35,26 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.models.Location
 import com.openclassrooms.realestatemanager.models.PhotoDescription
 import com.openclassrooms.realestatemanager.models.UriList
+import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
+import com.openclassrooms.realestatemanager.models.geocodingAPI.Result
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
+import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.disposables.Disposable
+import io.reactivex.observers.DisposableObserver
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 @AndroidEntryPoint
-class AddEditActivity : BaseActivity(),View.OnClickListener {
+class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogListener {
 
     protected val PICK_IMAGE_CAMERA = 1
     protected val PICK_IMAGE_GALLERY = 2
@@ -63,6 +71,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mSoldDate: DatePickerDialog? = null
     private var estateEdit: Long = 0
     private var mError = false
+    private var mDisposable: Disposable? = null
+    private var completeAddress: String? = null
+    private lateinit var resultGeocoding: List<Result>
 
     private var latestTmpUri: Uri? = null
     private val idEstate: Long = 0
@@ -76,8 +87,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private val photoText = PhotoDescription()
     private lateinit var cursor: Cursor
     private var newfile: File? = null
+    private lateinit var location:Location
 
-    private val viewModel: EstateViewModel by viewModels()
+    private var description : String? = null
+    private val estateViewModel: EstateViewModel by viewModels()
+    private val locationViewModel : LocationViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,7 +159,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.rvPhoto.adapter = adapter
 
         if(estateEdit!=0L) {
-            viewModel.getEstate(estateEdit).observe(this,this::updateUIFromEdit)
+            estateViewModel.getEstateById(estateEdit).observe(this,this::updateUIFromEdit)
         }
 
     }
@@ -310,6 +324,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             }
         ))
     }
+
+    /**
+     * Click on delete Image
+     */
+
 
     /**
      * Click on delete Video
@@ -496,9 +515,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
+                    openDialog()
                     contentUri?.let { listPhoto?.add(it) }
                     photo.photoList.add(contentUri.toString())
-                    photoText.photoDescription.add("")
+                    description?.let { photoText.photoDescription.add(it) }
                     listPhoto?.let { adapter.setPhotoList(it) }
                 }
             }
@@ -696,8 +716,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
         Log.d("saveEstate", "saveEstate$estate")
 
+        completeAddress = estate.address + "," + estate.postalCode + "," + estate.city
+        executeHttpRequestWithRetrofit()
+
         if (estateEdit == 0L) {
-            this.viewModel.insertEstates(estate)
+            this.estateViewModel.insertEstates(estate)
             Snackbar.make(
                 activityAddBinding.root,
                 "Your new Estate is created",
@@ -711,7 +734,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 })
                 .show()
         } else {
-            this.viewModel.updateEstate(estate)
+            this.estateViewModel.updateEstate(estate)
             Snackbar.make(activityAddBinding.root, "Your new Estate is updated", Snackbar.LENGTH_SHORT)
                 .addCallback(object : Snackbar.Callback() {
                     override fun onDismissed(snackbar: Snackbar, event: Int) {
@@ -720,6 +743,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     }
                 }).show()
         }
+    }
+
+    fun openDialog() {
+        val imageDialog = ImageDialog()
+        imageDialog.show(supportFragmentManager, "Image dialog")
     }
 
     fun soldDatedRequired() : Boolean
@@ -733,6 +761,36 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     }
 
+    override fun applyTexts(descirption: String?) {
+        description = descirption
+    }
+
+    /**
+     * RX Java http request for geocoding API
+     */
+    private fun executeHttpRequestWithRetrofit() {
+        this.mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
+            .subscribeWith(object : DisposableObserver<Geocoding?>() {
+                override fun onNext(geocoding: Geocoding) {
+                    resultGeocoding = geocoding.results
+                    for (geo in resultGeocoding) {
+                        location = Location(0,
+                            geo.geometry.location.lng,
+                            geo.geometry.location.lat,
+                            estateFormBinding.etAddress.text.toString(),
+                            estateFormBinding.etCity.text.toString(),
+                            estateFormBinding.etPostalCode.text.toString(),
+                            estateFormBinding.etMandate.text.toString().toLong())
+                    }
+                    locationViewModel.insertLocation(location)
+                }
+
+                override fun onError(@NonNull e: Throwable) {}
+                override fun onComplete() {
+                    TODO("Not yet implemented")
+                }
+            })
+    }
 
 
 }
