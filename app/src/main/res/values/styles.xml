@@ -11,7 +11,7 @@
     <style name="AlertDialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColor">@color/white</item>
-        <item name="colorControlNormal">@color/colorGray</item>
+        <item name="colorControlNormal">@color/colorBlue</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.App.Card.Media" parent="@style/ShapeAppearance.MaterialComponents.MediumComponent">

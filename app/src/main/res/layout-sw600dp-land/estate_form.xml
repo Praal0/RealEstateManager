@@ -541,7 +541,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="30dp"
-            android:background="@color/colorGray"
+            android:background="@color/colorBlue"
             android:clickable="true"
             android:elevation="15dp"
             android:focusable="true"
