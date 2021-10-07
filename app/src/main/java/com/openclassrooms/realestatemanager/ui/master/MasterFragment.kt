@@ -11,8 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterBinding
 import com.openclassrooms.realestatemanager.models.Estate
-import com.openclassrooms.realestatemanager.models.PhotoDescription
-import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.ui.MainActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.utils.Utils

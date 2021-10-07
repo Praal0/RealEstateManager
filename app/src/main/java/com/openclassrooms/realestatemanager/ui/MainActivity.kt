@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.content.Intent
 import android.view.MenuItem
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
-import com.openclassrooms.realestatemanager.ui.map.MapActivity
+import com.openclassrooms.realestatemanager.ui.map.MapsActivity
 
 
 @AndroidEntryPoint
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.map_btn -> {
-                val mapIntent = Intent(this,  MapActivity::class.java)
+                val mapIntent = Intent(this,  MapsActivity::class.java)
                 startActivity(mapIntent)
                 return true
             }

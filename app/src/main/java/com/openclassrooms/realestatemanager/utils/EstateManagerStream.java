@@ -1,6 +1,6 @@
 package com.openclassrooms.realestatemanager.utils;
 
-import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding;
+import com.openclassrooms.realestatemanager.model.geocoding_api.GeocodingApi;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +14,7 @@ public class EstateManagerStream {
      * @param address
      * @return
      */
-    public static Observable<Geocoding> streamFetchGeocode (String address) {
+    public static Observable<GeocodingApi> streamFetchGeocode (String address) {
         EstateManagerService estateManagerService = EstateManagerRetrofitObject.retrofit.create(EstateManagerService.class);
         return estateManagerService.getGeocode(address)
                 .subscribeOn(Schedulers.io())

@@ -39,7 +39,7 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
 
      var currentEstate : LiveData<Estate>? = null
 
-    fun setCurrentEstate(estateId : Long) {
+    fun setCurrentEstate(estateId: Long) {
         currentEstate = estateDataSource.getEstateByID(estateId)
     }
 

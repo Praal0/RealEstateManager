@@ -20,6 +20,7 @@ import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.MediaController
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.NonNull
@@ -34,12 +35,11 @@ import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
+import com.openclassrooms.realestatemanager.model.geocoding_api.GeocodingApi
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Location
 import com.openclassrooms.realestatemanager.models.PhotoDescription
 import com.openclassrooms.realestatemanager.models.UriList
-import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
-import com.openclassrooms.realestatemanager.models.geocodingAPI.Result
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import com.openclassrooms.realestatemanager.utils.Utils
@@ -73,8 +73,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
     private var mError = false
     private var mDisposable: Disposable? = null
     private var completeAddress: String? = null
-    private lateinit var resultGeocoding: List<Result>
-
     private var latestTmpUri: Uri? = null
     private val idEstate: Long = 0
     private lateinit var currentPhotoPath : String
@@ -477,8 +475,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         }
     }
 
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_CANCELED) {
@@ -650,13 +646,16 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
             validateTextView(estateFormBinding.inputCity)
 
 
+            if (!soldDatedRequired()){
+                return@setOnClickListener
+            }
+
+
             if (mError){
                 mError = false
                 return@setOnClickListener
             }
-            if (!soldDatedRequired()){
-                return@setOnClickListener
-            }
+
             saveEstates()
         }
     }
@@ -717,7 +716,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         Log.d("saveEstate", "saveEstate$estate")
 
         completeAddress = estate.address + "," + estate.postalCode + "," + estate.city
-        executeHttpRequestWithRetrofit()
+        executeHttpRequestWithRetrofit(this)
 
         if (estateEdit == 0L) {
             this.estateViewModel.insertEstates(estate)
@@ -768,26 +767,29 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
     /**
      * RX Java http request for geocoding API
      */
-    private fun executeHttpRequestWithRetrofit() {
+    private fun executeHttpRequestWithRetrofit(context: Context) {
         this.mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
-            .subscribeWith(object : DisposableObserver<Geocoding?>() {
-                override fun onNext(geocoding: Geocoding) {
-                    resultGeocoding = geocoding.results
-                    for (geo in resultGeocoding) {
+            .subscribeWith(object : DisposableObserver<GeocodingApi?>() {
+                override fun onNext(geocoding: GeocodingApi) {
+                    if (!geocoding.results.isNullOrEmpty()){
                         location = Location(0,
-                            geo.geometry.location.lng,
-                            geo.geometry.location.lat,
+                            geocoding.results[0].geometry.location.lng,
+                            geocoding.results[0].geometry.location.lat,
                             estateFormBinding.etAddress.text.toString(),
                             estateFormBinding.etCity.text.toString(),
                             estateFormBinding.etPostalCode.text.toString(),
                             estateFormBinding.etMandate.text.toString().toLong())
+                        locationViewModel.insertLocation(location)
+                    }else{
+                        Toast.makeText(context,"TEST",Toast.LENGTH_SHORT)
                     }
-                    locationViewModel.insertLocation(location)
                 }
 
-                override fun onError(@NonNull e: Throwable) {}
+                override fun onError(@NonNull e: Throwable) {
+                    Log.e("Geocoding","Error insert",e)
+                }
                 override fun onComplete() {
-                    TODO("Not yet implemented")
+
                 }
             })
     }
