@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(foreignKeys = [ForeignKey(entity = Estate::class,
-    parentColumns = ["id"],
+    parentColumns = ["numMandat"],
     childColumns = ["estateId"])])
 data class Location(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "locationId") var id:Long,
                     var longitude : Double?,

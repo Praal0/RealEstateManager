@@ -41,8 +41,14 @@ class EstateDataRepository @Inject constructor(
      *
      * @param mandateEstateID
      * */
-    fun deleteEstate(mandateEstateID: Long) {
-        estateDAO.deleteItem(mandateEstateID)
+    suspend fun deleteEstate(mandateEstateID: Long) {
+        try {
+            estateDAO.deleteItem(mandateEstateID)
+        }catch (cause: Throwable) {
+            // If anything throws an exception, inform the caller
+            Log.e("EstateDataRepository","Cannot Delete")
+        }
+
     }
 
 
@@ -52,8 +58,13 @@ class EstateDataRepository @Inject constructor(
      * @param estate
      */
     // --- UPDATE ---
-    fun updateEstate(estate: Estate) {
-        estateDAO.updateEstate(estate)
+    suspend fun updateEstate(estate: Estate) {
+        try {
+            estateDAO.updateEstate(estate)
+        } catch (cause: Throwable) {
+            // If anything throws an exception, inform the caller
+            Log.e("EstateDataRepository","Cannot Update")
+        }
     }
 
     /**

@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/image_description"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="142dp"
+        android:layout_height="139dp"
         android:layout_marginTop="16dp"
         android:contentDescription="homePhoto"
         android:scaleType="center"

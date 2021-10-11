@@ -30,7 +30,7 @@
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:hint="Mandate number"
-                android:inputType="none"
+                android:inputType="number"
                 android:paddingBottom="8dp"
                 android:singleLine="true"
                 android:textSize="@dimen/size_edit_text"

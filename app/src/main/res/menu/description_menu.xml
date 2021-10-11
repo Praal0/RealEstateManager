@@ -9,4 +9,10 @@
         android:title="Edit"
         app:showAsAction="ifRoom"></item>
 
+    <item
+        android:id="@+id/delete_btn"
+        android:icon="@drawable/baseline_delete"
+        android:title="Edit"
+        app:showAsAction="ifRoom"></item>
+
 </menu>

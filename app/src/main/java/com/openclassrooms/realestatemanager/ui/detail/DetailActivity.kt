@@ -6,22 +6,26 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityDetailBinding
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
+import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : BaseActivity() {
 
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var detailFragment: DetailFragment
     private lateinit var toolbar : Toolbar
     private  var estateId : Long  = 0
+    private val estateViewModel: EstateViewModel by viewModels()
     private var estate: Estate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,11 +59,23 @@ class DetailActivity : AppCompatActivity() {
                 editIntent.putExtra("iDEstate", idEstate)
                 Log.d("editEstate", "editEstate$idEstate")
                 startActivity(editIntent)
+                finish()
+                return true
+
+            }
+
+            R.id.delete_btn ->{
+                val idEstate: Long = estateId
+                if (showDialog(this))
+                finish()
+                estateViewModel.deleteEstate(idEstate)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
     private fun configureAndShowDetailFragment() {
         //Create new main fragment

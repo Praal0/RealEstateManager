@@ -93,7 +93,7 @@ public class EstateContentProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
         if (getContext() != null) {
             final int count =
-                    RealEstateDatabase.Companion.getInstance(getContext()).estateDao().deleteItem(ContentUris.parseId(uri));
+                    RealEstateDatabase.Companion.getInstance(getContext()).estateDao().deleteItemProvider(ContentUris.parseId(uri));
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         }
@@ -113,7 +113,7 @@ public class EstateContentProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         if (getContext() != null) {
             final int count = RealEstateDatabase.Companion
-                    .getInstance(getContext()).estateDao().updateEstate(Estate.Companion.fromContentValues(contentValues));
+                    .getInstance(getContext()).estateDao().updateEstateProvider(Estate.Companion.fromContentValues(contentValues));
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         }

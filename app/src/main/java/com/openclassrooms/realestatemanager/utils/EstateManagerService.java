@@ -1,13 +1,14 @@
 package com.openclassrooms.realestatemanager.utils;
 
-import com.openclassrooms.realestatemanager.model.geocoding_api.GeocodingApi;
+import com.openclassrooms.realestatemanager.BuildConfig;
+import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface EstateManagerService {
-    String GOOGLE_MAP_API_KEY = "AIzaSyAJM3OAnxshyxdLpqktVicVUUM_D74yKCU";
+    String GOOGLE_MAP_API_KEY = BuildConfig.API_KEY;
 
     /**
      * Create end point
@@ -15,6 +16,6 @@ public interface EstateManagerService {
      * @return
      */
     //Geocoding API Request
-    @GET("geocode/json?key="+GOOGLE_MAP_API_KEY)
-    Observable<GeocodingApi> getGeocode (@Query("address") String address);
+    @GET("maps/api/geocode/json?address=11avenuedusentier69390Millery&key="+GOOGLE_MAP_API_KEY)
+    Observable<Geocoding> getGeocode (@Query("address") String address);
 }

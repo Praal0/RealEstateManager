@@ -29,12 +29,16 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
     fun updateEstate(estate: Estate){
         viewModelScope.launch {
             estateDataSource.updateEstate(estate)
-            delay(1000)
+            delay(10)
         }
     }
 
     fun deleteEstate(estateId : Long){
-        estateDataSource.deleteEstate(estateId)
+        viewModelScope.launch {
+            estateDataSource.deleteEstate(estateId)
+            delay(1000)
+        }
+
     }
 
      var currentEstate : LiveData<Estate>? = null

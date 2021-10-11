@@ -1,10 +1,19 @@
 package com.openclassrooms.realestatemanager.ui.baseActivity
 
 import android.Manifest
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import android.webkit.MimeTypeMap
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.openclassrooms.realestatemanager.ui.createAndEditEstate.ImageDialog
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import android.content.DialogInterface
+
+
+
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -45,6 +54,38 @@ open class BaseActivity : AppCompatActivity() {
                 RC_CAMERA_AND_STORAGE_COARSELOCATION_FINELOCATION, *CAM_AND_READ_EXTERNAL_STORAGE
             )
         }
+    }
+
+    fun showDialog(context : Context): Boolean {
+        var result : Boolean = true
+
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage("Write your message here.")
+        builder.setCancelable(true)
+
+        builder.setPositiveButton("Yes",
+            DialogInterface.OnClickListener { dialog, id ->
+                dialog.cancel() })
+
+        builder.setNegativeButton("No") { dialog, id ->
+            result = false
+            dialog.cancel() }
+
+        val alert: AlertDialog = builder.create()
+        alert.show()
+
+        return result
+    }
+
+    fun openDialog(contentUri: Uri?) {
+        val imageDialog = ImageDialog(contentUri)
+        imageDialog.show(supportFragmentManager, "Image dialog")
+    }
+
+    fun getFileExt(contentUri: Uri?): String? {
+        val contentResolver = contentResolver
+        val mime = MimeTypeMap.getSingleton()
+        return mime.getExtensionFromMimeType(contentUri?.let { contentResolver.getType(it) })
     }
 
 

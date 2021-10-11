@@ -1,7 +1,9 @@
 package com.openclassrooms.realestatemanager.viewModel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Location
 import com.openclassrooms.realestatemanager.repositories.LocationDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,10 @@ class LocationViewModel@Inject constructor (private val locationDataSource: Loca
     // --------------------
     // LOCATION
     // --------------------
+
+    fun getLocations() : LiveData<List<Location>> {
+        return locationDataSource.getLocations()
+    }
 
     fun insertLocation(location: Location) {
         viewModelScope.launch {

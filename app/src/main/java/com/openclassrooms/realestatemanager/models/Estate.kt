@@ -6,8 +6,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(tableName = "estate")
-data class Estate(@PrimaryKey(autoGenerate = true) val id: Long,
-                  val numMandat:Long,
+data class Estate(@PrimaryKey(autoGenerate = true) val numMandat:Long,
                   var estateType:String?,
                   var surface: Int?,
                   var rooms:Int?,
@@ -31,7 +30,7 @@ data class Estate(@PrimaryKey(autoGenerate = true) val id: Long,
                   var photoDescription : PhotoDescription,
                   var video:UriList
                   ) : Serializable {
-    constructor() : this(0, 0,"", null, null, null, null, null,
+    constructor() : this(0,"", null, null, null, null, null,
         null, "", "", null, "", false, false, false,
         false, false, null, null, "",UriList(), PhotoDescription(), UriList())
 
