@@ -1,11 +1,13 @@
 package com.openclassrooms.realestatemanager.viewModel
 
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.repositories.EstateDataRepository
+import com.openclassrooms.realestatemanager.ui.notification.Notification.sendNotification
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,9 +21,10 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
     // --------------------
 
 
-    fun insertEstates(estate: Estate) {
+    fun insertEstates(estate: Estate,context: Context) {
         viewModelScope.launch {
             estateDataSource.createEstate(estate)
+            sendNotification(context)
             delay(1000)
         }
     }

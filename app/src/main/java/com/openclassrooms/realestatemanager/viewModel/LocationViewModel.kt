@@ -37,8 +37,12 @@ class LocationViewModel@Inject constructor (private val locationDataSource: Loca
         }
     }
 
-    fun deleteLocation(estateId : Long){
-        locationDataSource.deleteLocation(estateId)
+    fun deleteLocation(locationId : Long){
+        locationDataSource.deleteLocation(locationId)
+    }
+
+    fun getLocationById(locationId: Long) : LiveData<Location>{
+        return locationDataSource.getLocationByID(locationId)
     }
 
 }

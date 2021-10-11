@@ -18,7 +18,7 @@ interface LocationDao {
     suspend fun insertLocation(location: Location) : Long
 
     @Update
-    fun updateLocation(location: Location)
+    suspend fun updateLocation(location: Location)
 
     @Query("DELETE FROM Location WHERE estateId = :mandateNumberID")
     fun deleteLocation(mandateNumberID: Long): Int

@@ -41,8 +41,13 @@ class LocationDataRepository@Inject constructor(
      * @param estate
      */
     // --- UPDATE ---
-    fun updateLocation(location: Location) {
-        locationDao.updateLocation(location)
+    suspend fun updateLocation(location: Location) {
+        try {
+            locationDao.updateLocation(location)
+        } catch (cause: Throwable) {
+            // If anything throws an exception, inform the caller
+            Log.e("LocationDataRepository","Cannot Update")
+        }
     }
 
 

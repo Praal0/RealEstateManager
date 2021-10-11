@@ -57,4 +57,7 @@
 
     <string name="title_activity_maps">MapsActivity</string>
     <string name="require">Required</string>
+    <string name="new_property">New Property</string>
+    <string name="the_new_property_has_been_successfully_created">New property has been create</string>
+    <string name="default_notification_channel_id">1</string>
 </resources>

@@ -29,6 +29,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -52,6 +53,10 @@ import io.reactivex.observers.DisposableObserver
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import io.reactivex.disposables.CompositeDisposable
+
+
+
 
 
 @AndroidEntryPoint
@@ -61,6 +66,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
     protected val PICK_IMAGE_GALLERY = 2
     protected val PICK_VIDEO_CAMERA = 3
     protected val PICK_VIDEO_GALLERY = 4
+
+    private lateinit var mLifecycleRegistry : LifecycleOwner
+    private val mCompositeDisposable = CompositeDisposable()
 
     private lateinit var activityAddBinding: ActivityAddEditBinding
     private lateinit var estateFormBinding: EstateFormBinding
@@ -325,11 +333,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
     }
 
     /**
-     * Click on delete Image
-     */
-
-
-    /**
      * Click on delete Video
      */
     private fun onClickBtnDeleteVideo(){
@@ -574,8 +577,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         }
     }
 
-
-
     /**
      * Click Validate button and verification
      */
@@ -629,18 +630,14 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
 
     private fun saveEstates() {
 
-        var price: String = estateFormBinding.etPrice.text.toString()
-        var estateType: String = estateFormBinding.etMandate.text.toString()
-        var upOfSaleDate : String = estateFormBinding.upOfSaleDate.text.toString()
-
-        val estate = Estate(estateType.toLong(),
+        val estate = Estate(estateFormBinding.etMandate.text.toString().toLong(),
             estateFormBinding.etEstate.text.toString(),
             Integer.parseInt(estateFormBinding.etSurface.text.toString()),
             Integer.parseInt(estateFormBinding.etRooms.text.toString()),
             Integer.parseInt(estateFormBinding.etBedrooms.text.toString()),
             Integer.parseInt(estateFormBinding.etBathrooms.text.toString()),
             Integer.parseInt(estateFormBinding.etGround.text.toString()),
-            price.toDouble(),
+            estateFormBinding.etPrice.text.toString().toDouble(),
             estateFormBinding.etDescription.text.toString(),
             estateFormBinding.etAddress.text.toString(),
             Integer.parseInt(estateFormBinding.etPostalCode.text.toString()),
@@ -660,15 +657,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         Log.d("saveEstate", "saveEstate$estate")
 
         completeAddress = estate.address + "," + estate.postalCode + "," + estate.city
-        executeHttpRequestWithRetrofit(this)
 
         if (estateEdit == 0L) {
-            this.estateViewModel.insertEstates(estate)
-            Snackbar.make(
-                activityAddBinding.root,
-                "Your new Estate is created",
-                Snackbar.LENGTH_SHORT
-            )
+            this.estateViewModel.insertEstates(estate,this)
+            executeHttpRequestWithRetrofit(this)
+            Snackbar.make(activityAddBinding.root, "Your new Estate is created", Snackbar.LENGTH_SHORT)
                 .addCallback(object : Snackbar.Callback() {
                     override fun onDismissed(snackbar: Snackbar, event: Int) {
                         super.onDismissed(snackbar, event)
@@ -678,6 +671,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
                 .show()
         } else {
             this.estateViewModel.updateEstate(estate)
+            executeHttpRequestWithRetrofit(this)
 
             Snackbar.make(activityAddBinding.root, "Your new Estate is updated", Snackbar.LENGTH_SHORT)
                 .addCallback(object : Snackbar.Callback() {
@@ -703,15 +697,13 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
     }
 
 
-    fun soldDatedRequired() : Boolean
-    {
+    private fun soldDatedRequired() : Boolean {
         val soldDateInput = estateFormBinding.inputSoldDate.editText?.text.toString()
         if (soldDateInput.isEmpty() && estateFormBinding.availableCheckbtn.isChecked){
             estateFormBinding.soldDate.error = R.string.require.toString()
             return false
         }
         return true
-
     }
 
     override fun applyTexts(descirption: String?) {
@@ -722,7 +714,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
      * RX Java http request for geocoding API
      */
     private fun executeHttpRequestWithRetrofit(context: Context) {
-        this.mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
+        mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
             .subscribeWith(object : DisposableObserver<Geocoding?>() {
                 override fun onNext(geocoding: Geocoding) {
                     if (!geocoding.results.isNullOrEmpty()){
@@ -733,9 +725,18 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
                             estateFormBinding.etCity.text.toString(),
                             estateFormBinding.etPostalCode.text.toString(),
                             estateFormBinding.etMandate.text.toString().toLong())
-                        locationViewModel.insertLocation(location)
+
+                        if (estateEdit == 0L){
+                            locationViewModel.insertLocation(location)
+                        }else{
+                            locationViewModel.getLocationById(estateEdit).observe(this@AddEditActivity,
+                                androidx.lifecycle.Observer {
+                                    location.id = it.id
+                                    locationViewModel.updateLocation(location)
+                                })
+                        }
                     }else{
-                        Toast.makeText(context,"Geocoding : Null or Empty",Toast.LENGTH_SHORT)
+                        Toast.makeText(context,"Geocoding : Null or Empty",Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -746,6 +747,36 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
 
                 }
             })
+        mCompositeDisposable.add(mDisposable as DisposableObserver<Geocoding?>);
+    }
+
+    // -------------------
+    // HTTP (RxJAVA)
+    // -------------------
+    private fun <T> createObserver(): DisposableObserver<T>? {
+        return object : DisposableObserver<T>() {
+            override fun onNext(t: T) {
+
+            }
+
+            override fun onError(e: Throwable) {
+                Log.e("Geocoding","Error insert",e)
+            }
+
+            override fun onComplete() {}
+        }
+    }
+
+    /**
+     * Dispose subscription
+     */
+    private fun disposeWhenDestroy() {
+        mCompositeDisposable.clear()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposeWhenDestroy()
     }
 
 
