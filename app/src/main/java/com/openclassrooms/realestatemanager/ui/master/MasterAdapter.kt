@@ -53,7 +53,6 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
     @SuppressLint("SetTextI18n")
     fun bind(item: Estate) {
         this.estate = item
-        itemBinding.city.text = item.city
         itemBinding.estateType.text = item.estateType
         itemBinding.price.text = "$"+item.price.toString()
         //for estate sold

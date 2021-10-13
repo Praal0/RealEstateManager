@@ -35,7 +35,7 @@ public class EstateContentProviderTest {
 
     @Before
     public void setUp() {
-        InstrumentationRegistry.getInstrumentation().getTargetContext().deleteDatabase("Estate.db");
+        InstrumentationRegistry.getInstrumentation().getTargetContext().deleteDatabase("Estates.db");
         Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(), RealEstateDatabase.class)
                 .allowMainThreadQueries()
                 .build();

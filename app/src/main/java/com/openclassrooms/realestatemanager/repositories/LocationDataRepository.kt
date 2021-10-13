@@ -31,7 +31,7 @@ class LocationDataRepository@Inject constructor(
             locationDao.insertLocation(location)
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
-            Log.e("LocationDataRepository","Cannot Insert")
+            Log.e("LocationDataRepository","Cannot Insert : $cause")
         }
     }
 
@@ -46,7 +46,7 @@ class LocationDataRepository@Inject constructor(
             locationDao.updateLocation(location)
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
-            Log.e("LocationDataRepository","Cannot Update")
+            Log.e("LocationDataRepository","Cannot Update : $cause")
         }
     }
 
@@ -57,8 +57,14 @@ class LocationDataRepository@Inject constructor(
      * @param estate
      */
     // --- UPDATE ---
-    fun deleteLocation(estateId : Long) {
-        locationDao.deleteLocation(estateId)
+    suspend fun deleteLocation(estateId : Long) {
+        try {
+            locationDao.deleteLocation(estateId)
+        } catch (cause: Throwable){
+            // If anything throws an exception, inform the caller
+            Log.e("LocationDataRepository","Cannot Delete : $cause")
+        }
+
     }
 
 

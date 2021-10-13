@@ -16,6 +16,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.View.INVISIBLE
 import android.widget.MediaController
+import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -71,47 +72,39 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setupObservers() {
-        val intentDetail = this.activity?.intent
-         estateDetailId = intentDetail?.getLongExtra("estate",0)
-        Log.d("estateDetailId", "estateDetailId$estateDetailId")
-        estateDetailId?.let {
-            viewModel.getEstateById(it).observe(viewLifecycleOwner, Observer {
-                binding.etMandate.setText(it.numMandat.toString());
-                binding.etMandate.isEnabled = false
-                binding.etSurface.setText(it.surface.toString());
-                binding.etSurface.isEnabled = false
-                binding.etDescription.setText(it.description)
-                binding.etDescription.isEnabled = false
-                binding.etRooms.setText(it.rooms.toString())
-                binding.etRooms.isEnabled = false
-                binding.etBathrooms.setText(it.bathrooms.toString())
-                binding.etBathrooms.isEnabled = false
-                binding.etBedrooms.setText(it.bedrooms.toString())
-                binding.etBedrooms.isEnabled = false
-                binding.etAddress.setText(it.address)
-                binding.etAddress.isEnabled = false
-                binding.etPostalCode.setText(it.postalCode.toString())
-                binding.etPostalCode.isEnabled = false
-                binding.etCity.setText(it.city)
-                binding.etCity.isEnabled = false
+        viewModel.currentEstate?.let {it.observe(viewLifecycleOwner, Observer {
+            binding.etMandate.setText(it.numMandat.toString())
+            binding.etMandate.isEnabled = false
+            binding.etSurface.setText(it.surface.toString())
+            binding.etSurface.isEnabled = false
+            binding.etDescription.setText(it.description)
+            binding.etDescription.isEnabled = false
+            binding.etRooms.setText(it.rooms.toString())
+            binding.etRooms.isEnabled = false
+            binding.etBathrooms.setText(it.bathrooms.toString())
+            binding.etBathrooms.isEnabled = false
+            binding.etBedrooms.setText(it.bedrooms.toString())
+            binding.etBedrooms.isEnabled = false
+            binding.etAddress.isEnabled = false
+            binding.etPostalCode.isEnabled = false
+            binding.etCity.isEnabled = false
 
-
-
-                binding.videoView.requestFocus()
-                if (it.video.photoList.isNotEmpty()){
-                    for (videoStr in it.video.photoList) {
-                        binding.videoView.setVideoURI(Uri.parse(videoStr))
-                        val mediaController = MediaController(this.context)
-                        binding.videoView.setMediaController(mediaController)
-                        mediaController.setAnchorView(binding.videoView)
-                        binding.videoView.start()
-                    }
-                }else{
-                    binding.videoView.visibility = INVISIBLE
+            binding.videoView.requestFocus()
+            if (it.video.photoList.isNotEmpty()){
+                for (videoStr in it.video.photoList) {
+                    binding.videoView.setVideoURI(Uri.parse(videoStr))
+                    val mediaController = MediaController(this.context)
+                    binding.videoView.setMediaController(mediaController)
+                    mediaController.setAnchorView(binding.videoView)
+                    binding.videoView.start()
                 }
-            })
-        }
+            }else{
+                binding.videoView.visibility = INVISIBLE
+            }
+        })}?:run{Log.d("DetailFragment","Current estate : null")}
+
     }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         if (Utils.isInternetAvailable(this.context)) {
@@ -128,7 +121,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 }
             }
             catch (e: Resources.NotFoundException) { Log.e(ContentValues.TAG, "Can't find style. Error: ", e) }
-            googleMap.moveCamera(CameraUpdateFactory.zoomBy(14F))
+            googleMap.moveCamera(CameraUpdateFactory.zoomBy(15F))
         } else {
             Snackbar.make(binding.root, "No internet available", Snackbar.LENGTH_SHORT).show();
         }

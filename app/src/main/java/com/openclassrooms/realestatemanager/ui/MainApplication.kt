@@ -1,9 +1,9 @@
 package com.openclassrooms.realestatemanager.ui
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class MainApplication : Application() {
+class MainApplication : MultiDexApplication() {
 
 }

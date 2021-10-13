@@ -6,12 +6,12 @@ apply plugin: 'dagger.hilt.android.plugin'
 
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.openclassrooms.realestatemanager"
-        minSdkVersion 19
+        minSdkVersion 21
         multiDexEnabled true
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -61,6 +61,9 @@ dependencies {
     implementation "androidx.core:core-ktx:1.6.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+
+    //MULTIDEX
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     // EVENT BUS
     implementation 'org.greenrobot:eventbus:3.2.0'

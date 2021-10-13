@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.detail
 
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.openclassrooms.realestatemanager.R
@@ -16,6 +19,7 @@ import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import java.util.*
 
 @AndroidEntryPoint
@@ -25,7 +29,6 @@ class DetailActivity : BaseActivity() {
     private lateinit var detailFragment: DetailFragment
     private lateinit var toolbar : Toolbar
     private  var estateId : Long  = 0
-    private val estateViewModel: EstateViewModel by viewModels()
     private var estate: Estate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,15 +68,14 @@ class DetailActivity : BaseActivity() {
             }
 
             R.id.delete_btn ->{
-                val idEstate: Long = estateId
-                if (showDialog(this))
-                finish()
-                estateViewModel.deleteEstate(idEstate)
-                return true
+                showDialog(this,estateId)
+
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
 
 

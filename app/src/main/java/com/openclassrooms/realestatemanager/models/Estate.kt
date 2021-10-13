@@ -2,10 +2,15 @@ package com.openclassrooms.realestatemanager.models
 
 import android.content.ContentValues
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-@Entity(tableName = "estate")
+@Entity(tableName = "estate",foreignKeys = [ForeignKey(entity = Location::class,
+    parentColumns = ["locationId"],
+    childColumns = ["locationId"],
+    onDelete = CASCADE)])
 data class Estate(@PrimaryKey(autoGenerate = true) val numMandat:Long,
                   var estateType:String?,
                   var surface: Int?,
@@ -15,9 +20,6 @@ data class Estate(@PrimaryKey(autoGenerate = true) val numMandat:Long,
                   var ground:Int?,
                   var price: Double?,
                   var description:String?,
-                  var address:String?,
-                  var postalCode:Int?,
-                  var city:String?,
                   var schools:Boolean,
                   var stores:Boolean,
                   var park:Boolean,
@@ -28,11 +30,12 @@ data class Estate(@PrimaryKey(autoGenerate = true) val numMandat:Long,
                   var agentName:String?,
                   var photoList: UriList,
                   var photoDescription : PhotoDescription,
-                  var video:UriList
+                  var video:UriList,
+                  var locationId : Long
                   ) : Serializable {
-    constructor() : this(0,"", null, null, null, null, null,
-        null, "", "", null, "", false, false, false,
-        false, false, null, null, "",UriList(), PhotoDescription(), UriList())
+
+    constructor() : this(0,"",0,0,0,0,0,null,"",false,false,
+        false,false,false,0,"","",UriList(), PhotoDescription(), UriList(),0)
 
     companion object {
         /**
@@ -48,9 +51,6 @@ data class Estate(@PrimaryKey(autoGenerate = true) val numMandat:Long,
             if (values.containsKey("ground")) estate.ground = values.getAsInteger("ground")
             if (values.containsKey("price")) estate.price = values.getAsDouble("price")
             if (values.containsKey("description")) estate.description = values.getAsString("description")
-            if (values.containsKey("address")) estate.address = values.getAsString("address")
-            if (values.containsKey("postalCode")) estate.postalCode = values.getAsInteger("postalCode")
-            if (values.containsKey("city")) estate.city = values.getAsString("city")
             if (values.containsKey("schools")) estate.schools = values.getAsBoolean("schools")
             if (values.containsKey("stores")) estate.stores = values.getAsBoolean("stores")
             if (values.containsKey("park")) estate.park = values.getAsBoolean("park")

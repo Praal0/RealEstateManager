@@ -11,8 +11,10 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,7 +38,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
 
     protected val PERMS_CALL_ID = 200
     private lateinit var map: GoogleMap
+    private lateinit var toolbar : Toolbar
     private lateinit var mPosition: String
+
     private lateinit var binding: ActivityMapsBinding
     private  var locationManager: LocationManager? = null
     private var locationList: List<Location> = ArrayList()
@@ -54,6 +58,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        //Set title toolbar
+        setToolbar()
+
+        //Add marker
         addMarker()
     }
 
@@ -95,6 +103,24 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
             )
             Log.e("NetWorkProvider", "testNetwork")
         }
+    }
+
+    private fun setToolbar() {
+        toolbar = binding.includedToolbarAdd.simpleToolbar
+        setSupportActionBar(toolbar)
+        val ab: androidx.appcompat.app.ActionBar? = supportActionBar
+        ab?.setTitle(R.string.title_activity_map)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

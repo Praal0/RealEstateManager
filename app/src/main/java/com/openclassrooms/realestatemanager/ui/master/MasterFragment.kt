@@ -28,10 +28,9 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMasterBinding.inflate(inflater, container, false)
-        val view: View = binding.getRoot()
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

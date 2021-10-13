@@ -11,13 +11,19 @@ import com.openclassrooms.realestatemanager.ui.createAndEditEstate.ImageDialog
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import android.content.DialogInterface
+import androidx.activity.viewModels
+import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 
-
-
-
+@AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
 
     private val RC_CAMERA_AND_STORAGE_COARSELOCATION_FINELOCATION = 100
+    private val estateViewModel: EstateViewModel by viewModels()
+    private val locationViewModel: LocationViewModel by viewModels()
     private val CAM_AND_READ_EXTERNAL_STORAGE = arrayOf(
         Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
@@ -40,10 +46,32 @@ open class BaseActivity : AppCompatActivity() {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
+    fun showDialog(context : Context,estateId : Long): Boolean {
+        var result : Boolean = true
+
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(R.string.delete_message)
+        builder.setCancelable(true)
+        builder.setPositiveButton("Yes",
+            DialogInterface.OnClickListener { dialog, id ->
+                dialog.cancel()
+                finish()
+                estateViewModel.deleteEstate(estateId)
+            })
+
+        builder.setNegativeButton("No") { dialog, id ->
+            result = false
+            dialog.cancel() }
+
+        val alert: AlertDialog = builder.create()
+        alert.show()
+
+        return result
+    }
+
     /**
      * For permissions
      */
-    @AfterPermissionGranted(100)
     protected fun methodRequiresTwoPermission() {
         if (EasyPermissions.hasPermissions(this, *CAM_AND_READ_EXTERNAL_STORAGE)) {
             Log.d("Permissions", "Permissions granted")
@@ -56,27 +84,7 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun showDialog(context : Context): Boolean {
-        var result : Boolean = true
-
-        val builder = AlertDialog.Builder(context)
-        builder.setMessage("Write your message here.")
-        builder.setCancelable(true)
-
-        builder.setPositiveButton("Yes",
-            DialogInterface.OnClickListener { dialog, id ->
-                dialog.cancel() })
-
-        builder.setNegativeButton("No") { dialog, id ->
-            result = false
-            dialog.cancel() }
-
-        val alert: AlertDialog = builder.create()
-        alert.show()
-
-        return result
-    }
-
+    
     fun openDialog(contentUri: Uri?) {
         val imageDialog = ImageDialog(contentUri)
         imageDialog.show(supportFragmentManager, "Image dialog")

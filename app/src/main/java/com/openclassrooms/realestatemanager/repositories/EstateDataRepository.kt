@@ -31,7 +31,7 @@ class EstateDataRepository @Inject constructor(
             estateDAO.insertEstate(estate)
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
-            Log.e("EstateDataRepository","Cannot Insert")
+            Log.e("EstateDataRepository","Cannot Insert : $cause")
         }
 
     }
@@ -46,7 +46,7 @@ class EstateDataRepository @Inject constructor(
             estateDAO.deleteItem(mandateEstateID)
         }catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
-            Log.e("EstateDataRepository","Cannot Delete")
+            Log.e("EstateDataRepository", "Cannot Delete : $cause")
         }
 
     }
@@ -63,7 +63,7 @@ class EstateDataRepository @Inject constructor(
             estateDAO.updateEstate(estate)
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
-            Log.e("EstateDataRepository","Cannot Update")
+            Log.e("EstateDataRepository","Cannot Update : $cause")
         }
     }
 

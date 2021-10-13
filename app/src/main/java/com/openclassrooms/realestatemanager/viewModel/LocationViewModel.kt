@@ -37,8 +37,12 @@ class LocationViewModel@Inject constructor (private val locationDataSource: Loca
         }
     }
 
-    fun deleteLocation(locationId : Long){
-        locationDataSource.deleteLocation(locationId)
+     fun deleteLocation(locationId : Long){
+         viewModelScope.launch {
+             locationDataSource.deleteLocation(locationId)
+             delay(1000)
+         }
+
     }
 
     fun getLocationById(locationId: Long) : LiveData<Location>{

@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.viewModel
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.openclassrooms.realestatemanager.models.Estate
@@ -44,10 +45,10 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
 
     }
 
-     var currentEstate : LiveData<Estate>? = null
+     var currentEstate : MutableLiveData<Estate>? = null
 
     fun setCurrentEstate(estateId: Long) {
-        currentEstate = estateDataSource.getEstateByID(estateId)
+        currentEstate?.value = estateDataSource.getEstateByID(estateId).value
     }
 
     fun getEstates() : LiveData<List<Estate>>{
