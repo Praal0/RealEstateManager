@@ -387,7 +387,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                             createImageFile()
                         } catch (ex: IOException) {
                             // Error occurred while creating the File
-                            Log.e("Capture",ex)
+                            Log.e("Capture",ex.toString())
                             null
                         }
                         // Continue only if the File was successfully created
