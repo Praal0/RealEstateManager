@@ -1,10 +1,8 @@
 package com.openclassrooms.realestatemanager.ui.createAndEditEstate
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.DatePickerDialog
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
@@ -27,18 +25,18 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
+import com.openclassrooms.realestatemanager.databinding.LayoutDialogBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Location
 import com.openclassrooms.realestatemanager.models.PhotoDescription
 import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
-import com.openclassrooms.realestatemanager.provider.EstateContentProvider.AUTHORITY
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import com.openclassrooms.realestatemanager.utils.Utils
@@ -53,7 +51,7 @@ import java.util.*
 import io.reactivex.disposables.CompositeDisposable
 
 @AndroidEntryPoint
-class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogListener {
+class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     protected val PICK_IMAGE_CAMERA = 1
     protected val PICK_IMAGE_GALLERY = 2
@@ -66,6 +64,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
     private lateinit var estateFormBinding: EstateFormBinding
     private lateinit var toolbar : Toolbar
     private  val VIDEO_DIRECTORY : String = "/realEstateManager"
+    lateinit var estate : Estate
 
     private var mUpOfSaleDateDialog: DatePickerDialog? = null
     private var mDateFormat: SimpleDateFormat? = null
@@ -95,7 +94,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
-
         if(estateEdit==0L) {
             estateFormBinding.deleteVideo.visibility = INVISIBLE
         }
@@ -159,8 +157,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
     }
 
     private fun setupRecyclerView() {
-        adapter = PhotoAdapter()
-        estateFormBinding.rvPhoto.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        adapter = PhotoAdapter(listPhoto, Glide.with(this), photoText.photoDescription, estateEdit)
+        val horizontalLayoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
         estateFormBinding.rvPhoto.adapter = adapter
 
         if(estateEdit!=0L) {
@@ -187,6 +187,12 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         estateFormBinding.upOfSaleDate.setText(estate.upOfSaleDate?.let { Utils.longDateToString(it) })
         estateFormBinding.soldDate.setText(estate.soldDate)
         estateFormBinding.etAgent.setText(estate.agentName, false)
+
+        locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
+            estateFormBinding.etAddress.setText(it.address)
+            estateFormBinding.etCity.setText(it.city.toString())
+            estateFormBinding.etPostalCode.setText(it.zipCode.toString())
+        })
 
         listPhoto?.let { adapter.setPhotoList(it) };
         adapter.setPhotoDescription(estate.photoDescription.photoDescription)
@@ -381,13 +387,18 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
                             createImageFile()
                         } catch (ex: IOException) {
                             // Error occurred while creating the File
-                                null
+                            Log.e("Capture",ex)
+                            null
                         }
                         // Continue only if the File was successfully created
-                        photoFile?.also { val photoURI: Uri =
-                            FileProvider.getUriForFile(this, AUTHORITY, it)
-                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                                startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA)
+                        photoFile?.also {
+                            val photoURI: Uri = FileProvider.getUriForFile(
+                                this,
+                                "com.example.android.fileprovider",
+                                it
+                            )
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                            startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA)
                         }
                     }
                 }
@@ -402,7 +413,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         builder.show()
     }
 
-    private fun createImageFile(): File? {
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -428,14 +440,12 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != RESULT_CANCELED) {
-            if (requestCode == PICK_IMAGE_CAMERA && resultCode == Activity.RESULT_OK) {
+            if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK) {
                 val imageBitmap = data?.extras?.get("data") as Bitmap
-                listPhoto?.let { adapter.setPhotoList(it)}
-                photo.photoList.add(imageBitmap.toString())
-                photoText.photoDescription.add("")
+                saveCoolerImage(imageBitmap)
+
             }
-            if (requestCode == PICK_IMAGE_GALLERY && data != null && data.getData() != null) {
+            if (requestCode == PICK_IMAGE_GALLERY && data != null && data.data != null) {
                 if (resultCode == RESULT_OK) {
                     val contentUri = data.data
                     val timeStamp = SimpleDateFormat("ddMMyyyy", Locale.FRANCE).format(Date())
@@ -462,13 +472,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
                         e.printStackTrace()
                     }
                     openDialog(contentUri)
-                    contentUri?.let { listPhoto?.add(it) }
-                    Log.e("Picutre", "contentUri = ${contentUri.toString()}")
-                    description?.let { photoText.photoDescription.add(it) }
-                    photo.photoList.add(contentUri.toString())
-                    listPhoto?.let { adapter.setPhotoList(it)
-                    Log.e("Picutre", " it = ${it.size}")}
-
                 }
             }
             if (requestCode == PICK_VIDEO_CAMERA && data != null && data.data != null) {
@@ -506,7 +509,55 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
                     selectedVideoPath?.let { video.photoList.add(it) }
                 }
             }
+    }
+
+    private fun saveCoolerImage(bitmap: Bitmap) {
+        val root = Environment.getExternalStorageDirectory().toString()
+        val myDir = File("$root/saveImage")
+        myDir.mkdirs()
+        val generator = Random()
+        var n = 10000
+        n = generator.nextInt(n)
+        val imageName = "Image$n.jpg"
+        val file = File(myDir,imageName)
+        if (file.exists()) file.delete()
+        try {
+            val out: FileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG,90,out)
+            file.absolutePath
+        }catch (e:Exception){
+
         }
+    }
+
+
+
+    fun openDialog(contentUri: Uri?) {
+        val builder = android.app.AlertDialog.Builder(this)
+        var binding: LayoutDialogBinding = LayoutDialogBinding.inflate(layoutInflater)
+        val view: View = binding.root
+        binding.imageDescription.setImageURI(contentUri)
+        builder.setView(view)
+            .setNegativeButton("cancel",object : DialogInterface.OnClickListener{
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    dialog?.dismiss()
+                }
+
+            })
+            .setPositiveButton("ok",object : DialogInterface.OnClickListener{
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    val descirption: String = binding.editDescription.text.toString()
+                    contentUri?.let { listPhoto?.add(it) }
+                    Log.e("Picutre", "contentUri = ${contentUri.toString()}")
+                    photoText.photoDescription.add(descirption)
+                    photo.photoList.add(contentUri.toString())
+                    listPhoto?.let { adapter.setPhotoList(it)
+                        Log.e("Picutre", " it = ${it.size}")}
+                }
+
+            })
+        builder.create()
+        builder.show()
     }
 
     private fun saveVideoToInternalStorage( filePath: String) {
@@ -540,6 +591,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
             e.printStackTrace()
         }
     }
+
 
     /**
      * For video
@@ -607,17 +659,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         }
     }
 
-    private fun getTmpFileUri(): Uri {
-        val tmpFile = File.createTempFile("tmp_image_file", ".mp4", cacheDir).apply {
-            createNewFile()
-            deleteOnExit()
-        }
-        return FileProvider.getUriForFile(applicationContext, "${BuildConfig.APPLICATION_ID}.provider", tmpFile)
-    }
-
     private fun saveEstates() {
-
-        val estate = Estate(estateFormBinding.etMandate.text.toString().toLong(),
+         estate = Estate(estateFormBinding.etMandate.text.toString().toLong(),
             estateFormBinding.etEstate.text.toString(),
             Integer.parseInt(estateFormBinding.etSurface.text.toString()),
             Integer.parseInt(estateFormBinding.etRooms.text.toString()),
@@ -625,7 +668,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
             Integer.parseInt(estateFormBinding.etBathrooms.text.toString()),
             Integer.parseInt(estateFormBinding.etGround.text.toString()),
             estateFormBinding.etPrice.text.toString().toDouble(),
-            estateFormBinding.etCity.text.toString(),
+            estateFormBinding.etDescription.text.toString(),
             estateFormBinding.boxSchools.isChecked,
             estateFormBinding.boxStores.isChecked,
             estateFormBinding.boxPark.isChecked,
@@ -641,8 +684,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         Log.d("saveEstate", "saveEstate$estate")
 
         if (estateEdit == 0L) {
-            this.estateViewModel.insertEstates(estate,this)
-            executeHttpRequestWithRetrofit(this,estate)
+            executeHttpRequestWithRetrofit(this)
             Snackbar.make(activityAddBinding.root, "Your new Estate is created", Snackbar.LENGTH_SHORT)
                 .addCallback(object : Snackbar.Callback() {
                     override fun onDismissed(snackbar: Snackbar, event: Int) {
@@ -652,9 +694,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
                 })
                 .show()
         } else {
-            this.estateViewModel.updateEstate(estate)
-            executeHttpRequestWithRetrofit(this, estate)
-
+            executeHttpRequestWithRetrofit(this)
             Snackbar.make(activityAddBinding.root, "Your new Estate is updated", Snackbar.LENGTH_SHORT)
                 .addCallback(object : Snackbar.Callback() {
                     override fun onDismissed(snackbar: Snackbar, event: Int) {
@@ -688,14 +728,12 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
         return true
     }
 
-    override fun applyTexts(descirption: String?) {
-        description = descirption
-    }
 
     /**
      * RX Java http request for geocoding API
      */
-    private fun executeHttpRequestWithRetrofit(context: Context, estate: Estate) {
+    private fun executeHttpRequestWithRetrofit(context: Context) {
+        completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
         mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
             .subscribeWith(object : DisposableObserver<Geocoding?>() {
                 override fun onNext(geocoding: Geocoding) {
@@ -713,15 +751,21 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
                         }else{
                             locationViewModel.getLocationById(estateEdit).observe(this@AddEditActivity,
                                 androidx.lifecycle.Observer {
-                                    location.locationId = it.locationId
                                     locationViewModel.updateLocation(location)
                                 })
                         }
+                        locationViewModel.getLocationById(estate.numMandat).observe(this@AddEditActivity, androidx.lifecycle.Observer {
+                            estate.locationId = it.id
+                            if (estateEdit == 0L){
+                                estateViewModel.insertEstates(estate,this@AddEditActivity)
+                            }else{
+                                estateViewModel.updateEstate(estate)
+                            }
+                        })
                     }else{
                         Toast.makeText(context,"Geocoding : Null or Empty",Toast.LENGTH_SHORT).show()
                     }
                 }
-
                 override fun onError(@NonNull e: Throwable) {
                     Log.e("Geocoding","Error insert",e)
                 }
@@ -729,24 +773,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener,ImageDialog.DialogLi
 
                 }
             })
-        mCompositeDisposable.add(mDisposable as DisposableObserver<Geocoding?>);
-    }
-
-    // -------------------
-    // HTTP (RxJAVA)
-    // -------------------
-    private fun <T> createObserver(): DisposableObserver<T>? {
-        return object : DisposableObserver<T>() {
-            override fun onNext(t: T) {
-
-            }
-
-            override fun onError(e: Throwable) {
-                Log.e("Geocoding","Error insert",e)
-            }
-
-            override fun onComplete() {}
-        }
+        mCompositeDisposable.add(mDisposable as DisposableObserver<*>);
     }
 
     /**

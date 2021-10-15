@@ -6,12 +6,12 @@ apply plugin: 'dagger.hilt.android.plugin'
 
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.openclassrooms.realestatemanager"
         minSdkVersion 21
         multiDexEnabled true
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

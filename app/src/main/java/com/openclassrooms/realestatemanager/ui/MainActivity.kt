@@ -14,6 +14,7 @@ import android.content.Intent
 import android.view.MenuItem
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.map.MapsActivity
+import com.openclassrooms.realestatemanager.ui.search.SearchActivity
 
 
 @AndroidEntryPoint
@@ -81,6 +82,12 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             android.R.id.home -> {
                 finish()
+                return true
+            }
+
+            R.id.search_btn -> {
+                val searchIntent = Intent(this,SearchActivity::class.java)
+                startActivity(searchIntent)
                 return true
             }
 

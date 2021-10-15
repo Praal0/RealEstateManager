@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.ui.map
 import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources.NotFoundException
 import android.location.Location
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -25,16 +27,19 @@ import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMapsBinding
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
+import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
+import com.openclassrooms.realestatemanager.viewModel.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import io.reactivex.disposables.CompositeDisposable
+import pub.devrel.easypermissions.EasyPermissions
 import java.security.AccessController.getContext
 
 
 @AndroidEntryPoint
-class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
+class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarkerClickListener {
 
     protected val PERMS_CALL_ID = 200
     private lateinit var map: GoogleMap
@@ -43,8 +48,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
 
     private lateinit var binding: ActivityMapsBinding
     private  var locationManager: LocationManager? = null
-    private var locationList: List<Location> = ArrayList()
     private val locationViewModel: LocationViewModel by viewModels()
+    private val mapViewModel : MapViewModel by viewModels()
     private val mCompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,7 +143,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
     override fun onLocationChanged(location: Location) {
         val mLatitude = location.latitude
         val mLongitude = location.longitude
-
         val googleLocation = LatLng(mLatitude, mLongitude)
         map.moveCamera(CameraUpdateFactory.newLatLng(googleLocation))
         mPosition = "$mLatitude,$mLongitude"
@@ -165,16 +169,26 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
     override fun onMapReady(googleMap: GoogleMap) {
         if (Utils.isInternetAvailable(Objects.requireNonNull(this))) {
             map = googleMap
-            googleMap.uiSettings.isMyLocationButtonEnabled = true
             googleMap.uiSettings.isZoomControlsEnabled = true
-            googleMap.moveCamera(CameraUpdateFactory.zoomBy(15f))
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION), PERMS_CALL_ID)
                 return
+            }
+            //Request location updates:
+            map.isMyLocationEnabled = true
+            map.uiSettings.isCompassEnabled = true
+            map.uiSettings.isMyLocationButtonEnabled = true
+            mapViewModel.startLocationRequest(this)
+            mapViewModel.getLocation()?.observe(this) { location ->
+                if (location != null) {
+                    val latLng = LatLng(location.lat, location.lng)
+                    googleMap.uiSettings.isMyLocationButtonEnabled = true
+                    mapViewModel.updateCurrentUserPosition(latLng)
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20f))
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(20f), 2000, null)
+                }
             }
 
             try {
@@ -186,11 +200,29 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
                 }
             }
             catch (e: NotFoundException) { Log.e(TAG, "Can't find style. Error: ", e) }
-
             googleMap.isMyLocationEnabled = true
+
         } else {
             Snackbar.make(findViewById(R.id.map), "No internet avalaible", Snackbar.LENGTH_SHORT)
                 .show()
+        }
+        map.setOnMarkerClickListener(this)
+    }
+
+    /** Called when the user clicks a marker.  */
+    override fun onMarkerClick(marker: Marker): Boolean {
+
+        return if (marker.tag != null) {
+            Log.e(TAG, "onClickMarker: " + marker.tag)
+            val intent = Intent(this, DetailActivity::class.java)
+            val tag = marker.tag.toString()
+            intent.putExtra("PlaceDetailResult", tag)
+            startActivity(intent)
+            finish()
+            true
+        } else {
+            Log.e(TAG, "onClickMarker: ERROR NO TAG")
+            false
         }
     }
 
@@ -200,14 +232,13 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
                 val latLng = LatLng(locationList.latitude, locationList.longitude)
 
                 val marker = map.addMarker(
-                    MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                        .title(locationList.address)
+                    MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 )
                 marker.showInfoWindow()
             }
         })
     }
+
 
     /**
      * Dispose subscription

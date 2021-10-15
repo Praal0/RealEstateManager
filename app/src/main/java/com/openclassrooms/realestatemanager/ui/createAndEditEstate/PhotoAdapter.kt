@@ -1,23 +1,21 @@
 package com.openclassrooms.realestatemanager.ui.createAndEditEstate
 
-import android.app.PendingIntent.getActivity
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.databinding.ActivityAddPhotoItemBinding
-import android.provider.MediaStore
-
-import android.graphics.Bitmap
-import com.openclassrooms.realestatemanager.R
 
 
-class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
+class PhotoAdapter(
+    listPhoto: MutableList<Uri>?,
+    with: RequestManager,
+    photoDescription: java.util.ArrayList<String>,
+    estateEdit: Long
+) : RecyclerView.Adapter<PhotoViewHolder>() {
 
-    private val glide: RequestManager? = null
     private val mPhotoList: MutableList<Uri> = ArrayList()
     private val mPhotoDescription: MutableList<String> = ArrayList()
     private val estateEdit: Long = 0
@@ -38,7 +36,7 @@ class PhotoAdapter() : RecyclerView.Adapter<PhotoViewHolder>() {
             photoDescription = mPhotoDescription[position]
         }
         try {
-            glide?.let { holder.updateWithDetails(photoUri, it, photoDescription, estateEdit) }
+            holder.updateWithDetails(photoUri, photoDescription, estateEdit)
             notifyItemChanged(position);
         } catch (e: Exception) {
             e.message
@@ -79,19 +77,13 @@ class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
      * For update with data
      *
      * @param photoList
-     * @param glide
      * @param photoDescription
      * @param estateEdit
      */
-    fun updateWithDetails(photoList: Uri?, glide: RequestManager, photoDescription: String?, estateEdit: Long) {
-        activityAddPhotoItemBinding?.photoDescription?.setText("photoDescription")
-        activityAddPhotoItemBinding?.photoImage?.setImageResource(R.drawable.sold)
-        //for delete image display in Edit and Not in create
-        if (estateEdit == 0L) {
-            activityAddPhotoItemBinding?.deleteImage?.visibility = View.INVISIBLE
-        } else {
-            activityAddPhotoItemBinding?.deleteImage?.visibility = View.VISIBLE
-        }
+    fun updateWithDetails(photoList: Uri?, photoDescription: String?, estateEdit: Long) {
+        activityAddPhotoItemBinding?.photoDescription?.setText(photoDescription)
+        activityAddPhotoItemBinding?.photoImage?.setImageURI(photoList)
+
     }
 
 }

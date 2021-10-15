@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(tableName = "estate",foreignKeys = [ForeignKey(entity = Location::class,
-    parentColumns = ["locationId"],
+    parentColumns = ["id"],
     childColumns = ["locationId"],
     onDelete = CASCADE)])
 data class Estate(@PrimaryKey(autoGenerate = true) val numMandat:Long,
@@ -58,6 +58,7 @@ data class Estate(@PrimaryKey(autoGenerate = true) val numMandat:Long,
             if (values.containsKey("upOfSaleDate")) estate.upOfSaleDate = values.getAsLong("upOfSaleDate")
             if (values.containsKey("soldDate")) estate.soldDate = values.getAsString("soldDate")
             if (values.containsKey("agentName")) estate.agentName = values.getAsString("agentName")
+            if (values.containsKey("locationId")) estate.locationId = values.getAsLong("locationId")
             return estate
         }
     }

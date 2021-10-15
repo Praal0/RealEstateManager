@@ -31,11 +31,11 @@ public class EstateDaoTest {
     private static UriList uriListTest = new UriList();
     private static PhotoDescription descriptionTest = new PhotoDescription();
 
-    private static Estate ESTATE_HOUSE = new Estate(1L, "house", 200, 4, 2, 1, 200, 100000.00, "Très belle maison", "2 rue du Pont", 66000, "Perpignan", true, false,
-            false, true, true, 1601510400000L,"", "Karine Danjard",uriListTest,descriptionTest,uriListTest);
+    private static Estate ESTATE_HOUSE = new Estate(1L, "house", 200, 4, 2, 1, 200, 100000.00, "Très belle maison", true, false,
+            false, true, true, 1601510400000L,"", "Karine Danjard",uriListTest,descriptionTest,uriListTest,0);
 
-    private static Estate ESTATE_FLAT = new Estate(2L, "flat", 80, 2, 1, 1, 0, 50000.00, "Very nice flat", "5 rue longue", 66000, "Perpignan", false, true,
-            true, true, true,1601510400000L,"","John Doe", uriListTest,descriptionTest,uriListTest);
+    private static Estate ESTATE_FLAT = new Estate(2L, "flat", 80, 2, 1, 1, 0, 50000.00, "Very nice flat", false, true,
+            true, true, true,1601510400000L,"","John Doe", uriListTest,descriptionTest,uriListTest,0);
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();

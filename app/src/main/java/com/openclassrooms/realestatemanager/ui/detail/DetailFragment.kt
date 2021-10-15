@@ -28,6 +28,9 @@ import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.*
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.models.PhotoDescription
+import com.openclassrooms.realestatemanager.models.UriList
 
 /**
  * A simple [Fragment] subclass.
@@ -45,6 +48,11 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var positionMarker: Marker
     private var estateDetailId : Long? = 0
 
+    private val uriListTest = UriList()
+    private val descriptionTest = PhotoDescription()
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -57,7 +65,6 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-
         return view
     }
 
@@ -73,38 +80,36 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun setupObservers() {
         viewModel.currentEstate?.let {it.observe(viewLifecycleOwner, Observer {
-            binding.etMandate.setText(it.numMandat.toString())
+            binding.etMandate.setText(it.value?.numMandat.toString())
             binding.etMandate.isEnabled = false
-            binding.etSurface.setText(it.surface.toString())
-            binding.etSurface.isEnabled = false
-            binding.etDescription.setText(it.description)
-            binding.etDescription.isEnabled = false
-            binding.etRooms.setText(it.rooms.toString())
-            binding.etRooms.isEnabled = false
-            binding.etBathrooms.setText(it.bathrooms.toString())
-            binding.etBathrooms.isEnabled = false
-            binding.etBedrooms.setText(it.bedrooms.toString())
-            binding.etBedrooms.isEnabled = false
-            binding.etAddress.isEnabled = false
-            binding.etPostalCode.isEnabled = false
-            binding.etCity.isEnabled = false
-
-            binding.videoView.requestFocus()
-            if (it.video.photoList.isNotEmpty()){
-                for (videoStr in it.video.photoList) {
-                    binding.videoView.setVideoURI(Uri.parse(videoStr))
-                    val mediaController = MediaController(this.context)
-                    binding.videoView.setMediaController(mediaController)
-                    mediaController.setAnchorView(binding.videoView)
-                    binding.videoView.start()
-                }
-            }else{
-                binding.videoView.visibility = INVISIBLE
-            }
-        })}?:run{Log.d("DetailFragment","Current estate : null")}
+            /*binding.etSurface.setText(it.surface.toString())
+                binding.etSurface.isEnabled = false
+                binding.etDescription.setText(it.description)
+                binding.etDescription.isEnabled = false
+                binding.etRooms.setText(it.rooms.toString())
+                binding.etRooms.isEnabled = false
+                binding.etBathrooms.setText(it.bathrooms.toString())
+                binding.etBathrooms.isEnabled = false
+                binding.etBedrooms.setText(it.bedrooms.toString())
+                binding.etBedrooms.isEnabled = false
+                binding.etAddress.isEnabled = false
+                binding.etPostalCode.isEnabled = false
+                binding.etCity.isEnabled = false
+                binding.videoView.requestFocus()
+                if (it.video.photoList.isNotEmpty()){
+                    for (videoStr in it.video.photoList) {
+                        binding.videoView.setVideoURI(Uri.parse(videoStr))
+                        val mediaController = MediaController(this.context)
+                        binding.videoView.setMediaController(mediaController)
+                        mediaController.setAnchorView(binding.videoView)
+                        binding.videoView.start()
+                    }
+                }else{
+                    binding.videoView.visibility = INVISIBLE
+                }*/
+        })} ?:run{Log.d("DetailFragment","Current estate : null")}
 
     }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         if (Utils.isInternetAvailable(this.context)) {

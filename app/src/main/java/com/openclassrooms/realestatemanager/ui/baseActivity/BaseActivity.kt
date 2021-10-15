@@ -7,8 +7,6 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.openclassrooms.realestatemanager.ui.createAndEditEstate.ImageDialog
-import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import android.content.DialogInterface
 import androidx.activity.viewModels
@@ -16,7 +14,6 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
@@ -85,10 +82,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     
-    fun openDialog(contentUri: Uri?) {
-        val imageDialog = ImageDialog(contentUri)
-        imageDialog.show(supportFragmentManager, "Image dialog")
-    }
+
 
     fun getFileExt(contentUri: Uri?): String? {
         val contentResolver = contentResolver

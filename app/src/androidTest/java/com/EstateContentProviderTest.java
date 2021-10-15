@@ -88,6 +88,7 @@ public class EstateContentProviderTest {
         values.put("upOfSaleDate", "01/10/2020");
         values.put("soldDate", "");
         values.put("agentName", "Karine Danjard");
+        values.put("locationId", 1);
 
         return values;
         }
