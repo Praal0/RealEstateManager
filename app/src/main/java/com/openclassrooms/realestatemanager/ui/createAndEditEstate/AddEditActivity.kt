@@ -3,9 +3,11 @@ package com.openclassrooms.realestatemanager.ui.createAndEditEstate
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.*
+import android.content.ContentValues.TAG
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -20,12 +22,15 @@ import android.widget.MediaController
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.openclassrooms.realestatemanager.R
@@ -379,30 +384,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         builder.setTitle("Add pictures")
         builder.setItems(options) { dialog, item ->
             if (options[item].equals("Take Photo")) {
-                Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                    // Ensure that there's a camera activity to handle the intent
-                    takePictureIntent.resolveActivity(packageManager)?.also {
-                        // Create the File where the photo should go
-                        val photoFile: File? = try {
-                            createImageFile()
-                        } catch (ex: IOException) {
-                            // Error occurred while creating the File
-                            Log.e("Capture",ex.toString())
-                            null
-                        }
-                        // Continue only if the File was successfully created
-                        photoFile?.also {
-                            val photoURI: Uri = FileProvider.getUriForFile(
-                                this,
-                                "com.example.android.fileprovider",
-                                it
-                            )
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                            startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA)
-                        }
-                    }
-                }
-
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA)
+                Log.d(TAG, "dispatchTakePictureIntent: called")
             } else if (options[item] == "Choose from Gallery") {
                 val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 startActivityForResult(pickPhoto,PICK_IMAGE_GALLERY)
@@ -413,37 +397,23 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         builder.show()
     }
 
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-        }
-    }
-
-    /**
-     * For photos
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-
-
-
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
             if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK) {
-                val imageBitmap = data?.extras?.get("data") as Bitmap
-                saveCoolerImage(imageBitmap)
-
+                Log.d(TAG, "onActivityResult from take picture is call")
+                val takenImage = data?.extras?.get("data") as Bitmap
+                val date = System.currentTimeMillis()
+                val bytes = ByteArrayOutputStream()
+                takenImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                val path = MediaStore.Images.Media.insertImage(
+                    this.contentResolver,
+                    takenImage,
+                    System.currentTimeMillis().toString(),
+                    null
+                )
+                val image = Uri.parse(path.toString())
+                openDialog(image)
             }
             if (requestCode == PICK_IMAGE_GALLERY && data != null && data.data != null) {
                 if (resultCode == RESULT_OK) {
@@ -511,32 +481,14 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             }
     }
 
-    private fun saveCoolerImage(bitmap: Bitmap) {
-        val root = Environment.getExternalStorageDirectory().toString()
-        val myDir = File("$root/saveImage")
-        myDir.mkdirs()
-        val generator = Random()
-        var n = 10000
-        n = generator.nextInt(n)
-        val imageName = "Image$n.jpg"
-        val file = File(myDir,imageName)
-        if (file.exists()) file.delete()
-        try {
-            val out: FileOutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG,90,out)
-            file.absolutePath
-        }catch (e:Exception){
-
-        }
-    }
-
-
 
     fun openDialog(contentUri: Uri?) {
         val builder = android.app.AlertDialog.Builder(this)
         var binding: LayoutDialogBinding = LayoutDialogBinding.inflate(layoutInflater)
         val view: View = binding.root
-        binding.imageDescription.setImageURI(contentUri)
+        val glide : RequestManager = Glide.with(this)
+         glide.load(contentUri).apply(RequestOptions.centerCropTransform())
+            .into(binding.imageDescription)
         builder.setView(view)
             .setNegativeButton("cancel",object : DialogInterface.OnClickListener{
                 override fun onClick(dialog: DialogInterface?, which: Int) {

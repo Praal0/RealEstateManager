@@ -42,7 +42,7 @@ import java.security.AccessController.getContext
 class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarkerClickListener {
 
     protected val PERMS_CALL_ID = 200
-    private lateinit var map: GoogleMap
+    private var map: GoogleMap? = null
     private lateinit var toolbar : Toolbar
     private lateinit var mPosition: String
 
@@ -144,7 +144,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
         val mLatitude = location.latitude
         val mLongitude = location.longitude
         val googleLocation = LatLng(mLatitude, mLongitude)
-        map.moveCamera(CameraUpdateFactory.newLatLng(googleLocation))
+        map?.moveCamera(CameraUpdateFactory.newLatLng(googleLocation))
         mPosition = "$mLatitude,$mLongitude"
         Log.d("TestLatLng", mPosition)
     }
@@ -177,9 +177,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
                 return
             }
             //Request location updates:
-            map.isMyLocationEnabled = true
-            map.uiSettings.isCompassEnabled = true
-            map.uiSettings.isMyLocationButtonEnabled = true
+            map!!.isMyLocationEnabled = true
+            map!!.uiSettings.isCompassEnabled = true
+            map!!.uiSettings.isMyLocationButtonEnabled = true
             mapViewModel.startLocationRequest(this)
             mapViewModel.getLocation()?.observe(this) { location ->
                 if (location != null) {
@@ -206,7 +206,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             Snackbar.make(findViewById(R.id.map), "No internet avalaible", Snackbar.LENGTH_SHORT)
                 .show()
         }
-        map.setOnMarkerClickListener(this)
+        map?.setOnMarkerClickListener(this)
     }
 
     /** Called when the user clicks a marker.  */
@@ -231,10 +231,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             for (locationList in it){
                 val latLng = LatLng(locationList.latitude, locationList.longitude)
 
-                val marker = map.addMarker(
+                val marker = map?.addMarker(
                     MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 )
-                marker.showInfoWindow()
+                marker?.showInfoWindow()
             }
         })
     }
