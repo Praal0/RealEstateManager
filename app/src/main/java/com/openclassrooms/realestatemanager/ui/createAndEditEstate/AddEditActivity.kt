@@ -28,7 +28,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
@@ -89,7 +88,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var newfile: File? = null
     private lateinit var location:Location
 
-    private var description : String? = null
+
     private val estateViewModel: EstateViewModel by viewModels()
     private val locationViewModel : LocationViewModel by viewModels()
 
@@ -162,7 +161,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = PhotoAdapter(listPhoto, Glide.with(this), photoText.photoDescription, estateEdit)
+        adapter = listPhoto?.let { PhotoAdapter(it, Glide.with(this), photoText.photoDescription, estateEdit) }!!
         val horizontalLayoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
