@@ -162,15 +162,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     private fun setupRecyclerView() {
         adapter = listPhoto?.let { PhotoAdapter(it, Glide.with(this), photoText.photoDescription, estateEdit) }!!
-        val horizontalLayoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val horizontalLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
         estateFormBinding.rvPhoto.adapter = adapter
 
-        if(estateEdit!=0L) {
-            estateViewModel.getEstateById(estateEdit).observe(this,this::updateUIFromEdit)
-        }
-
+        if(estateEdit!=0L) { estateViewModel.getEstateById(estateEdit).observe(this,this::updateUIFromEdit) }
     }
 
     private fun updateUIFromEdit(estate: Estate) {
@@ -198,9 +194,17 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             estateFormBinding.etPostalCode.setText(it.zipCode.toString())
         })
 
-        listPhoto?.let { adapter.setPhotoList(it) };
-        adapter.setPhotoDescription(estate.photoDescription.photoDescription)
-        photo.photoList.addAll(estate.photoList.photoList);
+        if (estate.photoList.photoList.isNotEmpty()) {
+            listPhoto!!.clear()
+            photo.photoList.clear()
+            photoText.photoDescription.clear()
+            for (photoStr in estate.photoList.photoList) {
+                listPhoto!!.add(Uri.parse(photoStr))
+            }
+            adapter.setPhotoList(listPhoto)
+            adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+            photo.photoList.addAll(estate.photoList.photoList)
+        }
 
         if (estate.video.photoList.isNotEmpty()){
             for (videoStr in estate.video.photoList) {
@@ -341,7 +345,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         }
     }
 
-    fun onClickVideoBtn(){
+    private fun onClickVideoBtn(){
         estateFormBinding.cameraBtn.setOnClickListener {
             selectVideo()
         }
@@ -373,27 +377,23 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
      */
     private fun onClickOpenCamera(){
         estateFormBinding.photoBtn.setOnClickListener(View.OnClickListener {
-            selectImage()
-        })
-    }
-
-    private fun selectImage() {
-        val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
-        val builder = AlertDialog.Builder(this, R.style.AlertDialog)
-        builder.setTitle("Add pictures")
-        builder.setItems(options) { dialog, item ->
-            if (options[item].equals("Take Photo")) {
-                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA)
-                Log.d(TAG, "dispatchTakePictureIntent: called")
-            } else if (options[item] == "Choose from Gallery") {
-                val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                startActivityForResult(pickPhoto,PICK_IMAGE_GALLERY)
-            } else if (options[item] == "Cancel") {
-                dialog.dismiss()
+            val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
+            val builder = AlertDialog.Builder(this, R.style.AlertDialog)
+            builder.setTitle("Add pictures")
+            builder.setItems(options) { dialog, item ->
+                if (options[item].equals("Take Photo")) {
+                    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA)
+                    Log.d(TAG, "dispatchTakePictureIntent: called")
+                } else if (options[item] == "Choose from Gallery") {
+                    val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    startActivityForResult(pickPhoto,PICK_IMAGE_GALLERY)
+                } else if (options[item] == "Cancel") {
+                    dialog.dismiss()
+                }
             }
-        }
-        builder.show()
+            builder.show()
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -481,7 +481,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
 
-    fun openDialog(contentUri: Uri?) {
+    private fun openDialog(contentUri: Uri?) {
         val builder = android.app.AlertDialog.Builder(this)
         var binding: LayoutDialogBinding = LayoutDialogBinding.inflate(layoutInflater)
         val view: View = binding.root
@@ -489,24 +489,18 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
          glide.load(contentUri).apply(RequestOptions.centerCropTransform())
             .into(binding.imageDescription)
         builder.setView(view)
-            .setNegativeButton("cancel",object : DialogInterface.OnClickListener{
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    dialog?.dismiss()
+            .setNegativeButton("cancel") { dialog, _ -> dialog?.dismiss() }
+            .setPositiveButton("ok") { dialog, which ->
+                val description: String = binding.editDescription.text.toString()
+                contentUri?.let { listPhoto?.add(it) }
+                Log.e("Picutre", "contentUri = ${contentUri.toString()}")
+                photoText.photoDescription.add(description)
+                photo.photoList.add(contentUri.toString())
+                listPhoto?.let {
+                    adapter.setPhotoList(it)
+                    Log.e("Picutre", " it = ${it.size}")
                 }
-
-            })
-            .setPositiveButton("ok",object : DialogInterface.OnClickListener{
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    val descirption: String = binding.editDescription.text.toString()
-                    contentUri?.let { listPhoto?.add(it) }
-                    Log.e("Picutre", "contentUri = ${contentUri.toString()}")
-                    photoText.photoDescription.add(descirption)
-                    photo.photoList.add(contentUri.toString())
-                    listPhoto?.let { adapter.setPhotoList(it)
-                        Log.e("Picutre", " it = ${it.size}")}
-                }
-
-            })
+            }
         builder.create()
         builder.show()
     }
@@ -542,7 +536,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             e.printStackTrace()
         }
     }
-
 
     /**
      * For video
@@ -669,7 +662,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         }
     }
 
-
     private fun soldDatedRequired() : Boolean {
         val soldDateInput = estateFormBinding.inputSoldDate.editText?.text.toString()
         if (soldDateInput.isEmpty() && estateFormBinding.availableCheckbtn.isChecked){
@@ -679,10 +671,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         return true
     }
 
-
-    /**
-     * RX Java http request for geocoding API
-     */
+    //RX Java http request for geocoding API
     private fun executeHttpRequestWithRetrofit(context: Context) {
         completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
         mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
@@ -727,9 +716,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         mCompositeDisposable.add(mDisposable as DisposableObserver<*>);
     }
 
-    /**
-     * Dispose subscription
-     */
+    // Dispose subscription
     private fun disposeWhenDestroy() {
         mCompositeDisposable.clear()
     }
@@ -738,6 +725,4 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         super.onDestroy()
         disposeWhenDestroy()
     }
-
-
 }

@@ -48,10 +48,6 @@
                 android:resource="@xml/provider_paths" />
         </provider>
         <!-- For ContentProvider -->
-        <provider
-            android:authorities="com.openclassrooms.realestatemanager.provider"
-            android:name=".provider.EstateContentProvider"
-            android:exported="true"/>
 
         <activity
             android:name=".ui.map.MapsActivity"

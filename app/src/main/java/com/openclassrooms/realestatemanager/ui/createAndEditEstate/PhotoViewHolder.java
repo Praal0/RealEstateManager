@@ -36,7 +36,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder {
     public void updateWithDetails(Uri photoList, RequestManager glide, String photoDescription, long estateEdit) {
 
         activityAddPhotoItemBinding.photoDescription.setText(photoDescription);
-
         glide.load(photoList).apply(RequestOptions.centerCropTransform()).into(activityAddPhotoItemBinding.photoImage);
         //for delete image display in Edit and Not in create
         if (estateEdit == 0) {

@@ -15,6 +15,7 @@ import android.view.MenuItem
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.map.MapsActivity
 import com.openclassrooms.realestatemanager.ui.search.SearchActivity
+import pub.devrel.easypermissions.EasyPermissions
 
 
 @AndroidEntryPoint
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toolbar : Toolbar
     private lateinit var detailFragment: DetailFragment
     private lateinit var masterFragment: MasterFragment
+
+    private val perms = "Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION"
 
 
 
@@ -36,6 +39,10 @@ class MainActivity : AppCompatActivity() {
         configureAndShowMasterFragment()
         configureAndShowDetailFragment()
         setSupportActionBar(toolbar)
+    }
+
+    private fun checkLocationPermission(): Boolean {
+        return EasyPermissions.hasPermissions(this, perms)
     }
 
     private fun configureAndShowMasterFragment() {

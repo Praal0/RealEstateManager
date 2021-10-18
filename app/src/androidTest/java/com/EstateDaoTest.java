@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase;
 import com.openclassrooms.realestatemanager.models.Estate;
+import com.openclassrooms.realestatemanager.models.Location;
 import com.openclassrooms.realestatemanager.models.PhotoDescription;
 import com.openclassrooms.realestatemanager.models.UriList;
 
@@ -31,11 +32,14 @@ public class EstateDaoTest {
     private static UriList uriListTest = new UriList();
     private static PhotoDescription descriptionTest = new PhotoDescription();
 
+    private static Location LOCATION_HOUSE = new Location(1,0L,0L,"11 street de senter","Lyon","69000",1);
+    private static Location LOCATION_FLAT = new Location(1,0L,0L,"11 street de senter","Lyon","69000",2);
+
     private static Estate ESTATE_HOUSE = new Estate(1L, "house", 200, 4, 2, 1, 200, 100000.00, "Très belle maison", true, false,
-            false, true, true, 1601510400000L,"", "Karine Danjard",uriListTest,descriptionTest,uriListTest,0);
+            false, true, true, 1601510400000L,"", "Karine Danjard",uriListTest,descriptionTest,uriListTest,1);
 
     private static Estate ESTATE_FLAT = new Estate(2L, "flat", 80, 2, 1, 1, 0, 50000.00, "Very nice flat", false, true,
-            true, true, true,1601510400000L,"","John Doe", uriListTest,descriptionTest,uriListTest,0);
+            true, true, true,1601510400000L,"","John Doe", uriListTest,descriptionTest,uriListTest,1);
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -46,6 +50,8 @@ public class EstateDaoTest {
                RealEstateDatabase.class)
                .allowMainThreadQueries()
                .build();
+       estateDatabase.locationDao().insertLocationTest(LOCATION_HOUSE);
+       estateDatabase.locationDao().insertLocationTest(LOCATION_FLAT);
     }
 
     @After

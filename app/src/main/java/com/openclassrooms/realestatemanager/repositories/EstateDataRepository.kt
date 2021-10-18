@@ -22,7 +22,6 @@ class EstateDataRepository @Inject constructor(
 
     /**
      * Create
-     *
      * @param estate
      */
     // --- CREATE ---
@@ -38,7 +37,6 @@ class EstateDataRepository @Inject constructor(
 
     /**
      * Delete
-     *
      * @param mandateEstateID
      * */
     suspend fun deleteEstate(mandateEstateID: Long) {
@@ -48,13 +46,10 @@ class EstateDataRepository @Inject constructor(
             // If anything throws an exception, inform the caller
             Log.e("EstateDataRepository", "Cannot Delete : $cause")
         }
-
     }
-
 
     /**
      * Update
-     *
      * @param estate
      */
     // --- UPDATE ---
@@ -69,7 +64,6 @@ class EstateDataRepository @Inject constructor(
 
     /**
      * For Search
-     *
      * @param queryString
      * @param args
      * @return
@@ -80,12 +74,4 @@ class EstateDataRepository @Inject constructor(
     }
 
 }
-
-/**
- * Thrown when there was a error fetching a new title
- *
- * @property message user ready error message
- * @property cause the original cause of this exception
- */
-class TitleRefreshError(message: String, cause: Throwable?) : Throwable(message, cause)
 

@@ -29,6 +29,7 @@ import com.openclassrooms.realestatemanager.databinding.ActivityMapsBinding
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.utils.Utils
+import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import com.openclassrooms.realestatemanager.viewModel.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +40,7 @@ import java.security.AccessController.getContext
 
 
 @AndroidEntryPoint
-class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarkerClickListener {
+class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
 
     protected val PERMS_CALL_ID = 200
     private var map: GoogleMap? = null
@@ -190,6 +191,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
                     googleMap.animateCamera(CameraUpdateFactory.zoomTo(20f), 2000, null)
                 }
             }
+            map!!.setOnMarkerClickListener { marker: Marker ->
+                onClickMarker(marker)
+            }
+
 
             try {
                 // Customise the styling of the base map using a JSON object defined
@@ -206,23 +211,18 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             Snackbar.make(findViewById(R.id.map), "No internet avalaible", Snackbar.LENGTH_SHORT)
                 .show()
         }
-        map?.setOnMarkerClickListener(this)
     }
 
-    /** Called when the user clicks a marker.  */
-    override fun onMarkerClick(marker: Marker): Boolean {
-
-        return if (marker.tag != null) {
+    private fun onClickMarker(marker: Marker): Boolean {
+        if (marker.tag != null){
             Log.e(TAG, "onClickMarker: " + marker.tag)
             val intent = Intent(this, DetailActivity::class.java)
-            val tag = marker.tag.toString()
-            intent.putExtra("PlaceDetailResult", tag)
             startActivity(intent)
-            finish()
-            true
-        } else {
+            return true
+
+        }else{
             Log.e(TAG, "onClickMarker: ERROR NO TAG")
-            false
+            return false
         }
     }
 

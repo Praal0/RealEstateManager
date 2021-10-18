@@ -33,9 +33,6 @@ interface EstateDAO {
     fun getEstateWithCursor(mandateNumberID: Long): Cursor?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertEstateProvider(estate: Estate): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEstateTest(estateHouse: Estate)
 
     @Update

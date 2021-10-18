@@ -2,35 +2,30 @@ package com.openclassrooms.realestatemanager.ui.detail
 
 import android.content.ContentValues
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
 import android.view.ViewGroup
+import android.widget.MediaController
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
-import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
-import java.util.*
-import android.net.Uri
-import android.util.Log
-import android.view.View.INVISIBLE
-import android.widget.MediaController
-import android.widget.Toast
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import dagger.hilt.android.AndroidEntryPoint
-import com.google.android.gms.maps.MapView
-import com.google.android.material.snackbar.Snackbar
-import com.openclassrooms.realestatemanager.utils.Utils
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
-import com.google.android.gms.maps.GoogleMapOptions
+import com.bumptech.glide.Glide
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
 import com.openclassrooms.realestatemanager.models.PhotoDescription
-import com.openclassrooms.realestatemanager.models.UriList
+import com.openclassrooms.realestatemanager.ui.createAndEditEstate.PhotoAdapter
+import com.openclassrooms.realestatemanager.utils.Utils
+import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -45,11 +40,12 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private val locationViewModel : LocationViewModel by viewModels()
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
+    private lateinit var adapter: PhotoAdapter
+    private val photoText = PhotoDescription()
     private lateinit var positionMarker: Marker
     private var estateDetailId : Long? = 0
-
-    private val uriListTest = UriList()
-    private val descriptionTest = PhotoDescription()
+    private val estateEdit: Long = 0
+    private val listPhoto: MutableList<Uri>? = null
 
 
 
@@ -59,6 +55,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         binding = FragmentDetailBinding.inflate(inflater, container, false)
         val view: View = binding.root
 
+        configureRecyclerView()
+
         //for lite map
         val options = GoogleMapOptions()
         options.liteMode(true)
@@ -66,6 +64,10 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
         return view
+    }
+
+    private fun configureRecyclerView() {
+        adapter = PhotoAdapter(listPhoto, Glide.with(this), photoText.photoDescription, estateEdit)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,10 +81,11 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setupObservers() {
-        viewModel.currentEstate?.let {it.observe(viewLifecycleOwner, Observer {
-            binding.etMandate.setText(it.value?.numMandat.toString())
-            binding.etMandate.isEnabled = false
-            /*binding.etSurface.setText(it.surface.toString())
+        viewModel.currentEstate.let { it ->
+            it.observe(viewLifecycleOwner, Observer {
+                binding.etMandate.setText(it.numMandat.toString())
+                binding.etMandate.isEnabled = false
+                binding.etSurface.setText(it.surface.toString())
                 binding.etSurface.isEnabled = false
                 binding.etDescription.setText(it.description)
                 binding.etDescription.isEnabled = false
@@ -96,6 +99,16 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 binding.etPostalCode.isEnabled = false
                 binding.etCity.isEnabled = false
                 binding.videoView.requestFocus()
+
+
+                listPhoto?.clear()
+                if (it.photoList.photoList.isNotEmpty()){
+                    for (photoStr in it.photoList.photoList) {
+                        listPhoto!!.add(Uri.parse(photoStr))
+                    }
+                    adapter.setPhotoList(listPhoto)
+                    adapter.setPhotoDescription(it.photoDescription.photoDescription)
+                }
                 if (it.video.photoList.isNotEmpty()){
                     for (videoStr in it.video.photoList) {
                         binding.videoView.setVideoURI(Uri.parse(videoStr))
@@ -106,8 +119,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                     }
                 }else{
                     binding.videoView.visibility = INVISIBLE
-                }*/
-        })} ?:run{Log.d("DetailFragment","Current estate : null")}
+                }
+            })} ?:run{Log.d("DetailFragment","Current estate : null")}
 
     }
 

@@ -7,13 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.models.geocodingAPI.Location
-import com.openclassrooms.realestatemanager.repositories.LocationRepository
+import com.openclassrooms.realestatemanager.repositories.MapRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
 @HiltViewModel
-class MapViewModel@Inject constructor (private val locationRepository: LocationRepository): ViewModel() {
+class MapViewModel@Inject constructor (private val mapRepository: MapRepository): ViewModel() {
 
     private val perms = "Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION"
 
@@ -23,12 +23,12 @@ class MapViewModel@Inject constructor (private val locationRepository: LocationR
     @SuppressLint("MissingPermission")
     fun startLocationRequest(context: Context) {
         if (EasyPermissions.hasPermissions(context, perms)) {
-            locationRepository.startLocationRequest()
+            mapRepository.startLocationRequest()
         }
     }
 
     fun getLocation(): LiveData<Location?>? {
-        return locationRepository.getLocationLiveData()
+        return mapRepository.getLocationLiveData()
     }
 
     

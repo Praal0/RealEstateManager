@@ -17,7 +17,11 @@ import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import android.widget.Toast
 
+import androidx.recyclerview.widget.RecyclerView
+
+import androidx.recyclerview.widget.ItemTouchHelper
 
 @AndroidEntryPoint
 class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
@@ -45,6 +49,16 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
         adapter = MasterAdapter(this)
         binding.fragmentListRV.layoutManager = LinearLayoutManager(requireContext())
         binding.fragmentListRV.adapter = adapter
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                adapter.getEstateAt(viewHolder.absoluteAdapterPosition)?.let {
+                    estateViewModel.deleteEstate(it.numMandat)
+                }
+            }
+        }).attachToRecyclerView(binding.fragmentListRV)
     }
 
     private fun setupObservers() {

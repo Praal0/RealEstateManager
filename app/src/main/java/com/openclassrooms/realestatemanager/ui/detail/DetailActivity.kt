@@ -74,11 +74,6 @@ class DetailActivity : BaseActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
-
-
-
     private fun configureAndShowDetailFragment() {
         //Create new main fragment
         detailFragment = DetailFragment()

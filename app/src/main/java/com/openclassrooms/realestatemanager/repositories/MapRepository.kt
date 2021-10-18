@@ -10,7 +10,7 @@ import com.google.android.gms.location.LocationResult
 import com.openclassrooms.realestatemanager.models.geocodingAPI.Location
 import javax.inject.Inject
 
-class LocationRepository @Inject constructor(){
+class MapRepository @Inject constructor(){
     private val LOCATION_REQUEST_INTERVAL_MS = 10000
     private val SMALLEST_DISPLACEMENT_THRESHOLD_METER = 25f
 
@@ -20,7 +20,7 @@ class LocationRepository @Inject constructor(){
 
     private lateinit var callback: LocationCallback
 
-    fun getLocationLiveData(): MutableLiveData<Location?>? {
+    fun getLocationLiveData(): MutableLiveData<Location?> {
         return locationMutableLiveData
     }
 

@@ -22,7 +22,6 @@ class LocationDataRepository@Inject constructor(
 
     /**
      * Create
-     *
      * @param location
      */
     // --- CREATE ---
@@ -37,7 +36,6 @@ class LocationDataRepository@Inject constructor(
 
     /**
      * Update
-     *
      * @param estate
      */
     // --- UPDATE ---

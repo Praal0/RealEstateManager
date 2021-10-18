@@ -18,7 +18,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
     private RequestManager glide;
     private List<Uri> mPhotoList = new ArrayList<Uri>();
-    private List<String> mPhotoDescription = new ArrayList<>();
+    private List<String> mPhotoDescription;
     private long estateEdit;
 
     /**
@@ -86,7 +86,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         mPhotoList.clear();
         mPhotoList.addAll(photos);
         notifyDataSetChanged();
-
     }
 
     /**

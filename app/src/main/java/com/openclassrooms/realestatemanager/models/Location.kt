@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity()
+@Entity
 data class Location(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id:Long,
                     var longitude : Double,
                     var latitude : Double,

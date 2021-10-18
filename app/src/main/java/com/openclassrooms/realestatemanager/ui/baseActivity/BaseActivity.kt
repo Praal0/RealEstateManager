@@ -54,6 +54,7 @@ open class BaseActivity : AppCompatActivity() {
                 dialog.cancel()
                 finish()
                 estateViewModel.deleteEstate(estateId)
+                locationViewModel.deleteLocation(estateId)
             })
 
         builder.setNegativeButton("No") { dialog, id ->
