@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding
 import com.openclassrooms.realestatemanager.models.Estate
@@ -19,14 +21,16 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
     }
 
     private var items = ArrayList<Estate>()
+    private lateinit var glide : RequestManager
 
     /**
      * For update estate list
      *
      * @param estateList
      */
-    fun updateData(estateList: List<Estate?>, locationViewModel: LocationViewModel) {
+    fun updateData(estateList: List<Estate?>, locationViewModel: LocationViewModel, glide : RequestManager) {
         items = estateList as ArrayList<Estate>
+        this.glide = glide
         this.viewModel = locationViewModel
         notifyDataSetChanged()
     }
@@ -42,7 +46,7 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
         return MasterViewHolder(binding, result)
     }
 
-    override fun onBindViewHolder(holder: MasterViewHolder, position: Int) { holder.bind(items[position]) }
+    override fun onBindViewHolder(holder: MasterViewHolder, position: Int) { holder.bind(items[position],this.glide) }
 
     override fun getItemCount(): Int = items.size
 
@@ -56,7 +60,7 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
     init { itemBinding.root.setOnClickListener(this) }
 
     @SuppressLint("SetTextI18n")
-    fun bind(item: Estate) {
+    fun bind(item: Estate,  glide: RequestManager) {
         this.estate = item
         itemBinding.city.text = "TEST"
         itemBinding.estateType.text = item.estateType
@@ -66,6 +70,13 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
             itemBinding.listPhotoSold.setImageResource(R.drawable.sold)
         }else {
             itemBinding.listPhotoSold.setImageResource(0)
+        }
+
+        //for photo
+        if(estate.photoList.photoList.isNotEmpty()) {
+            glide.load(estate.photoList.photoList[0]).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto);
+        }else {
+            itemBinding.listPhoto.setImageResource(R.drawable.no_image);
         }
     }
 

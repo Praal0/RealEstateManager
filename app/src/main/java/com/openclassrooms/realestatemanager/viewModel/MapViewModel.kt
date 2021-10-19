@@ -17,7 +17,7 @@ class MapViewModel@Inject constructor (private val mapRepository: MapRepository)
 
     private val perms = "Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION"
 
-    val currentUserPosition = MutableLiveData<LatLng>()
+    private val currentUserPosition = MutableLiveData<LatLng>()
 
 
     @SuppressLint("MissingPermission")

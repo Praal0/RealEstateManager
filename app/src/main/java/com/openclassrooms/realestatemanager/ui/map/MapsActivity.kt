@@ -187,10 +187,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
                     val latLng = LatLng(location.lat, location.lng)
                     googleMap.uiSettings.isMyLocationButtonEnabled = true
                     mapViewModel.updateCurrentUserPosition(latLng)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20f))
-                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(20f), 2000, null)
+                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+                    map!!.animateCamera(CameraUpdateFactory.zoomTo(15F), 2000, null)
                 }
             }
+            map!!.uiSettings.isRotateGesturesEnabled = true
             map!!.setOnMarkerClickListener { marker: Marker ->
                 onClickMarker(marker)
             }
@@ -214,15 +215,15 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
     }
 
     private fun onClickMarker(marker: Marker): Boolean {
-        if (marker.tag != null){
+        return if (marker.tag != null){
             Log.e(TAG, "onClickMarker: " + marker.tag)
             val intent = Intent(this, DetailActivity::class.java)
             startActivity(intent)
-            return true
+            true
 
         }else{
             Log.e(TAG, "onClickMarker: ERROR NO TAG")
-            return false
+            false
         }
     }
 

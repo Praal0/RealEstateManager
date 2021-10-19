@@ -26,6 +26,10 @@ import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import android.content.Intent
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.openclassrooms.realestatemanager.models.Estate
+
 
 /**
  * A simple [Fragment] subclass.
@@ -45,7 +49,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var positionMarker: Marker
     private var estateDetailId : Long? = 0
     private val estateEdit: Long = 0
-    private val listPhoto: MutableList<Uri>? = null
+    private var listPhoto : MutableList<Uri> = ArrayList()
 
 
 
@@ -68,11 +72,60 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun configureRecyclerView() {
         adapter = PhotoAdapter(listPhoto, Glide.with(this), photoText.photoDescription, estateEdit)
+        val horizontalLayoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvPhoto.layoutManager = horizontalLayoutManager
+        binding.rvPhoto.adapter = adapter
+        val intent = Intent(activity?.intent)
+        estateDetailId = intent.getLongExtra("estate",0)
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObservers()
+
+        if (!Utils.isTablet(this.context)){
+            estateDetailId?.let { viewModel.getEstateById(it).observe(viewLifecycleOwner, Observer {
+                binding.etMandate.setText(it.numMandat.toString())
+                binding.etMandate.isEnabled = false
+                binding.etSurface.setText(it.surface.toString())
+                binding.etSurface.isEnabled = false
+                binding.etDescription.setText(it.description)
+                binding.etDescription.isEnabled = false
+                binding.etRooms.setText(it.rooms.toString())
+                binding.etRooms.isEnabled = false
+                binding.etBathrooms.setText(it.bathrooms.toString())
+                binding.etBathrooms.isEnabled = false
+                binding.etBedrooms.setText(it.bedrooms.toString())
+                binding.etBedrooms.isEnabled = false
+                binding.etAddress.isEnabled = false
+                binding.etPostalCode.isEnabled = false
+                binding.etCity.isEnabled = false
+                binding.videoView.requestFocus()
+
+                listPhoto.clear()
+                if (it.photoList.photoList.isNotEmpty()){
+                    for (photoStr in it.photoList.photoList) {
+                        listPhoto.add(Uri.parse(photoStr))
+                    }
+                    adapter.setPhotoList(listPhoto)
+                    adapter.setPhotoDescription(it.photoDescription.photoDescription)
+                }
+                if (it.video.photoList.isNotEmpty()){
+                    for (videoStr in it.video.photoList) {
+                        binding.videoView.setVideoURI(Uri.parse(videoStr))
+                        val mediaController = MediaController(this.context)
+                        binding.videoView.setMediaController(mediaController)
+                        mediaController.setAnchorView(binding.videoView)
+                        binding.videoView.start()
+                    }
+                }else{
+                    binding.videoView.visibility = INVISIBLE
+                }
+            }) }
+        } else {
+            setupObservers()
+        }
     }
 
     override fun onResume() {
@@ -101,10 +154,10 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 binding.videoView.requestFocus()
 
 
-                listPhoto?.clear()
+                listPhoto.clear()
                 if (it.photoList.photoList.isNotEmpty()){
                     for (photoStr in it.photoList.photoList) {
-                        listPhoto!!.add(Uri.parse(photoStr))
+                        listPhoto.add(Uri.parse(photoStr))
                     }
                     adapter.setPhotoList(listPhoto)
                     adapter.setPhotoDescription(it.photoDescription.photoDescription)
@@ -133,7 +186,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             try {
                 // Customise the styling of the base map using a JSON object defined
                 // in a raw resource file.
-                val success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this.context, R.raw.mapstyle))
+                val success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle))
                 if (!success) {
                     Log.e(ContentValues.TAG, "Style parsing failed.")
                 }
@@ -149,6 +202,9 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         estateDetailId?.let { it ->
             locationViewModel.getLocationById(it).observe(viewLifecycleOwner, Observer {
                 if (it !=null){
+                    binding.etAddress.setText(it.address)
+                    binding.etCity.setText(it.city)
+                    binding.etPostalCode.setText(it.zipCode)
                     map.clear()
                     val latLng = LatLng(it.latitude, it.longitude)
                     positionMarker = map.addMarker(MarkerOptions().position(latLng)

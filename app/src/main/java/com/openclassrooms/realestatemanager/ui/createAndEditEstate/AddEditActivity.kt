@@ -79,7 +79,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var completeAddress: String? = null
     private val idEstate: Long = 0
     lateinit var currentPhotoPath: String
-    private var listPhoto: MutableList<Uri>? = null
+    private lateinit var listPhoto : MutableList<Uri>
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
     private val video = UriList()
@@ -161,7 +161,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = listPhoto?.let { PhotoAdapter(it, Glide.with(this), photoText.photoDescription, estateEdit) }!!
+        adapter = PhotoAdapter(listPhoto, Glide.with(this), photoText.photoDescription, estateEdit)
         val horizontalLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
         estateFormBinding.rvPhoto.adapter = adapter
@@ -195,11 +195,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         })
 
         if (estate.photoList.photoList.isNotEmpty()) {
-            listPhoto!!.clear()
+            listPhoto.clear()
             photo.photoList.clear()
             photoText.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
-                listPhoto!!.add(Uri.parse(photoStr))
+                listPhoto.add(Uri.parse(photoStr))
             }
             adapter.setPhotoList(listPhoto)
             adapter.setPhotoDescription(estate.photoDescription.photoDescription)
