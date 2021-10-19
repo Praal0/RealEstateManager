@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.content.Intent
+import android.content.Intent.getIntent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,9 +24,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.bumptech.glide.Glide
+import com.openclassrooms.realestatemanager.ui.baseActivity.BaseFragment
 
 @AndroidEntryPoint
-class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
+class MasterFragment : BaseFragment(), MasterAdapter.MasterItemListener {
 
     private lateinit var binding: FragmentMasterBinding
     private lateinit var adapter: MasterAdapter
@@ -56,8 +58,7 @@ class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 adapter.getEstateAt(viewHolder.absoluteAdapterPosition).let {
-                    estateViewModel.deleteEstate(it.numMandat)
-                    locationViewModel.deleteLocation(it.numMandat)
+                    activity?.let { it1 -> showDialog(it1,it.numMandat) }
                 }
             }
         }).attachToRecyclerView(binding.fragmentListRV)

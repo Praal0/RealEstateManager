@@ -67,16 +67,17 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
         itemBinding.price.text = "$"+item.price.toString()
         //for estate sold
         if (estate.sold) {
-            itemBinding.listPhotoSold.setImageResource(R.drawable.sold)
+            glide.load(R.drawable.sold).apply(RequestOptions.centerCropTransform()).into( itemBinding.listPhotoSold)
         }else {
             itemBinding.listPhotoSold.setImageResource(0)
         }
 
         //for photo
         if(estate.photoList.photoList.isNotEmpty()) {
-            glide.load(estate.photoList.photoList[0]).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto);
+            glide.load(estate.photoList.photoList[0]).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
         }else {
-            itemBinding.listPhoto.setImageResource(R.drawable.no_image);
+            glide.load(R.drawable.no_image).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
+
         }
     }
 

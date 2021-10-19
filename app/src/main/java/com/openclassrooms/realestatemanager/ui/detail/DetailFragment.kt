@@ -182,7 +182,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             map = googleMap;
             map.uiSettings.isMyLocationButtonEnabled = false;
             map.uiSettings.isMapToolbarEnabled = false
-            positionMarker()
+
             try {
                 // Customise the styling of the base map using a JSON object defined
                 // in a raw resource file.
@@ -196,6 +196,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         } else {
             Snackbar.make(binding.root, "No internet available", Snackbar.LENGTH_SHORT).show();
         }
+        positionMarker()
     }
 
     private fun positionMarker() {
@@ -205,12 +206,16 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                     binding.etAddress.setText(it.address)
                     binding.etCity.setText(it.city)
                     binding.etPostalCode.setText(it.zipCode)
-                    map.clear()
-                    val latLng = LatLng(it.latitude, it.longitude)
-                    positionMarker = map.addMarker(MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-                    positionMarker.showInfoWindow()
-                    map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                    if (Utils.isInternetAvailable(this.context)) {
+                        map.clear()
+                        val latLng = LatLng(it.latitude, it.longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+
+                        positionMarker = map.addMarker(MarkerOptions().position(latLng)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                        positionMarker.showInfoWindow()
+
+                    }
                 }
             })
         }
