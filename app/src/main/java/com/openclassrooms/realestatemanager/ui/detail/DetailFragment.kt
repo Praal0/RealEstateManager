@@ -194,7 +194,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             catch (e: Resources.NotFoundException) { Log.e(ContentValues.TAG, "Can't find style. Error: ", e) }
             googleMap.moveCamera(CameraUpdateFactory.zoomBy(15F))
         } else {
-            Snackbar.make(binding.root, "No internet available", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(binding.root, "No internet available", Snackbar.LENGTH_SHORT).show()
         }
         positionMarker()
     }
@@ -209,8 +209,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                     if (Utils.isInternetAvailable(this.context)) {
                         map.clear()
                         val latLng = LatLng(it.latitude, it.longitude)
-                        map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
                         positionMarker = map.addMarker(MarkerOptions().position(latLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
                         positionMarker.showInfoWindow()
