@@ -10,6 +10,7 @@ import com.openclassrooms.realestatemanager.databinding.ActivitySearchBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import android.R
+import android.view.MenuItem
 
 import android.widget.ArrayAdapter
 
@@ -49,8 +50,24 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     }
 
+
     private fun setToolbar() {
         toolbar = activitySearchBinding.includedToolbarAdd.simpleToolbar
+        setSupportActionBar(toolbar)
+        val ab: androidx.appcompat.app.ActionBar? = supportActionBar
+        ab?.title = "Search Estate"
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun configureUpButton() {

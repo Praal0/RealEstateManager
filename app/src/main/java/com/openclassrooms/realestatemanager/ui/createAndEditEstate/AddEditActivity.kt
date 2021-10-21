@@ -493,8 +493,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 photo.photoList.add(contentUri.toString())
                 listPhoto.let {
                     adapter.setPhotoList(it)
-                    Log.e("Picutre", " it = ${it.size}")
+                    Log.e("Picture", " it = ${it.size}")
                 }
+
             }
         builder.create()
         builder.show()
