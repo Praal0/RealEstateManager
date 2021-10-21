@@ -1,4 +1,4 @@
-package com;
+package realestatemanager;
 
 
 import static org.junit.Assert.assertEquals;

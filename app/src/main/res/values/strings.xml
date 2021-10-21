@@ -62,4 +62,6 @@
     <string name="default_notification_channel_id">1</string>
     <string name="type_of_property">Type of Property</string>
     <string name="delete_message">Are you sure you want delete this Estate</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -5,26 +5,34 @@ import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.openclassrooms.realestatemanager.R
+
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.Intent
 import android.view.MenuItem
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.map.MapsActivity
 import com.openclassrooms.realestatemanager.ui.search.SearchActivity
-import pub.devrel.easypermissions.EasyPermissions
+
+
+
+
+
+
+
+
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+abstract class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toolbar : Toolbar
-    private lateinit var detailFragment: DetailFragment
-    private lateinit var masterFragment: MasterFragment
+    private  var detailFragment: DetailFragment? = null
+    private  var masterFragment: MasterFragment? = null
 
     private val perms = "Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION"
 
@@ -41,23 +49,34 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
     }
 
-    private fun checkLocationPermission(): Boolean {
-        return EasyPermissions.hasPermissions(this, perms)
-    }
+
 
     private fun configureAndShowMasterFragment() {
         //A - We only add DetailFragment in Tablet mode (If found frame_layout_detail)
-        masterFragment = MasterFragment()
-        supportFragmentManager.beginTransaction().add(R.id.frame_layout_main, masterFragment).commit()
+        masterFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_main) as MasterFragment
+        if (masterFragment == null) {
+            //Create new main fragment
+            masterFragment = MasterFragment()
+            //Add it to FrameLayout container
+            supportFragmentManager.beginTransaction()
+                .add(R.id.frame_layout_main, masterFragment!!)
+                .commit()
+        }
+
+
+        supportFragmentManager.beginTransaction().add(R.id.frame_layout_main, masterFragment!!).commit()
     }
 
     private fun configureAndShowDetailFragment() {
-        if (findViewById<View?>(R.id.frame_layout_detail) != null) {
+        //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
+        detailFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_detail) as DetailFragment
+
+        if (findViewById<View>(R.id.frame_layout_detail) != null ) {
             //Create new main fragment
             detailFragment = DetailFragment()
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_detail, detailFragment)
+                .add(R.id.frame_layout_detail, detailFragment!!)
                 .commit()
         }
     }

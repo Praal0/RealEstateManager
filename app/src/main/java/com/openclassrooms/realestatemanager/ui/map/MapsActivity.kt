@@ -40,7 +40,7 @@ import java.security.AccessController.getContext
 
 
 @AndroidEntryPoint
-class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
+class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarkerClickListener {
 
     protected val PERMS_CALL_ID = 200
     private var map: GoogleMap? = null
@@ -192,9 +192,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
                 }
             }
             map!!.uiSettings.isRotateGesturesEnabled = true
-            map!!.setOnMarkerClickListener { marker: Marker ->
-                onClickMarker(marker)
-            }
+            googleMap.setOnMarkerClickListener(this);
 
 
             try {
@@ -214,18 +212,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
         }
     }
 
-    private fun onClickMarker(marker: Marker): Boolean {
-        return if (marker.tag != null){
-            Log.e(TAG, "onClickMarker: " + marker.tag)
-            val intent = Intent(this, DetailActivity::class.java)
-            startActivity(intent)
-            true
-
-        }else{
-            Log.e(TAG, "onClickMarker: ERROR NO TAG")
-            false
-        }
-    }
 
     private fun addMarker() {
         locationViewModel.getLocations().observe(this, androidx.lifecycle.Observer {
@@ -251,6 +237,21 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener {
     override fun onDestroy() {
         super.onDestroy()
         disposeWhenDestroy()
+    }
+
+    override fun onMarkerClick(marker : Marker): Boolean {
+        return if (marker.tag != null){
+            Log.e(TAG, "onClickMarker: " + marker.tag)
+            val intent = Intent(this, DetailActivity::class.java)
+            val estateId = Objects.requireNonNull(marker.tag).toString().toLong()
+            intent.putExtra("estate",estateId)
+            startActivity(intent)
+            true
+
+        }else{
+            Log.e(TAG, "onClickMarker: ERROR NO TAG")
+            false
+        }
     }
 
 

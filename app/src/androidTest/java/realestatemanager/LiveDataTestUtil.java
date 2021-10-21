@@ -1,4 +1,4 @@
-package com;
+package realestatemanager;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;

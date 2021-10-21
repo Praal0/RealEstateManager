@@ -13,34 +13,30 @@ import android.R
 
 import android.widget.ArrayAdapter
 
-
-
-
-
-private lateinit var  activitySearchBinding: ActivitySearchBinding
-private var mUpOfSaleDateMinDialog: DatePickerDialog? = null
-private var mDateFormat: SimpleDateFormat? = null
-private lateinit var toolbar : androidx.appcompat.widget.Toolbar
-private var mUpOfSaleDateMaxDialog: DatePickerDialog? = null
-private val estateType: String? = null
-private val city: String? = null
-private const val minRooms = 0
-private const val maxRooms = 0
-private const val minSurface = 0
-private const val maxSurface = 0
-private const val minPrice = 0.0
-private const val maxPrice = 0.0
-private const val minUpOfSaleDate: Long = 0
-private const val maxUpOfSaleDate: Long = 0
-private const val photoSearch = false
-private const val schoolsSearch = false
-private const val parkSearch = false
-private const val restaurantSearch = false
-private const val storeSearch = false
-private const val availableSearch = false
-private val fabIntent: Intent? = null
-
 class SearchActivity : AppCompatActivity(), View.OnClickListener{
+    private lateinit var  activitySearchBinding: ActivitySearchBinding
+    private var mUpOfSaleDateMinDialog: DatePickerDialog? = null
+    private var mDateFormat: SimpleDateFormat? = null
+    private lateinit var toolbar : androidx.appcompat.widget.Toolbar
+    private var mUpOfSaleDateMaxDialog: DatePickerDialog? = null
+    private val estateType: String? = null
+    private val city: String? = null
+    private  val minRooms = 0
+    private  val maxRooms = 0
+    private  val minSurface = 0
+    private  val maxSurface = 0
+    private  val minPrice = 0.0
+    private  val maxPrice = 0.0
+    private  val minUpOfSaleDate: Long = 0
+    private  val maxUpOfSaleDate: Long = 0
+    private  val photoSearch = false
+    private  val schoolsSearch = false
+    private  val parkSearch = false
+    private  val restaurantSearch = false
+    private  val storeSearch = false
+    private  val availableSearch = false
+    private val fabIntent: Intent? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activitySearchBinding = ActivitySearchBinding.inflate(layoutInflater)
