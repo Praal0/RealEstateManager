@@ -49,21 +49,7 @@ class LocationDataRepository@Inject constructor(
     }
 
 
-    /**
-     * Delete
-     *
-     * @param estate
-     */
-    // --- UPDATE ---
-    suspend fun deleteLocation(estateId : Long) {
-        try {
-            locationDao.deleteLocation(estateId)
-        } catch (cause: Throwable){
-            // If anything throws an exception, inform the caller
-            Log.e("LocationDataRepository","Cannot Delete : $cause")
-        }
 
-    }
 
 
 }

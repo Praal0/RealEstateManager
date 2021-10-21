@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Location
 
 @Dao
@@ -23,6 +22,4 @@ interface LocationDao {
     @Update
     suspend fun updateLocation(location: Location)
 
-    @Query("DELETE FROM Location WHERE estateId = :mandateNumberID")
-    suspend fun deleteLocation(mandateNumberID: Long): Int
 }

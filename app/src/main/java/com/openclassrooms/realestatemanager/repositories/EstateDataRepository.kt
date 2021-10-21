@@ -35,18 +35,6 @@ class EstateDataRepository @Inject constructor(
 
     }
 
-    /**
-     * Delete
-     * @param mandateEstateID
-     * */
-    suspend fun deleteEstate(mandateEstateID: Long) {
-        try {
-            estateDAO.deleteItem(mandateEstateID)
-        }catch (cause: Throwable) {
-            // If anything throws an exception, inform the caller
-            Log.e("EstateDataRepository", "Cannot Delete : $cause")
-        }
-    }
 
     /**
      * Update

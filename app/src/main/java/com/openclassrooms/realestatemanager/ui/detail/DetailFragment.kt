@@ -71,7 +71,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun configureRecyclerView() {
-        adapter = PhotoAdapter(listPhoto, Glide.with(this), photoText.photoDescription, estateEdit)
+        adapter = PhotoAdapter( Glide.with(this), photoText.photoDescription, estateEdit)
         val horizontalLayoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvPhoto.layoutManager = horizontalLayoutManager
         binding.rvPhoto.adapter = adapter
@@ -192,7 +192,6 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 }
             }
             catch (e: Resources.NotFoundException) { Log.e(ContentValues.TAG, "Can't find style. Error: ", e) }
-            googleMap.moveCamera(CameraUpdateFactory.zoomBy(15F))
         } else {
             Snackbar.make(binding.root, "No internet available", Snackbar.LENGTH_SHORT).show()
         }

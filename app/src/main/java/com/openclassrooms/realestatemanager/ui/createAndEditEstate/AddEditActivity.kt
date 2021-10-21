@@ -161,7 +161,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = PhotoAdapter(listPhoto, Glide.with(this), photoText.photoDescription, estateEdit)
+        adapter = PhotoAdapter(Glide.with(this), photoText.photoDescription, estateEdit)
         val horizontalLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
         estateFormBinding.rvPhoto.adapter = adapter
@@ -359,9 +359,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             if (options[item] == "Take Video") {
                 val takeVideo = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                 startActivityForResult(takeVideo, PICK_VIDEO_CAMERA)
-                //getTmpFileUri().let { uri ->
-                //resultLauncher.launch(uri) }
-
             } else if (options[item] == "Choose Video") {
                 val pickVideo = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.INTERNAL_CONTENT_URI)
                 startActivityForResult(pickVideo, PICK_VIDEO_GALLERY)
@@ -402,7 +399,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK) {
                 Log.d(TAG, "onActivityResult from take picture is call")
                 val takenImage = data?.extras?.get("data") as Bitmap
-                val date = System.currentTimeMillis()
                 val bytes = ByteArrayOutputStream()
                 takenImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
                 val path = MediaStore.Images.Media.insertImage(
@@ -480,7 +476,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             }
     }
 
-
     private fun openDialog(contentUri: Uri?) {
         val builder = android.app.AlertDialog.Builder(this)
         var binding: LayoutDialogBinding = LayoutDialogBinding.inflate(layoutInflater)
@@ -492,11 +487,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             .setNegativeButton("cancel") { dialog, _ -> dialog?.dismiss() }
             .setPositiveButton("ok") { dialog, which ->
                 val description: String = binding.editDescription.text.toString()
-                contentUri?.let { listPhoto?.add(it) }
+                contentUri?.let { listPhoto.add(it) }
                 Log.e("Picutre", "contentUri = ${contentUri.toString()}")
                 photoText.photoDescription.add(description)
                 photo.photoList.add(contentUri.toString())
-                listPhoto?.let {
+                listPhoto.let {
                     adapter.setPhotoList(it)
                     Log.e("Picutre", " it = ${it.size}")
                 }

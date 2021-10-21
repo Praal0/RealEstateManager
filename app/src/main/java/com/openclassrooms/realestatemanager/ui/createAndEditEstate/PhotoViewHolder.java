@@ -22,7 +22,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder {
         //for viewBinding
         super(activityAddPhotoItemBinding.getRoot());
         this.activityAddPhotoItemBinding = activityAddPhotoItemBinding;
-
     }
 
     /**

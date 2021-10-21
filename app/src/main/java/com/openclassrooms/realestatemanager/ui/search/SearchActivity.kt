@@ -58,7 +58,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
     }
 
     private fun configureUpButton() {
-        TODO("Not yet implemented")
+
     }
 
     /**

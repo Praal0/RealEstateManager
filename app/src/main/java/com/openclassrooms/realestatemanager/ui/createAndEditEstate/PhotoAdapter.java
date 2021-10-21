@@ -24,12 +24,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     /**
      * Constructor
      *
-     * @param listPhoto
      * @param glide
      * @param photoDescription
      * @param estateEdit
      */
-    public PhotoAdapter(List<Uri> listPhoto, RequestManager glide, ArrayList<String> photoDescription, long estateEdit) {
+    public PhotoAdapter( RequestManager glide, ArrayList<String> photoDescription, long estateEdit) {
         this.glide = glide;
         this.mPhotoDescription = photoDescription;
         this.estateEdit = estateEdit;

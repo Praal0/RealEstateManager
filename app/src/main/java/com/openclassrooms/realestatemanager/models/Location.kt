@@ -2,10 +2,9 @@ package com.openclassrooms.realestatemanager.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "location")
 data class Location(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id:Long,
                     var longitude : Double,
                     var latitude : Double,

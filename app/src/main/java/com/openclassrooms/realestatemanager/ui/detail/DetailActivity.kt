@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityDetailBinding
 import com.openclassrooms.realestatemanager.models.Estate
@@ -27,6 +28,7 @@ class DetailActivity : BaseActivity() {
 
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var detailFragment: DetailFragment
+    private val viewModel: EstateViewModel by viewModels()
     private lateinit var toolbar : Toolbar
     private  var estateId : Long  = 0
     private var estate: Estate? = null
@@ -64,11 +66,6 @@ class DetailActivity : BaseActivity() {
                 startActivity(editIntent)
                 finish()
                 return true
-
-            }
-
-            R.id.delete_btn ->{
-                showDialog(this,estateId)
 
             }
             else -> super.onOptionsItemSelected(item)

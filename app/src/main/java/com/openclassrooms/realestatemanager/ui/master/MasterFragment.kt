@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,16 +17,14 @@ import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.widget.Toast
 
 import androidx.recyclerview.widget.RecyclerView
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.bumptech.glide.Glide
-import com.openclassrooms.realestatemanager.ui.baseActivity.BaseFragment
 
 @AndroidEntryPoint
-class MasterFragment : BaseFragment(), MasterAdapter.MasterItemListener {
+class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
 
     private lateinit var binding: FragmentMasterBinding
     private lateinit var adapter: MasterAdapter
@@ -52,33 +49,23 @@ class MasterFragment : BaseFragment(), MasterAdapter.MasterItemListener {
         adapter = MasterAdapter(this)
         binding.fragmentListRV.layoutManager = LinearLayoutManager(requireContext())
         binding.fragmentListRV.adapter = adapter
-
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                adapter.getEstateAt(viewHolder.absoluteAdapterPosition).let {
-                    activity?.let { it1 -> showDialog(it1,it.numMandat) }
-                }
-            }
-        }).attachToRecyclerView(binding.fragmentListRV)
     }
 
     private fun setupObservers() {
         this.estateViewModel.getEstates().observe(viewLifecycleOwner, this::updateEstateList)
     }
 
-    override fun onClickedEstate(estateId: Long) {
-        estateViewModel.setCurrentEstate(estateId)
+    override fun onClickedEstate(estate: Estate) {
+        //estateViewModel.setCurrentEstate(estate)
         if (!Utils.isTablet(this.context)){
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("estate", estateId)
-            Log.d("bundleRV", "estate$estateId")
+            intent.putExtra("estate", estate.numMandat)
+            Log.d("bundleRV", "estate$estate")
             startActivity(intent)
         }else{
-            Log.d("bundleListFragment", "bundleFragment$estateId")
+            Log.d("bundleListFragment", "bundleFragment$estate")
             val intent = Intent(context, MainActivity::class.java)
-            intent.putExtra("estate", estateId)
+            intent.putExtra("estateId", estate.numMandat)
             startActivity(intent)
         }
     }
@@ -88,6 +75,6 @@ class MasterFragment : BaseFragment(), MasterAdapter.MasterItemListener {
      * @param estates
      */
     private fun updateEstateList(estates: List<Estate>?) {
-        if (estates != null) adapter.updateData(estates,locationViewModel, Glide.with(this))
+        if (estates != null) adapter.updateData(estates,locationViewModel, Glide.with(this),this)
     }
 }
