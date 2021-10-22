@@ -669,35 +669,21 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     //RX Java http request for geocoding API
     private fun executeHttpRequestWithRetrofit(context: Context) {
+        location = Location(0,
+            0.0,
+            0.0,
+            estateFormBinding.etAddress.text.toString(),
+            estateFormBinding.etCity.text.toString(),
+            estateFormBinding.etPostalCode.text.toString(),
+            estateFormBinding.etMandate.text.toString().toLong())
+
         completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
         mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
             .subscribeWith(object : DisposableObserver<Geocoding?>() {
                 override fun onNext(geocoding: Geocoding) {
                     if (!geocoding.results.isNullOrEmpty()){
-                        location = Location(0,
-                            geocoding.results[0].geometry.location.lng,
-                            geocoding.results[0].geometry.location.lat,
-                            estateFormBinding.etAddress.text.toString(),
-                            estateFormBinding.etCity.text.toString(),
-                            estateFormBinding.etPostalCode.text.toString(),
-                            estateFormBinding.etMandate.text.toString().toLong())
-
-                        if (estateEdit == 0L){
-                            locationViewModel.insertLocation(location)
-                        }else{
-                            locationViewModel.getLocationById(estateEdit).observe(this@AddEditActivity,
-                                androidx.lifecycle.Observer {
-                                    locationViewModel.updateLocation(location)
-                                })
-                        }
-                        locationViewModel.getLocationById(estate.numMandat).observe(this@AddEditActivity, androidx.lifecycle.Observer {
-                            estate.locationId = it.id
-                            if (estateEdit == 0L){
-                                estateViewModel.insertEstates(estate,this@AddEditActivity)
-                            }else{
-                                estateViewModel.updateEstate(estate)
-                            }
-                        })
+                        location.latitude = geocoding.results[0].geometry.location.lat
+                        location.longitude = geocoding.results[0].geometry.location.lat
                     }else{
                         Toast.makeText(context,"Geocoding : Null or Empty",Toast.LENGTH_SHORT).show()
                     }
@@ -709,6 +695,19 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
                 }
             })
+        if (estateEdit == 0L){
+            locationViewModel.insertLocation(location)
+        }else{
+            locationViewModel.updateLocation(location)
+        }
+        locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
+            estate.locationId = it.id
+            if (estateEdit == 0L){
+                estateViewModel.insertEstates(estate,this)
+            }else{
+                estateViewModel.updateEstate(estate)
+            }
+        })
         mCompositeDisposable.add(mDisposable as DisposableObserver<*>);
     }
 
