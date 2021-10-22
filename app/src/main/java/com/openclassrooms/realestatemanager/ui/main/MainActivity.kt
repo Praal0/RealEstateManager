@@ -1,84 +1,82 @@
-package com.openclassrooms.realestatemanager.ui
+package com.openclassrooms.realestatemanager.ui.main
 
 import android.os.Bundle
 import android.view.Menu
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
-import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
-import com.openclassrooms.realestatemanager.ui.master.MasterFragment
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.Intent
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import androidx.activity.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
+import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
+import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.ui.map.MapsActivity
 import com.openclassrooms.realestatemanager.ui.search.SearchActivity
-
-
-
-
-
-
-
-
+import com.openclassrooms.realestatemanager.utils.Utils
+import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 
 
 @AndroidEntryPoint
-abstract class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainAdapter.MainItemListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toolbar : Toolbar
-    private  var detailFragment: DetailFragment? = null
-    private  var masterFragment: MasterFragment? = null
-
-    private val perms = "Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION"
-
+    private lateinit var adapter: MainAdapter
+    private lateinit var detailFragment : DetailFragment
+    val estateViewModel: EstateViewModel by viewModels()
+    val locationViewModel : LocationViewModel by viewModels()
+    // Is the container layout available? If so, set mTwoPane to true.
+    private var mTwoPane: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        toolbar = binding.includedToolbar.simpleToolbar
         setContentView(binding.root)
-        initialize()
-        onClickFab();
-        configureAndShowMasterFragment()
-        configureAndShowDetailFragment()
+        onClickFab()
+        setupRecyclerView()
+        setupObservers()
         setSupportActionBar(toolbar)
     }
 
+    private fun setupRecyclerView() {
+        adapter = MainAdapter(this)
+        binding.fragmentListRV.layoutManager = LinearLayoutManager(this)
+        binding.fragmentListRV.adapter = adapter
 
-
-    private fun configureAndShowMasterFragment() {
-        //A - We only add DetailFragment in Tablet mode (If found frame_layout_detail)
-        masterFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_main) as MasterFragment
-        if (masterFragment == null) {
-            //Create new main fragment
-            masterFragment = MasterFragment()
-            //Add it to FrameLayout container
-            supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_main, masterFragment!!)
-                .commit()
-        }
-
-
-        supportFragmentManager.beginTransaction().add(R.id.frame_layout_main, masterFragment!!).commit()
-    }
-
-    private fun configureAndShowDetailFragment() {
-        //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        detailFragment = supportFragmentManager.findFragmentById(R.id.frame_layout_detail) as DetailFragment
-
-        if (findViewById<View>(R.id.frame_layout_detail) != null ) {
-            //Create new main fragment
+        // Is the container layout available? If so, set mTwoPane to true.
+        if (findViewById<View>(R.id.frame_layout_detail) != null) {
+            mTwoPane = true
             detailFragment = DetailFragment()
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_detail, detailFragment!!)
+                .add(R.id.frame_layout_detail, detailFragment)
                 .commit()
         }
+    }
+
+    private fun setupObservers() {
+        this.estateViewModel.getEstates().observe(this, this::updateEstateList)
+    }
+
+
+    /**
+     * for update estate list
+     * @param estates
+     */
+    private fun updateEstateList(estates: List<Estate>?) {
+        if (estates != null) adapter.updateData(estates,locationViewModel, Glide.with(this),this)
     }
 
     /**
@@ -126,9 +124,15 @@ abstract class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Initialisation variable
-    private fun initialize() {
-        toolbar = binding.includedToolbar.simpleToolbar
+    override fun onClickedEstate(estate: Estate) {
+        //estateViewModel.setCurrentEstate(estate)
+        if (!Utils.isTablet(this)){
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra("estate", estate.numMandat)
+            Log.d("bundleRV", "estate$estate")
+            startActivity(intent)
     }
 
+
+}
 }

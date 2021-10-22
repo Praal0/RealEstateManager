@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.ui.master
+package com.openclassrooms.realestatemanager.ui.main
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -14,12 +14,12 @@ import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBindin
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 
-class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapter<MasterViewHolder>() {
+class MainAdapter(private val result: MainItemListener) :RecyclerView.Adapter<MainViewHolder>() {
 
     private lateinit var viewModel : LocationViewModel
     private lateinit var owner: LifecycleOwner
 
-    interface MasterItemListener{
+    interface MainItemListener{
         fun onClickedEstate(EstateId: Estate)
     }
 
@@ -44,20 +44,20 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
         return items[position]
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MasterViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val binding: FragmentMasterItemBinding = FragmentMasterItemBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
 
-        return MasterViewHolder(binding, result,viewModel,owner)
+        return MainViewHolder(binding, result,viewModel,owner)
     }
 
-    override fun onBindViewHolder(holder: MasterViewHolder, position: Int) { holder.bind(items[position],this.glide) }
+    override fun onBindViewHolder(holder: MainViewHolder, position: Int) { holder.bind(items[position],this.glide) }
 
     override fun getItemCount(): Int = items.size
 }
 
-class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, private val listener: MasterAdapter.MasterItemListener
-, private val viewModel: LocationViewModel,private val owner: LifecycleOwner) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener{
+class MainViewHolder(private val itemBinding: FragmentMasterItemBinding, private val listener: MainAdapter.MainItemListener
+                     , private val viewModel: LocationViewModel, private val owner: LifecycleOwner) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener{
 
     private lateinit var estate: Estate
 
