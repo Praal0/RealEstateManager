@@ -27,13 +27,12 @@ import com.openclassrooms.realestatemanager.ui.search.SearchActivity
 
 
 @AndroidEntryPoint
-abstract class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toolbar : Toolbar
-    private  var detailFragment: DetailFragment? = null
-    private  var masterFragment: MasterFragment? = null
-
+    private lateinit var detailFragment: DetailFragment
+    private lateinit var masterFragment: MasterFragment
     private val perms = "Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION"
 
 
@@ -59,12 +58,12 @@ abstract class MainActivity : AppCompatActivity() {
             masterFragment = MasterFragment()
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_main, masterFragment!!)
+                .add(R.id.frame_layout_main, masterFragment)
                 .commit()
         }
 
 
-        supportFragmentManager.beginTransaction().add(R.id.frame_layout_main, masterFragment!!).commit()
+        supportFragmentManager.beginTransaction().add(R.id.frame_layout_main, masterFragment).commit()
     }
 
     private fun configureAndShowDetailFragment() {
@@ -76,7 +75,7 @@ abstract class MainActivity : AppCompatActivity() {
             detailFragment = DetailFragment()
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout_detail, detailFragment!!)
+                .add(R.id.frame_layout_detail, detailFragment)
                 .commit()
         }
     }
