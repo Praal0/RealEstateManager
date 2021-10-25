@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.R
 import android.view.MenuItem
+import android.view.MotionEvent
 
 import android.widget.ArrayAdapter
 
@@ -44,12 +45,13 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
         val view: View = activitySearchBinding.root
         setContentView(view)
         this.configureUpButton()
+        dropDownAdapters()
+        this.setDateField()
         this.setToolbar()
 
         //For date picker
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     }
-
 
     private fun setToolbar() {
         toolbar = activitySearchBinding.includedToolbarAdd.simpleToolbar
@@ -91,6 +93,15 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
      */
     fun dropDownAdapters() {
         activitySearchBinding.etEstate.setAdapter(factoryAdapter(com.openclassrooms.realestatemanager.R.array.ESTATES))
+        activitySearchBinding.etEstate.setOnTouchListener(View.OnTouchListener(
+            fun(v: View?, event: MotionEvent): Boolean {
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    activitySearchBinding.etEstate.showDropDown()
+                    return true
+                }
+                return event.action == MotionEvent.ACTION_UP
+            }
+        ))
     }
 
     /**

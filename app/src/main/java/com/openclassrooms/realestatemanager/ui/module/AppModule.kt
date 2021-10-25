@@ -42,4 +42,5 @@ object AppModule  : Application() {
     @Singleton
     @Provides
     fun provideLocationRepository(localDataSource: LocationDao) = LocationDataRepository(localDataSource)
+
 }

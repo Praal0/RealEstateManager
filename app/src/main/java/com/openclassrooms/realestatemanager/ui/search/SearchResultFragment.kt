@@ -22,6 +22,7 @@ import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.SearchEstate
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
+import com.openclassrooms.realestatemanager.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -32,7 +33,7 @@ class SearchResultFragment : Fragment() {
     private var estateList: List<Estate>? = null
     private val photoLists = UriList()
     private var mAdapter: SearchResultAdapter? = null
-    private val estateViewModel: EstateViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
     private val estateSearch: SearchEstate? = null
     private val detailFragment: DetailFragment? = null
 
@@ -57,8 +58,17 @@ class SearchResultFragment : Fragment() {
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         fragmentSearchResultBinding.searchResultListRV.setLayoutManager(layoutManager)
         fragmentSearchResultBinding.searchResultListRV.setAdapter(mAdapter)
+
+        //for observe data
+        this.searchViewModel.searchEstate(estateSearch!!.estateType, estateSearch.city, estateSearch.minRooms, estateSearch.maxRooms,
+            estateSearch.minSurface, estateSearch.maxSurface, estateSearch.minPrice, estateSearch.maxPrice,
+            estateSearch.minUpOfSaleDate, estateSearch.maxOfSaleDate, estateSearch.photos, estateSearch.schools, estateSearch.stores,
+            estateSearch.park, estateSearch.restaurants, estateSearch.sold).observe(this, this::updateEstateList)
     }
 
+    private fun updateEstateList( estates : List<Estate>) {
+        
+    }
 
 
 }

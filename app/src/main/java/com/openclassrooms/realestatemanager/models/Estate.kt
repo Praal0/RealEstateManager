@@ -26,7 +26,7 @@ data class Estate(@PrimaryKey(autoGenerate = true) var numMandat:Long,
                   var park:Boolean,
                   var restaurants:Boolean,
                   var sold:Boolean,
-                  var upOfSaleDate: Long?,
+                  var upOfSaleDate: String?,
                   var soldDate:String?,
                   var agentName:String?,
                   var photoList: UriList,
@@ -36,7 +36,7 @@ data class Estate(@PrimaryKey(autoGenerate = true) var numMandat:Long,
                   )  {
 
     constructor() : this(0,"",0,0,0,0,0,null,"",false,false,
-        false,false,false,0,"","",UriList(), PhotoDescription(), UriList(),0)
+        false,false,false,"","","",UriList(), PhotoDescription(), UriList(),0)
      }
 
 

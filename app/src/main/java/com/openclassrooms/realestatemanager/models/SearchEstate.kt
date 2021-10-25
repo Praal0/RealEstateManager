@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.models
 
 data class SearchEstate(var estateType: String?,
-
                         var city: String?,
                         var minRooms: Int?,
                         var maxRooms: Int?,

@@ -5,19 +5,20 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.realestatemanager.databinding.ActivityAddPhotoItemBinding;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
-
-
     private RequestManager glide;
     private List<Uri> mPhotoList = new ArrayList<Uri>();
+    private LiveData<List<Uri>> mPhotoLiveDate;
     private List<String> mPhotoDescription;
     private long estateEdit;
 
@@ -52,9 +53,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         //For photo description with photo
         Uri photoUri = null;
         String photoDescription = "";
-        if (mPhotoList.size() > position) {
+
+        photoUri = mPhotoLiveDate.getValue().get(position);
+        /*if (mPhotoList.size() > position) {
             photoUri = mPhotoList.get(position);
-        }
+        }*/
+
         if (mPhotoDescription.size() > position) {
             photoDescription = mPhotoDescription.get(position);
         }
@@ -75,7 +79,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         return mPhotoList.size();
     }
 
-
     /**
      * for set photolist in adapter
      *
@@ -84,6 +87,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     public void setPhotoList(List<Uri> photos) {
         mPhotoList.clear();
         mPhotoList.addAll(photos);
+        notifyDataSetChanged();
+    }
+
+    public void setPhotoListLive(Uri photos){
+        mPhotoLiveDate.getValue().addAll((Collection<? extends Uri>) photos) ;
         notifyDataSetChanged();
     }
 

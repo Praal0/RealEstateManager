@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
@@ -27,7 +28,7 @@ import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), MainAdapter.MainItemListener {
+class MainActivity : BaseActivity(), MainAdapter.MainItemListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toolbar : Toolbar
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.MainItemListener {
         setupRecyclerView()
         setupObservers()
         setSupportActionBar(toolbar)
+        methodRequiresTwoPermission()
     }
 
     private fun setupRecyclerView() {
