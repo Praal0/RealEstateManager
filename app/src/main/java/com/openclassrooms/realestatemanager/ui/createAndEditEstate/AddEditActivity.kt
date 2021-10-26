@@ -67,6 +67,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private lateinit var estateFormBinding: EstateFormBinding
     private lateinit var toolbar : Toolbar
     lateinit var estate : Estate
+    lateinit var location:Location
 
     private var mUpOfSaleDateDialog: DatePickerDialog? = null
     private var mDateFormat: SimpleDateFormat? = null
@@ -76,13 +77,12 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mDisposable: Disposable? = null
     private var completeAddress: String? = null
     private val idEstate: Long = 0
-    private val myList : MutableLiveData<Uri> = MutableLiveData<Uri>()
+    private var myList : MutableLiveData<List<Uri>> = MutableLiveData<List<Uri>>()
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
     private val video = UriList()
     private val photoText = PhotoDescription()
     private lateinit var cursor: Cursor
-    private lateinit var location:Location
 
     private val estateViewModel: EstateViewModel by viewModels()
     private val locationViewModel : LocationViewModel by viewModels()
@@ -191,10 +191,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             photoText.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
                 //listPhoto.add((Uri.parse(photoStr)))
-                myList.value = Uri.parse(photoStr)
+                myList.value = listOf(Uri.parse(photoStr))
             }
-            adapter
-            adapter.setPhotoListLive(myList.value)
+            adapter.setPhotoList(myList.value)
             adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             photo.photoList.addAll(estate.photoList.photoList)
         }
@@ -467,33 +466,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             }
     }
 
-    private fun openDialog(contentUri: Uri?) {
-        val builder = android.app.AlertDialog.Builder(this)
-        var binding: LayoutDialogBinding = LayoutDialogBinding.inflate(layoutInflater)
-        val view: View = binding.root
-        val glide : RequestManager = Glide.with(this)
-         glide.load(contentUri).apply(RequestOptions.centerCropTransform())
-            .into(binding.imageDescription)
-        builder.setView(view)
-            .setNegativeButton("cancel") { dialog, _ -> dialog?.dismiss() }
-            .setPositiveButton("ok") { dialog, which ->
-                val description: String = binding.editDescription.text.toString()
-                myList.value = (contentUri)
-                Log.e("Picture", "contentUri = ${myList.value.toString()}")
-                photoText.photoDescription.add(description)
-                photo.photoList.add(contentUri.toString())
-
-                adapter.setPhotoListLive(myList.value)
-
-                /*listPhoto.let {
-                    adapter.setPhotoList(it)
-                    Log.e("Picture", " it = $it")
-                }*/
-            }
-        builder.create()
-        builder.show()
-    }
-
     /**
      * For video
      * @param uri
@@ -516,10 +488,31 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         }
     }
 
+    private fun openDialog(contentUri: Uri?) {
+        val builder = android.app.AlertDialog.Builder(this)
+        var binding: LayoutDialogBinding = LayoutDialogBinding.inflate(layoutInflater)
+        val view: View = binding.root
+        val glide : RequestManager = Glide.with(this)
+         glide.load(contentUri).apply(RequestOptions.centerCropTransform())
+            .into(binding.imageDescription)
+        builder.setView(view)
+            .setNegativeButton("cancel") { dialog, _ -> dialog?.dismiss() }
+            .setPositiveButton("ok") { dialog, which ->
+                val description: String = binding.editDescription.text.toString()
+                myList.value (contentUri)
+                Log.e("Picture", "contentUri = ${myList.value.toString()}")
+                photoText.photoDescription.add(description)
+                photo.photoList.add(contentUri.toString())
+
+                adapter.setPhotoList(myList.value)
+            }
+        builder.create()
+        builder.show()
+    }
+
     /**
      * Click Validate button and verification
      */
-
     fun clickFabButton(){
         estateFormBinding.validateFabBtn.setOnClickListener {
             //For description photo in recyclerView
@@ -634,6 +627,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     //RX Java http request for geocoding API
     private fun executeHttpRequestWithRetrofit(context: Context) {
+        completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
         location = Location(0,
             0.0,
             0.0,
@@ -641,30 +635,36 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             estateFormBinding.etCity.text.toString(),
             estateFormBinding.etPostalCode.text.toString(),
             estateFormBinding.etMandate.text.toString().toLong())
-
-        completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
         mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
             .subscribeWith(object : DisposableObserver<Geocoding?>() {
                 override fun onNext(geocoding: Geocoding) {
                     if (!geocoding.results.isNullOrEmpty()){
                         location.latitude = geocoding.results[0].geometry.location.lat
-                        location.longitude = geocoding.results[0].geometry.location.lat
+                        location.longitude = geocoding.results[0].geometry.location.lng
                     }else{
                         Toast.makeText(context,"Geocoding : Null or Empty",Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }override fun onComplete() {}
             })
+
         if (estateEdit == 0L){
             locationViewModel.insertLocation(location)
         }else{
-            locationViewModel.updateLocation(location)
+            locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
+                location.id = it.id
+                locationViewModel.updateLocation(location)
+            })
+
         }
+
+
         locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
             estate.locationId = it.id
             if (estateEdit == 0L){
                 estateViewModel.insertEstates(estate,this)
             }else{
+                location.id = it.id
                 estateViewModel.updateEstate(estate)
             }
         })

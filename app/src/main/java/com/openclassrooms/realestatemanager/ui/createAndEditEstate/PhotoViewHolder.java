@@ -15,8 +15,6 @@ import java.util.Objects;
 public class PhotoViewHolder extends RecyclerView.ViewHolder {
 
     private ActivityAddPhotoItemBinding activityAddPhotoItemBinding;
-    private long estateEdit;
-
 
     public PhotoViewHolder(ActivityAddPhotoItemBinding activityAddPhotoItemBinding) {
         //for viewBinding

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
@@ -18,7 +19,7 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private RequestManager glide;
     private List<Uri> mPhotoList = new ArrayList<Uri>();
-    private LiveData<List<Uri>> mPhotoLiveDate;
+    private MutableLiveData<List<Uri>> mPhotoLiveDate;
     private List<String> mPhotoDescription;
     private long estateEdit;
 
@@ -51,7 +52,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         //For photo description with photo
-        Uri photoUri = null;
+        Uri photoUri = Uri.EMPTY;
         String photoDescription = "";
 
         photoUri = mPhotoLiveDate.getValue().get(position);
@@ -87,11 +88,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     public void setPhotoList(List<Uri> photos) {
         mPhotoList.clear();
         mPhotoList.addAll(photos);
-        notifyDataSetChanged();
-    }
-
-    public void setPhotoListLive(Uri photos){
-        mPhotoLiveDate.getValue().addAll((Collection<? extends Uri>) photos) ;
         notifyDataSetChanged();
     }
 
