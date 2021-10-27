@@ -302,7 +302,7 @@
             android:layout_below="@+id/input_address"
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@+id/input_postalCode"
-            android:nextFocusDown="@id/upOfSaleDate"
+            android:nextFocusDown="@id/saleDate"
             app:boxStrokeColor="@color/colorAccent"
             app:errorEnabled="true"
             app:helperTextEnabled="true">
@@ -413,7 +413,7 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/upOfSaleDate"
+                android:id="@+id/saleDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="false"

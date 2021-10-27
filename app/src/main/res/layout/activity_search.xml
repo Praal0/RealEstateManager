@@ -38,7 +38,7 @@
                 android:inputType="none"
                 android:paddingBottom="8dp"
                 android:textSize="12sp"
-                tools:ignore="TouchTargetSizeCheck" />
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -92,8 +92,10 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_city"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="60dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@+id/input_RoomsMin"
             app:boxStrokeColor="@color/colorAccent"
             app:suffixTextColor="#000000">
@@ -140,8 +142,10 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_RoomsMax"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="60dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@+id/input_SurfaceMin"
             app:boxStrokeColor="@color/colorAccent"
             app:suffixText="m²"
@@ -149,7 +153,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_surfaceMaxi"
-                android:layout_width="match_parent"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:hint="Max Surface"
                 android:inputType="number"
@@ -189,8 +193,10 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_SurfaceMax"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="60dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@+id/input_SurfaceMin"
             app:boxStrokeColor="@color/colorAccent"
             app:suffixText="$"
@@ -236,18 +242,20 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_upOfSaleDateMax"
-            android:layout_width="139dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/input_PriceMax"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="60dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@+id/input_PriceMin"
             app:boxStrokeColor="@color/colorAccent"
             app:startIconDrawable="@drawable/baseline_date_range_black">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_upOfSaleDateMaxi"
-                android:layout_width="137dp"
+                android:layout_width="135dp"
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="false"
                 android:hint="Max Sale Date"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <include
         android:id="@+id/included_toolbar"
@@ -23,12 +23,11 @@
             android:orientation="horizontal">
 
 
-            <FrameLayout
-                android:id="@+id/frame_layout_main"
-                android:layout_weight="30"
-                android:layout_width="0px"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_list_RV"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                />
+                android:layout_marginTop="?attr/actionBarSize"/>
 
             <FrameLayout
                 android:id="@+id/frame_layout_detail"
