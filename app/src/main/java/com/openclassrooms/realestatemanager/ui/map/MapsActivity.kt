@@ -13,7 +13,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -26,8 +28,10 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMapsBinding
+import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
+import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
@@ -35,6 +39,7 @@ import com.openclassrooms.realestatemanager.viewModel.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableObserver
 import pub.devrel.easypermissions.EasyPermissions
 import java.security.AccessController.getContext
 
@@ -43,12 +48,13 @@ import java.security.AccessController.getContext
 class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarkerClickListener {
 
     protected val PERMS_CALL_ID = 200
-    private var map: GoogleMap? = null
+    private var map: GoogleMap?  = null
     private lateinit var toolbar : Toolbar
     private lateinit var mPosition: String
 
     private lateinit var binding: ActivityMapsBinding
     private  var locationManager: LocationManager? = null
+    private lateinit var latLng : LatLng
     private val locationViewModel: LocationViewModel by viewModels()
     private val mapViewModel : MapViewModel by viewModels()
     private val mCompositeDisposable = CompositeDisposable()
@@ -145,7 +151,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
         val mLatitude = location.latitude
         val mLongitude = location.longitude
         val googleLocation = LatLng(mLatitude, mLongitude)
-        map?.moveCamera(CameraUpdateFactory.newLatLng(googleLocation))
+        map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(googleLocation, 16f))
         mPosition = "$mLatitude,$mLongitude"
         Log.d("TestLatLng", mPosition)
     }
@@ -158,15 +164,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
         locationManager?.removeUpdates(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         if (Utils.isInternetAvailable(Objects.requireNonNull(this))) {
             map = googleMap
@@ -184,17 +181,14 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             mapViewModel.startLocationRequest(this)
             mapViewModel.getLocation()?.observe(this) { location ->
                 if (location != null) {
-                    val latLng = LatLng(location.lat, location.lng)
+                    latLng = LatLng(location.lat, location.lng)
                     googleMap.uiSettings.isMyLocationButtonEnabled = true
                     mapViewModel.updateCurrentUserPosition(latLng)
-                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-                    map!!.animateCamera(CameraUpdateFactory.zoomTo(15F), 2000, null)
+                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
                 }
             }
             map!!.uiSettings.isRotateGesturesEnabled = true
             googleMap.setOnMarkerClickListener(this);
-
-
             try {
                 // Customise the styling of the base map using a JSON object defined
                 // in a raw resource file.
@@ -212,20 +206,45 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
         }
     }
 
-
     private fun addMarker() {
         locationViewModel.getLocations().observe(this, androidx.lifecycle.Observer {
             for (locationList in it){
-                val latLng = LatLng(locationList.latitude, locationList.longitude)
+                if (locationList.latitude == 0.0 && locationList.longitude == 0.0){
+                    val completeAddress = locationList.address + locationList.city+ locationList.zipCode
+                    EstateManagerStream.streamFetchGeocode(completeAddress)
+                        .subscribeWith(object : DisposableObserver<Geocoding?>() {
+                            override fun onNext(geocoding: Geocoding) {
+                                if (!geocoding.results.isNullOrEmpty()){
+                                    locationList.latitude = geocoding.results[0].geometry.location.lat
+                                    locationList.longitude = geocoding.results[0].geometry.location.lng
+                                    locationViewModel.updateLocation(locationList)
+                                    latLng = LatLng(locationList.latitude, locationList.longitude)
+                                    val marker = map?.addMarker(
+                                        MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                    )
+                                    marker?.tag = locationList.estateId
+                                    marker?.showInfoWindow()
 
-                val marker = map?.addMarker(
-                    MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                )
-                marker?.showInfoWindow()
+                                }else{
+                                    Log.d("Geocoding","Geocoding : Null or Empty")
+                                }
+
+                            }
+                            override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }
+                            override fun onComplete() {}
+                        })
+                }else{
+                    latLng = LatLng(locationList.latitude, locationList.longitude)
+                    val marker = map?.addMarker(
+                        MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    )
+                    marker?.tag = locationList.estateId
+                    marker?.showInfoWindow()
+                }
+
             }
         })
     }
-
 
     /**
      * Dispose subscription
@@ -242,9 +261,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
     override fun onMarkerClick(marker : Marker): Boolean {
         return if (marker.tag != null){
             Log.e(TAG, "onClickMarker: " + marker.tag)
-            val intent = Intent(this, DetailActivity::class.java)
-            val estateId = Objects.requireNonNull(marker.tag).toString().toLong()
-            intent.putExtra("estate",estateId)
+            val estateId: Long = marker.tag.toString().toLong()
+            val intent = Intent(applicationContext, DetailActivity::class.java)
+            intent.putExtra("estate", estateId)
             startActivity(intent)
             true
 
@@ -253,8 +272,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             false
         }
     }
-
-
 }
 
 

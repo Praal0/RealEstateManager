@@ -27,6 +27,7 @@ import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import android.content.Intent
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.models.Estate
 
@@ -49,7 +50,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var positionMarker: Marker
     private var estateDetailId : Long? = 0
     private val estateEdit: Long = 0
-    private var listPhoto : MutableList<Uri> = ArrayList()
+    private val myListPhoto : MutableLiveData<List<Uri?>> = MutableLiveData<List<Uri?>>()
 
 
 
@@ -85,7 +86,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         if (!Utils.isTablet(this.context)){
-            estateDetailId?.let { viewModel.getEstateById(it).observe(viewLifecycleOwner, Observer {
+            estateDetailId?.let { it ->
+                viewModel.getEstateById(it).observe(viewLifecycleOwner, Observer {
                 binding.etMandate.setText(it.numMandat.toString())
                 binding.etMandate.isEnabled = false
                 binding.etSurface.setText(it.surface.toString())
@@ -103,12 +105,11 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 binding.etCity.isEnabled = false
                 binding.videoView.requestFocus()
 
-                listPhoto.clear()
                 if (it.photoList.photoList.isNotEmpty()){
                     for (photoStr in it.photoList.photoList) {
-                        listPhoto.add(Uri.parse(photoStr))
+                        myListPhoto.value = listOf(Uri.parse(photoStr))
                     }
-                    adapter.setPhotoList(listPhoto)
+                    adapter.setPhotoList(myListPhoto.value)
                     adapter.setPhotoDescription(it.photoDescription.photoDescription)
                 }
                 if (it.video.photoList.isNotEmpty()){
@@ -153,13 +154,11 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 binding.etCity.isEnabled = false
                 binding.videoView.requestFocus()
 
-
-                listPhoto.clear()
                 if (it.photoList.photoList.isNotEmpty()){
                     for (photoStr in it.photoList.photoList) {
-                        listPhoto.add(Uri.parse(photoStr))
+                        myListPhoto.value = listOf(Uri.parse(photoStr))
                     }
-                    adapter.setPhotoList(listPhoto)
+                    adapter.setPhotoList(myListPhoto.value)
                     adapter.setPhotoDescription(it.photoDescription.photoDescription)
                 }
                 if (it.video.photoList.isNotEmpty()){

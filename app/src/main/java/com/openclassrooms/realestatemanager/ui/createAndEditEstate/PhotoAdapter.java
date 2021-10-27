@@ -5,19 +5,21 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.realestatemanager.databinding.ActivityAddPhotoItemBinding;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
-
-
     private RequestManager glide;
     private List<Uri> mPhotoList = new ArrayList<Uri>();
+    private MutableLiveData<List<Uri>> mPhotoLiveDate;
     private List<String> mPhotoDescription;
     private long estateEdit;
 
@@ -50,11 +52,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         //For photo description with photo
-        Uri photoUri = null;
+        Uri photoUri = Uri.EMPTY;
         String photoDescription = "";
-        if (mPhotoList.size() > position) {
+
+        photoUri = mPhotoLiveDate.getValue().get(position);
+        /*if (mPhotoList.size() > position) {
             photoUri = mPhotoList.get(position);
-        }
+        }*/
+
         if (mPhotoDescription.size() > position) {
             photoDescription = mPhotoDescription.get(position);
         }
@@ -74,7 +79,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     public int getItemCount() {
         return mPhotoList.size();
     }
-
 
     /**
      * for set photolist in adapter

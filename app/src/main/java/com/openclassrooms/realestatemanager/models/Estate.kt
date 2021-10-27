@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(
     tableName = "estate",
@@ -26,17 +27,17 @@ data class Estate(@PrimaryKey(autoGenerate = true) var numMandat:Long,
                   var park:Boolean,
                   var restaurants:Boolean,
                   var sold:Boolean,
-                  var upOfSaleDate: Long?,
+                  var upOfSaleDate: String?,
                   var soldDate:String?,
                   var agentName:String?,
                   var photoList: UriList,
                   var photoDescription : PhotoDescription,
                   var video:UriList,
                   var locationId : Long
-                  )  {
+                  ) : Serializable {
 
     constructor() : this(0,"",0,0,0,0,0,null,"",false,false,
-        false,false,false,0,"","",UriList(), PhotoDescription(), UriList(),0)
+        false,false,false,"","","",UriList(), PhotoDescription(), UriList(),0)
      }
 
 

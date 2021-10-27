@@ -1,7 +1,8 @@
 package com.openclassrooms.realestatemanager.models
 
-data class SearchEstate(var estateType: String?,
+import java.io.Serializable
 
+data class SearchEstate(var estateType: String?,
                         var city: String?,
                         var minRooms: Int?,
                         var maxRooms: Int?,
@@ -9,8 +10,8 @@ data class SearchEstate(var estateType: String?,
                         var maxSurface:Int?,
                         var minPrice:Double?,
                         var maxPrice:Double?,
-                        var minUpOfSaleDate: Long?,
-                        var maxOfSaleDate:Long?,
+                        var minUpOfSaleDate: String?,
+                        var maxOfSaleDate:String?,
                         var photos:Boolean,
                         var schools:Boolean,
                         var stores:Boolean,
@@ -19,7 +20,7 @@ data class SearchEstate(var estateType: String?,
                         var sold:Boolean
 
 
-)  {
+) : Serializable {
     constructor() : this("", "",null,null,null,null,null, null,null, null,
         false, false,false,false,false,false)
 }

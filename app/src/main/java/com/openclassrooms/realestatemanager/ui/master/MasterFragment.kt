@@ -11,17 +11,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterBinding
 import com.openclassrooms.realestatemanager.models.Estate
-import com.openclassrooms.realestatemanager.ui.MainActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-import androidx.recyclerview.widget.RecyclerView
-
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.bumptech.glide.Glide
+import com.openclassrooms.realestatemanager.ui.main.MainActivity
 
 @AndroidEntryPoint
 class MasterFragment : Fragment(), MasterAdapter.MasterItemListener {
