@@ -25,7 +25,7 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toolbar : Toolbar
-    private lateinit var masterFragment: MasterFragment
+    private var masterFragment: MasterFragment = MasterFragment()
     private var detailFragment: DetailFragment = DetailFragment()
     val estateViewModel: EstateViewModel by viewModels()
     val locationViewModel : LocationViewModel by viewModels()
@@ -93,18 +93,12 @@ class MainActivity : BaseActivity() {
      */
     private fun configureAndShowListFragment() {
         //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        masterFragment = supportFragmentManager.findFragmentById(R.id.list_master_frameLayout) as MasterFragment
-
         masterFragment = MasterFragment()
-        supportFragmentManager.beginTransaction()
-            .add(R.id.list_master_frameLayout, masterFragment)
-            .commit()
+        supportFragmentManager.beginTransaction().add(R.id.list_master_frameLayout, masterFragment).commit()
     }
 
     private fun configureAndShowDetailFragment(){
         //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        detailFragment = (supportFragmentManager.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment?)!!
-
         if (findViewById<View?>(R.id.detail_fragment_frameLayout) != null) {
             //Create new main fragment
             detailFragment = DetailFragment()

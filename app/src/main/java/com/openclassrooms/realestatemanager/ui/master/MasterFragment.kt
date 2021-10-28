@@ -68,9 +68,9 @@ class MasterFragment : Fragment() {
     private fun configureOnClickRecyclerView() {
         ItemClickSupport.addTo(binding.fragmentListRV, com.openclassrooms.realestatemanager.R.layout.fragment_master_item)
             .setOnItemClickListener { recyclerView, position, v ->
-                detailFragment = fragmentManager?.findFragmentById(com.openclassrooms.realestatemanager.R.id.detail_fragment_frameLayout) as DetailFragment
+                detailFragment = DetailFragment()
                 //for tablet format
-                if (detailFragment != null && detailFragment.isVisible) {
+                if (detailFragment.isVisible) {
                     val estate: Estate = adapter.getEstateAt(position)
                     Log.d("bundleListFragment", "bundleFragment$estate")
                     val intent = Intent(context, MainActivity::class.java)
