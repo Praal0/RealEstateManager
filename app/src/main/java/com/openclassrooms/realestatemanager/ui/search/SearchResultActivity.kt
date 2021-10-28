@@ -24,7 +24,7 @@ class SearchResultActivity : AppCompatActivity() {
     /**
      * For declaration fragment
      */
-    /*private fun configureAndShowSearchResultFragment() {
+    private fun configureAndShowSearchResultFragment() {
 //        Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
         searchResultFragment = supportFragmentManager.findFragmentById(com.openclassrooms.realestatemanager.R.id.fragment_search_result) as SearchResultFragment
         if (searchResultFragment == null) {
@@ -32,8 +32,8 @@ class SearchResultActivity : AppCompatActivity() {
             searchResultFragment = SearchResultFragment()
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_search_result, searchResultFragment)
-                .commit();
+                .add(com.openclassrooms.realestatemanager.R.id.fragment_search_result, searchResultFragment)
+                .commit()
         }
-    }*/
+    }
 }
