@@ -12,19 +12,17 @@ import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
+import org.bouncycastle.asn1.x500.style.RFC4519Style.owner
 
-class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapter<MasterViewHolder>() {
+class MasterAdapter(estateList : List<Estate>, glide : RequestManager) :RecyclerView.Adapter<MasterViewHolder>() {
 
     private lateinit var viewModel : LocationViewModel
     private lateinit var owner: LifecycleOwner
 
-    interface MasterItemListener{
-        fun onClickedEstate(EstateId: Estate)
-    }
-
     private var items = ArrayList<Estate>()
-    private lateinit var glide : RequestManager
+    private var glide : RequestManager = glide
 
     /**
      * For update estate list
@@ -45,10 +43,7 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MasterViewHolder {
-        val binding: FragmentMasterItemBinding = FragmentMasterItemBinding.inflate(LayoutInflater.from(parent.context),
-            parent, false)
-
-        return MasterViewHolder(binding, result,viewModel,owner)
+        return MasterViewHolder(FragmentMasterItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: MasterViewHolder, position: Int) { holder.bind(items[position],this.glide) }
@@ -56,19 +51,14 @@ class MasterAdapter(private val result: MasterItemListener) :RecyclerView.Adapte
     override fun getItemCount(): Int = items.size
 }
 
-class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, private val listener: MasterAdapter.MasterItemListener
-, private val viewModel: LocationViewModel,private val owner: LifecycleOwner) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener{
+class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding) : RecyclerView.ViewHolder(itemBinding.root){
 
     private lateinit var estate: Estate
-
-    init { itemBinding.root.setOnClickListener(this) }
 
     @SuppressLint("SetTextI18n")
     fun bind(item: Estate,  glide: RequestManager) {
         this.estate = item
-        viewModel.getLocationById(estate.numMandat).observe(owner, Observer {
-            itemBinding.city.text = it.city
-        })
+
 
         itemBinding.estateType.text = item.estateType
         itemBinding.price.text = "$"+item.price.toString()
@@ -86,10 +76,6 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding, priva
             glide.load(R.drawable.no_image).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
 
         }
-    }
-
-    override fun onClick(v: View?) {
-        listener.onClickedEstate(estate)
     }
 
 }

@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.ui.search
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +11,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentSearchResultBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.SearchEstate
 import com.openclassrooms.realestatemanager.models.UriList
+import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
+import com.openclassrooms.realestatemanager.utils.ItemClickSupport
 import com.openclassrooms.realestatemanager.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -70,7 +74,23 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun configureOnClickRecyclerView() {
-
+        ItemClickSupport.addTo(fragmentSearchResultBinding.searchResultListRV, R.layout.fragment_master_item)
+            .setOnItemClickListener { recyclerView, position, v ->
+                detailFragment = fragmentManager?.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment
+                //for tablet format
+                if (detailFragment != null && detailFragment!!.isVisible) {
+                    val estate = mAdapter!!.getEstates(position)
+                    detailFragment!!.updateUiForTablet(estate)
+                    Log.d("bundleListFragment", "bundleFragment$estate")
+                } else {
+                    //for phone format
+                    val estate = mAdapter!!.getEstates(position)
+                    val intent = Intent(context, DetailActivity::class.java)
+                    intent.putExtra("estate", estate)
+                    Log.d("bundleRV", "estate$estate")
+                    startActivity(intent)
+                }
+            }
     }
 
     private fun updateEstateList( estates : List<Estate>) {

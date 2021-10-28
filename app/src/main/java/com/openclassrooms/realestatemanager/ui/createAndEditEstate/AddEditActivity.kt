@@ -499,7 +499,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             .setNegativeButton("cancel") { dialog, _ -> dialog?.dismiss() }
             .setPositiveButton("ok") { dialog, which ->
                 val description: String = binding.editDescription.text.toString()
-                myList.value (contentUri)
+                //myList.value (contentUri)
                 Log.e("Picture", "contentUri = ${myList.value.toString()}")
                 photoText.photoDescription.add(description)
                 photo.photoList.add(contentUri.toString())

@@ -19,11 +19,11 @@
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fragment_list_RV"
+        <FrameLayout
+            android:id="@+id/list_master_frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"/>
+            android:layout_marginTop="?attr/actionBarSize" />
 
     </LinearLayout>
 

@@ -22,16 +22,15 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_list_RV"
-                android:layout_width="match_parent"
+            <FrameLayout
+                android:id="@+id/list_master_frameLayout"
+                android:layout_width="0px"
                 android:layout_height="match_parent"
-                android:layout_marginTop="?attr/actionBarSize"/>
+                android:layout_weight="40" />
 
             <FrameLayout
-                android:id="@+id/frame_layout_detail"
-                android:layout_width="wrap_content"
+                android:id="@+id/detail_fragment_frameLayout"
+                android:layout_width="0px"
                 android:layout_height="match_parent"
                 android:layout_weight="50" />
 

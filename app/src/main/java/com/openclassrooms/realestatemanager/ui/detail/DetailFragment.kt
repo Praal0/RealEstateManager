@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.detail
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.res.Resources
 import android.net.Uri
@@ -30,6 +31,7 @@ import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.models.Estate
+import java.lang.String
 
 
 /**
@@ -195,6 +197,41 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             Snackbar.make(binding.root, "No internet available", Snackbar.LENGTH_SHORT).show()
         }
         positionMarker()
+    }
+
+    /**
+     * For update UI for tablet
+     *
+     * @param estate
+     */
+    @SuppressLint("SetTextI18n")
+    fun updateUiForTablet(estate: Estate?) {
+        if (estate != null) {
+            binding.etMandate.setText(estate.numMandat.toString())
+            binding.etMandate.isEnabled = false
+            binding.etSurface.setText(Objects.requireNonNull(estate.surface).toString())
+            binding.etSurface.isEnabled = false
+            binding.etDescription.setText(estate.description)
+            binding.etDescription.isEnabled = false
+            binding.etRooms.setText(Objects.requireNonNull(estate.rooms).toString())
+            binding.etRooms.isEnabled = false
+            binding.etBathrooms.setText((estate.bathrooms).toString())
+            binding.etBathrooms.isEnabled = false
+            binding.etBedrooms.setText((estate.bedrooms).toString())
+            binding.etBedrooms.isEnabled = false
+            binding.etAddress.isEnabled = false
+            if (estate.photoList.photoList.isNotEmpty()) {
+                for (photoStr in estate.photoList.photoList) {
+                }
+                //adapter.setPhotoList()
+                //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+            }
+            if (!estate.video.photoList.isEmpty() && estate.video.photoList.size > 0) {
+                for (videoStr in estate.video.photoList) {
+                    binding.videoView.setVideoURI(Uri.parse(videoStr))
+                }
+            }
+        }
     }
 
     private fun positionMarker() {
