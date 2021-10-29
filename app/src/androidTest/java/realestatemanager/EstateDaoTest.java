@@ -36,10 +36,10 @@ public class EstateDaoTest {
     private static Location LOCATION_FLAT = new Location(1,0L,0L,"11 street de senter","Lyon","69000",2);
 
     private static Estate ESTATE_HOUSE = new Estate(1L, "house", 200, 4, 2, 1, 200, 100000.00, "Très belle maison", true, false,
-            false, true, true, 1601510400000L,"", "Karine Danjard",uriListTest,descriptionTest,uriListTest,1);
+            false, true, true, "23/01/2021","", "Karine Danjard",uriListTest,descriptionTest,uriListTest,1);
 
     private static Estate ESTATE_FLAT = new Estate(2L, "flat", 80, 2, 1, 1, 0, 50000.00, "Very nice flat", false, true,
-            true, true, true,1601510400000L,"","John Doe", uriListTest,descriptionTest,uriListTest,1);
+            true, true, true,"23/01/2021","","John Doe", uriListTest,descriptionTest,uriListTest,2);
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();

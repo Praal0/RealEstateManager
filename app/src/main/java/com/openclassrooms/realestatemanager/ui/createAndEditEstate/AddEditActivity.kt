@@ -72,7 +72,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mUpOfSaleDateDialog: DatePickerDialog? = null
     private var mDateFormat: SimpleDateFormat? = null
     private var mSoldDate: DatePickerDialog? = null
-    private var estateEdit: Long = 0
+    private var estateEdit: Long = 0L
     private var mError = false
     private var mDisposable: Disposable? = null
     private var completeAddress: String? = null
@@ -657,7 +657,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             })
 
         }
-
 
         locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
             estate.locationId = it.id

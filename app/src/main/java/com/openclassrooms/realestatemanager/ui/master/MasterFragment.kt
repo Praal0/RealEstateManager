@@ -10,19 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
-import com.openclassrooms.realestatemanager.ui.main.MainActivity
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import com.openclassrooms.realestatemanager.models.UriList
-
-
-
 
 
 @AndroidEntryPoint
@@ -34,6 +30,7 @@ class MasterFragment : Fragment() {
     val estateViewModel: EstateViewModel by viewModels()
     val locationViewModel : LocationViewModel by viewModels()
     private var estateList: List<Estate>? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,16 +63,15 @@ class MasterFragment : Fragment() {
      * Configure item click on RecyclerView
      */
     private fun configureOnClickRecyclerView() {
-        ItemClickSupport.addTo(binding.fragmentListRV, com.openclassrooms.realestatemanager.R.layout.fragment_master_item)
+        ItemClickSupport.addTo(binding.fragmentListRV, R.layout.fragment_master_item)
             .setOnItemClickListener { recyclerView, position, v ->
                 detailFragment = DetailFragment()
+                detailFragment = fragmentManager?.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment
                 //for tablet format
                 if (detailFragment.isVisible) {
                     val estate: Estate = adapter.getEstateAt(position)
                     Log.d("bundleListFragment", "bundleFragment$estate")
-                    val intent = Intent(context, MainActivity::class.java)
-                    intent.putExtra("estate", estate.numMandat)
-                    startActivity(intent)
+                    detailFragment.updateUiForTablet(estate)
                 } else {
                     //for phone format
                     val estate: Estate = adapter.getEstateAt(position)

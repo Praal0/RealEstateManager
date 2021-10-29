@@ -50,11 +50,9 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var adapter: PhotoAdapter
     private val photoText = PhotoDescription()
     private lateinit var positionMarker: Marker
-    private var estateDetailId : Long? = 0
+    private var estateDetailId : Long = 0
     private val estateEdit: Long = 0
     private val myListPhoto : MutableLiveData<List<Uri?>> = MutableLiveData<List<Uri?>>()
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,54 +78,36 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         binding.rvPhoto.adapter = adapter
         val intent = Intent(activity?.intent)
         estateDetailId = intent.getLongExtra("estate",0)
-
+        viewModel.getEstateById(this.estateDetailId).observe(viewLifecycleOwner, this::updateUi)
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        if (!Utils.isTablet(this.context)){
-            estateDetailId?.let { it ->
-                viewModel.getEstateById(it).observe(viewLifecycleOwner, Observer {
-                binding.etMandate.setText(it.numMandat.toString())
-                binding.etMandate.isEnabled = false
-                binding.etSurface.setText(it.surface.toString())
-                binding.etSurface.isEnabled = false
-                binding.etDescription.setText(it.description)
-                binding.etDescription.isEnabled = false
-                binding.etRooms.setText(it.rooms.toString())
-                binding.etRooms.isEnabled = false
-                binding.etBathrooms.setText(it.bathrooms.toString())
-                binding.etBathrooms.isEnabled = false
-                binding.etBedrooms.setText(it.bedrooms.toString())
-                binding.etBedrooms.isEnabled = false
-                binding.etAddress.isEnabled = false
-                binding.etPostalCode.isEnabled = false
-                binding.etCity.isEnabled = false
-                binding.videoView.requestFocus()
-
-                if (it.photoList.photoList.isNotEmpty()){
-                    for (photoStr in it.photoList.photoList) {
-                        myListPhoto.value = listOf(Uri.parse(photoStr))
-                    }
-                    adapter.setPhotoList(myListPhoto.value)
-                    adapter.setPhotoDescription(it.photoDescription.photoDescription)
+    private fun updateUi(estate: Estate?) {
+        if (estate != null) {
+            binding.etMandate.setText(estate.numMandat.toString())
+            binding.etMandate.isEnabled = false
+            binding.etSurface.setText(Objects.requireNonNull(estate.surface).toString())
+            binding.etSurface.isEnabled = false
+            binding.etDescription.setText(estate.description)
+            binding.etDescription.isEnabled = false
+            binding.etRooms.setText(Objects.requireNonNull(estate.rooms).toString())
+            binding.etRooms.isEnabled = false
+            binding.etBathrooms.setText((estate.bathrooms).toString())
+            binding.etBathrooms.isEnabled = false
+            binding.etBedrooms.setText((estate.bedrooms).toString())
+            binding.etBedrooms.isEnabled = false
+            binding.etAddress.isEnabled = false
+            if (estate.photoList.photoList.isNotEmpty()) {
+                for (photoStr in estate.photoList.photoList) {
+                    //adapter.setPhotoList()
+                    //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
                 }
-                if (it.video.photoList.isNotEmpty()){
-                    for (videoStr in it.video.photoList) {
-                        binding.videoView.setVideoURI(Uri.parse(videoStr))
-                        val mediaController = MediaController(this.context)
-                        binding.videoView.setMediaController(mediaController)
-                        mediaController.setAnchorView(binding.videoView)
-                        binding.videoView.start()
-                    }
-                }else{
-                    binding.videoView.visibility = INVISIBLE
+            }
+            if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
+                for (videoStr in estate.video.photoList) {
+                    binding.videoView.setVideoURI(Uri.parse(videoStr))
                 }
-            }) }
-        } else {
-            setupObservers()
+            }
         }
     }
 
@@ -136,47 +116,6 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         super.onResume()
     }
 
-    private fun setupObservers() {
-        viewModel.currentEstate.let { it ->
-            it.observe(viewLifecycleOwner, Observer {
-                binding.etMandate.setText(it.numMandat.toString())
-                binding.etMandate.isEnabled = false
-                binding.etSurface.setText(it.surface.toString())
-                binding.etSurface.isEnabled = false
-                binding.etDescription.setText(it.description)
-                binding.etDescription.isEnabled = false
-                binding.etRooms.setText(it.rooms.toString())
-                binding.etRooms.isEnabled = false
-                binding.etBathrooms.setText(it.bathrooms.toString())
-                binding.etBathrooms.isEnabled = false
-                binding.etBedrooms.setText(it.bedrooms.toString())
-                binding.etBedrooms.isEnabled = false
-                binding.etAddress.isEnabled = false
-                binding.etPostalCode.isEnabled = false
-                binding.etCity.isEnabled = false
-                binding.videoView.requestFocus()
-
-                if (it.photoList.photoList.isNotEmpty()){
-                    for (photoStr in it.photoList.photoList) {
-                        myListPhoto.value = listOf(Uri.parse(photoStr))
-                    }
-                    adapter.setPhotoList(myListPhoto.value)
-                    adapter.setPhotoDescription(it.photoDescription.photoDescription)
-                }
-                if (it.video.photoList.isNotEmpty()){
-                    for (videoStr in it.video.photoList) {
-                        binding.videoView.setVideoURI(Uri.parse(videoStr))
-                        val mediaController = MediaController(this.context)
-                        binding.videoView.setMediaController(mediaController)
-                        mediaController.setAnchorView(binding.videoView)
-                        binding.videoView.start()
-                    }
-                }else{
-                    binding.videoView.visibility = INVISIBLE
-                }
-            })} ?:run{Log.d("DetailFragment","Current estate : null")}
-
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         if (Utils.isInternetAvailable(this.context)) {
@@ -207,6 +146,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     @SuppressLint("SetTextI18n")
     fun updateUiForTablet(estate: Estate?) {
         if (estate != null) {
+            estateDetailId = estate.numMandat
             binding.etMandate.setText(estate.numMandat.toString())
             binding.etMandate.isEnabled = false
             binding.etSurface.setText(Objects.requireNonNull(estate.surface).toString())
@@ -222,20 +162,21 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             binding.etAddress.isEnabled = false
             if (estate.photoList.photoList.isNotEmpty()) {
                 for (photoStr in estate.photoList.photoList) {
+                    //adapter.setPhotoList()
+                    //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
                 }
-                //adapter.setPhotoList()
-                //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
-            if (!estate.video.photoList.isEmpty() && estate.video.photoList.size > 0) {
+            if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {
                     binding.videoView.setVideoURI(Uri.parse(videoStr))
                 }
             }
+            positionMarker()
         }
     }
 
     private fun positionMarker() {
-        estateDetailId?.let { it ->
+        estateDetailId.let { it ->
             locationViewModel.getLocationById(it).observe(viewLifecycleOwner, Observer {
                 if (it !=null){
                     binding.etAddress.setText(it.address)
