@@ -7,8 +7,10 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
+import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
@@ -27,6 +29,9 @@ class MainActivity : BaseActivity() {
     private lateinit var toolbar : Toolbar
     private var masterFragment: MasterFragment = MasterFragment()
     private var detailFragment: DetailFragment = DetailFragment()
+
+    private var idEstate: Long = 0
+
     val estateViewModel: EstateViewModel by viewModels()
     val locationViewModel : LocationViewModel by viewModels()
 
@@ -50,10 +55,26 @@ class MainActivity : BaseActivity() {
      * @return
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        val intent: Intent = intent
+        val estateDetail = intent.getSerializableExtra("estate") as Estate?
+        idEstate = estateDetail?.numMandat ?: 0
         //Handle actions on menu items
         return when (item.itemId) {
             android.R.id.home -> {
                 finish()
+                return true
+            }
+
+            R.id.edit_btn ->{
+                if (idEstate > 0) {
+                    val editIntent = Intent(this, AddEditActivity::class.java)
+                    editIntent.putExtra("estate", idEstate)
+                    startActivity(editIntent)
+                    finish()
+                } else {
+                    Snackbar.make(binding.root, "No estate selected", Snackbar.LENGTH_SHORT).show()
+                }
                 return true
             }
 
@@ -73,7 +94,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(com.openclassrooms.realestatemanager.R.menu.activity_main_menu, menu)
+        menuInflater.inflate(R.menu.activity_main_menu, menu)
         return super.onCreateOptionsMenu(menu)
 
     }
@@ -102,6 +123,7 @@ class MainActivity : BaseActivity() {
         if (findViewById<View?>(R.id.detail_fragment_frameLayout) != null) {
             //Create new main fragment
             detailFragment = DetailFragment()
+
             //Add it to FrameLayout container
             supportFragmentManager.beginTransaction()
                 .add(R.id.detail_fragment_frameLayout, detailFragment)

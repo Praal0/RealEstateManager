@@ -44,8 +44,4 @@ interface EstateDAO {
 
     @Query("DELETE FROM Estate WHERE numMandat = :mandateNumberID")
     fun deleteItemProvider(mandateNumberID: Long): Int
-
-
-
-
 }

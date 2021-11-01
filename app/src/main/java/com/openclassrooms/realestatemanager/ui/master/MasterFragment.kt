@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,7 +27,7 @@ class MasterFragment : Fragment() {
 
     private lateinit var binding: FragmentMasterBinding
     private lateinit var adapter: MasterAdapter
-    private lateinit var detailFragment: DetailFragment
+    private  var detailFragment: DetailFragment? = null
     val estateViewModel: EstateViewModel by viewModels()
     val locationViewModel : LocationViewModel by viewModels()
     private var estateList: List<Estate>? = null
@@ -66,12 +67,12 @@ class MasterFragment : Fragment() {
         ItemClickSupport.addTo(binding.fragmentListRV, R.layout.fragment_master_item)
             .setOnItemClickListener { recyclerView, position, v ->
                 detailFragment = DetailFragment()
-                detailFragment = fragmentManager?.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment
+                detailFragment = fragmentManager?.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment?
                 //for tablet format
-                if (detailFragment.isVisible) {
+                if (detailFragment?.isVisible == true) {
                     val estate: Estate = adapter.getEstateAt(position)
                     Log.d("bundleListFragment", "bundleFragment$estate")
-                    detailFragment.updateUiForTablet(estate)
+                    detailFragment?.updateUiForTablet(estate)
                 } else {
                     //for phone format
                     val estate: Estate = adapter.getEstateAt(position)

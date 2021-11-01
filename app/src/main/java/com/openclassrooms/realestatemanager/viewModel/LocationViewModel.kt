@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationViewModel @Inject constructor (private val locationDataSource: LocationDataRepository): ViewModel() {
+    private var idLocation : Long = 0
 
     // --------------------
     // LOCATION
@@ -22,11 +23,12 @@ class LocationViewModel @Inject constructor (private val locationDataSource: Loc
         return locationDataSource.getLocations()
     }
 
-    fun insertLocation(location: Location) {
+    fun insertLocation(location: Location) : Long {
         viewModelScope.launch {
-            locationDataSource.createLocation(location)
+            idLocation =  locationDataSource.createLocation(location)
             delay(1000)
         }
+        return idLocation
     }
 
     fun updateLocation(location: Location){

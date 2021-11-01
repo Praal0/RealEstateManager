@@ -1,9 +1,11 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -43,23 +45,33 @@ class MasterAdapter(estateList : List<Estate>, glide : RequestManager) :Recycler
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MasterViewHolder {
-        return MasterViewHolder(FragmentMasterItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return MasterViewHolder(FragmentMasterItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),viewModel,owner)
     }
 
-    override fun onBindViewHolder(holder: MasterViewHolder, position: Int) { holder.bind(items[position],this.glide) }
+    override fun onBindViewHolder(holder: MasterViewHolder, position: Int) {
+        holder.bind(items[position],this.glide)
+        holder.itemView.setOnClickListener {
+            notifyDataSetChanged()
+        }
+
+    }
 
     override fun getItemCount(): Int = items.size
 }
 
-class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding) : RecyclerView.ViewHolder(itemBinding.root){
+class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding,private val locationViewModel: LocationViewModel,private val owner: LifecycleOwner) : RecyclerView.ViewHolder(itemBinding.root){
 
     private lateinit var estate: Estate
 
     @SuppressLint("SetTextI18n")
     fun bind(item: Estate,  glide: RequestManager) {
+
+
         this.estate = item
 
-
+        locationViewModel.getLocationById(item.numMandat).observe(owner, Observer {
+            itemBinding.city.text = it.city
+        })
         itemBinding.estateType.text = item.estateType
         itemBinding.price.text = "$"+item.price.toString()
         //for estate sold

@@ -11,6 +11,7 @@ import javax.inject.Inject
 class LocationDataRepository@Inject constructor(
     private val locationDao: LocationDao
     ){
+    private var  id : Long = 0
 
     fun getLocations(): LiveData<List<Location>> {
         return this.locationDao.getLocations()
@@ -25,13 +26,14 @@ class LocationDataRepository@Inject constructor(
      * @param location
      */
     // --- CREATE ---
-     suspend fun createLocation(location: Location) {
+     suspend fun createLocation(location: Location)  : Long {
         try {
-            locationDao.insertLocation(location)
+            id = locationDao.insertLocation(location)
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
             Log.e("LocationDataRepository","Cannot Insert : $cause")
         }
+        return id
     }
 
     /**

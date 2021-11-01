@@ -78,6 +78,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         binding.rvPhoto.adapter = adapter
         val intent = Intent(activity?.intent)
         estateDetailId = intent.getLongExtra("estate",0)
+        binding.detailLayout.visibility = if (estateDetailId != 0L) View.VISIBLE else View.GONE
         viewModel.getEstateById(this.estateDetailId).observe(viewLifecycleOwner, this::updateUi)
 
     }
@@ -107,6 +108,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 for (videoStr in estate.video.photoList) {
                     binding.videoView.setVideoURI(Uri.parse(videoStr))
                 }
+            }else{
+                binding.videoView.visibility = INVISIBLE
             }
         }
     }
@@ -145,6 +148,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
      */
     @SuppressLint("SetTextI18n")
     fun updateUiForTablet(estate: Estate?) {
+        binding.detailLayout.visibility = View.VISIBLE
         if (estate != null) {
             estateDetailId = estate.numMandat
             binding.etMandate.setText(estate.numMandat.toString())

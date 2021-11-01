@@ -32,7 +32,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
         val args: MutableList<String> = ArrayList()
         var containsCondition = false
 
-        queryString += "SELECT * FROM Estate"
+        queryString += "SELECT * FROM Estate "
 
         if (estateType?.isNotEmpty() == true) {
             if (containsCondition) {

@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentSearchResultBinding
 import com.openclassrooms.realestatemanager.models.Estate
@@ -19,6 +20,7 @@ import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
+import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import com.openclassrooms.realestatemanager.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -31,8 +33,9 @@ class SearchResultFragment : Fragment() {
     private lateinit var fragmentSearchResultBinding: FragmentSearchResultBinding
     private var estateList: List<Estate>? = null
     private val photoLists = UriList()
-    private var mAdapter: SearchResultAdapter? = null
+    private lateinit var mAdapter: SearchResultAdapter
     private val searchViewModel: SearchViewModel by viewModels()
+    private val locationViewModel : LocationViewModel by viewModels()
     private var estateSearch: SearchEstate = SearchEstate()
     private var detailFragment: DetailFragment? = null
 
@@ -52,6 +55,9 @@ class SearchResultFragment : Fragment() {
      * For configure ViewModel
      */
     private fun configureViewModel() {
+        val intent = Intent(activity?.intent)
+        estateSearch = (intent.getSerializableExtra("estateSearch") as SearchEstate)
+        Log.d("estateSearch", estateSearch.toString())
         //for observe data
         this.searchViewModel.searchEstate(estateSearch.estateType, estateSearch.city, estateSearch.minRooms, estateSearch.maxRooms,
             estateSearch.minSurface, estateSearch.maxSurface, estateSearch.minPrice, estateSearch.maxPrice,
@@ -67,7 +73,7 @@ class SearchResultFragment : Fragment() {
     private fun configureRecyclerView() {
         this.estateList = ArrayList()
         //Create adapter
-        this.mAdapter = SearchResultAdapter(this.estateList, Glide.with(this), this.photoLists)
+        this.mAdapter = SearchResultAdapter(this.estateList as ArrayList<Estate>, Glide.with(this), this.photoLists,this)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         fragmentSearchResultBinding.searchResultListRV.layoutManager = layoutManager
         fragmentSearchResultBinding.searchResultListRV.adapter = mAdapter
@@ -76,24 +82,26 @@ class SearchResultFragment : Fragment() {
     private fun configureOnClickRecyclerView() {
         ItemClickSupport.addTo(fragmentSearchResultBinding.searchResultListRV, R.layout.fragment_master_item)
             .setOnItemClickListener { recyclerView, position, v ->
-                detailFragment = fragmentManager?.findFragmentById(R.id.detail_fragment_frameLayout) as DetailFragment
-                //for tablet format
-                if (detailFragment != null && detailFragment!!.isVisible) {
-                    val estate = mAdapter!!.getEstates(position)
-                    detailFragment!!.updateUiForTablet(estate)
-                    Log.d("bundleListFragment", "bundleFragment$estate")
-                } else {
-                    //for phone format
-                    val estate = mAdapter!!.getEstates(position)
-                    val intent = Intent(context, DetailActivity::class.java)
-                    intent.putExtra("estate", estate)
-                    Log.d("bundleRV", "estate$estate")
-                    startActivity(intent)
-                }
+                val estate = mAdapter.getEstates(position)
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("estate", estate.numMandat)
+                Log.d("bundleRV", "estate$estate")
+                startActivity(intent)
+
             }
     }
 
-    private fun updateEstateList( estates : List<Estate>) {
+    private fun updateEstateList(estates : List<Estate>) {
+        mAdapter.updateData(estates,locationViewModel,this)
+            Log.d("updateListSearch", "updateListSearch$estates")
+
+        if (Objects.requireNonNull(estates).isEmpty()) {
+            Snackbar.make(
+                fragmentSearchResultBinding.root, "No result found, please retry with another search", Snackbar.LENGTH_LONG)
+                .setAction("Return") { View.OnClickListener { activity?.finish() } }
+                .show()
+        }
+
         
     }
 

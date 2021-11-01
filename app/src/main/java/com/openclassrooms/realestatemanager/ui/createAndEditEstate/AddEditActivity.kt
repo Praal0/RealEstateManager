@@ -77,6 +77,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mDisposable: Disposable? = null
     private var completeAddress: String? = null
     private val idEstate: Long = 0
+    private var idLocation : Long = 0
     private var myList : MutableLiveData<List<Uri>> = MutableLiveData<List<Uri>>()
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
@@ -503,7 +504,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 Log.e("Picture", "contentUri = ${myList.value.toString()}")
                 photoText.photoDescription.add(description)
                 photo.photoList.add(contentUri.toString())
-
                 adapter.setPhotoList(myList.value)
             }
         builder.create()
@@ -652,21 +652,22 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             locationViewModel.insertLocation(location)
         }else{
             locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
-                location.id = it.id
+                idLocation = it.id
+                location.id = idLocation
                 locationViewModel.updateLocation(location)
             })
 
         }
-
         locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
             estate.locationId = it.id
             if (estateEdit == 0L){
                 estateViewModel.insertEstates(estate,this)
             }else{
-                location.id = it.id
                 estateViewModel.updateEstate(estate)
             }
         })
+
+
         mCompositeDisposable.add(mDisposable as DisposableObserver<*>);
     }
 
