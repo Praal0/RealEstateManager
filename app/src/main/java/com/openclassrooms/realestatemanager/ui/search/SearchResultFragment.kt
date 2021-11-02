@@ -37,14 +37,12 @@ class SearchResultFragment : Fragment() {
     private val searchViewModel: SearchViewModel by viewModels()
     private val locationViewModel : LocationViewModel by viewModels()
     private var estateSearch: SearchEstate = SearchEstate()
-    private var detailFragment: DetailFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         fragmentSearchResultBinding = FragmentSearchResultBinding.inflate(inflater, container, false)
         val view: View = fragmentSearchResultBinding.root
-
         configureViewModel()
         configureRecyclerView()
         configureOnClickRecyclerView()
@@ -87,7 +85,6 @@ class SearchResultFragment : Fragment() {
                 intent.putExtra("estate", estate.numMandat)
                 Log.d("bundleRV", "estate$estate")
                 startActivity(intent)
-
             }
     }
 
@@ -101,9 +98,5 @@ class SearchResultFragment : Fragment() {
                 .setAction("Return") { View.OnClickListener { activity?.finish() } }
                 .show()
         }
-
-        
     }
-
-
 }

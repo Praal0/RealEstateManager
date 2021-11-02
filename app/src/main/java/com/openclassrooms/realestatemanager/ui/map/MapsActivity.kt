@@ -55,7 +55,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
     private lateinit var binding: ActivityMapsBinding
     private  var locationManager: LocationManager? = null
     private lateinit var latLng : LatLng
-    private val locationViewModel: LocationViewModel by viewModels()
+    private val estateViewModel:EstateViewModel by viewModels()
     private val mapViewModel : MapViewModel by viewModels()
     private val mCompositeDisposable = CompositeDisposable()
 
@@ -182,9 +182,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             mapViewModel.getLocation()?.observe(this) { location ->
                 if (location != null) {
                     latLng = LatLng(location.lat, location.lng)
+                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
                     googleMap.uiSettings.isMyLocationButtonEnabled = true
                     mapViewModel.updateCurrentUserPosition(latLng)
-                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
                 }
             }
             map!!.uiSettings.isRotateGesturesEnabled = true
@@ -207,22 +207,22 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
     }
 
     private fun addMarker() {
-        locationViewModel.getLocations().observe(this, androidx.lifecycle.Observer {
+        estateViewModel.getEstates().observe(this, androidx.lifecycle.Observer {
             for (locationList in it){
-                if (locationList.latitude == 0.0 && locationList.longitude == 0.0){
-                    val completeAddress = locationList.address + locationList.city+ locationList.zipCode
+                if (locationList.locationEstate.latitude == 0.0 && locationList.locationEstate.longitude == 0.0){
+                    val completeAddress = locationList.locationEstate.address + locationList.locationEstate.city+ locationList.locationEstate.zipCode
                     EstateManagerStream.streamFetchGeocode(completeAddress)
                         .subscribeWith(object : DisposableObserver<Geocoding?>() {
                             override fun onNext(geocoding: Geocoding) {
                                 if (!geocoding.results.isNullOrEmpty()){
-                                    locationList.latitude = geocoding.results[0].geometry.location.lat
-                                    locationList.longitude = geocoding.results[0].geometry.location.lng
-                                    locationViewModel.updateLocation(locationList)
-                                    latLng = LatLng(locationList.latitude, locationList.longitude)
+                                    locationList.locationEstate.latitude = geocoding.results[0].geometry.location.lat
+                                    locationList.locationEstate.longitude = geocoding.results[0].geometry.location.lng
+                                    estateViewModel.updateEstate(locationList)
+                                    latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
                                     val marker = map?.addMarker(
                                         MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                                     )
-                                    marker?.tag = locationList.estateId
+                                    //marker?.tag = locationList.estateId
                                     marker?.showInfoWindow()
 
                                 }else{
@@ -234,11 +234,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
                             override fun onComplete() {}
                         })
                 }else{
-                    latLng = LatLng(locationList.latitude, locationList.longitude)
+                    latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
                     val marker = map?.addMarker(
                         MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                     )
-                    marker?.tag = locationList.estateId
+                    marker?.tag = locationList.numMandat
                     marker?.showInfoWindow()
                 }
 

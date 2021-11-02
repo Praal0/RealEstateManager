@@ -10,9 +10,6 @@ interface LocationDao {
     @Query("SELECT * FROM Location")
     fun getLocations(): LiveData<List<Location>>
 
-    @Query("SELECT * FROM Location WHERE estateId = :index")
-    fun getLocationById(index:Long): LiveData<Location>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(location: Location) : Long
 

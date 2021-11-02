@@ -65,13 +65,8 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding,privat
 
     @SuppressLint("SetTextI18n")
     fun bind(item: Estate,  glide: RequestManager) {
-
-
         this.estate = item
-
-        locationViewModel.getLocationById(item.numMandat).observe(owner, Observer {
-            itemBinding.city.text = it.city
-        })
+        itemBinding.city.text = item.locationEstate.city
         itemBinding.estateType.text = item.estateType
         itemBinding.price.text = "$"+item.price.toString()
         //for estate sold
@@ -80,10 +75,9 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding,privat
         }else {
             itemBinding.listPhotoSold.setImageResource(0)
         }
-
         //for photo
         if(estate.photoList.photoList.isNotEmpty()) {
-            glide.load(estate.photoList.photoList[0]).into(itemBinding.listPhoto)
+            glide.load(estate.photoList.photoList[0]).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
         }else {
             glide.load(R.drawable.no_image).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
 

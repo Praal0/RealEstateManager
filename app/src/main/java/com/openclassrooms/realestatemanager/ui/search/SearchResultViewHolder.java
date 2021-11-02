@@ -33,13 +33,7 @@ public class SearchResultViewHolder extends RecyclerView.ViewHolder {
             // for Estate type
            fragmentMasterItemBinding.estateType.setText(estate.getEstateType());
 
-           // For city
-            locationViewModel.getLocationById(estate.getNumMandat()).observe(owner, new Observer<Location>() {
-                @Override
-                public void onChanged(Location location) {
-                    fragmentMasterItemBinding.city.setText(location.getCity());
-                }
-            });
+           fragmentMasterItemBinding.city.setText(estate.getLocationEstate().getCity());
 
             //for price
             if (estate.getPrice() != null) {

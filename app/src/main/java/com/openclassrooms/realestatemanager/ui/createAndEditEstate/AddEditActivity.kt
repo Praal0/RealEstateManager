@@ -9,7 +9,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
@@ -44,16 +43,15 @@ import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.utils.EstateManagerStream
-import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-import io.reactivex.disposables.CompositeDisposable
 
 @AndroidEntryPoint
 class AddEditActivity : BaseActivity(),View.OnClickListener {
@@ -77,7 +75,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mDisposable: Disposable? = null
     private var completeAddress: String? = null
     private val idEstate: Long = 0
-    private var idLocation : Long = 0
     private var myList : MutableLiveData<List<Uri>> = MutableLiveData<List<Uri>>()
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
@@ -86,7 +83,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private lateinit var cursor: Cursor
 
     private val estateViewModel: EstateViewModel by viewModels()
-    private val locationViewModel : LocationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,8 +164,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.etSurface.setText(estate.surface.toString())
         estateFormBinding.etDescription.setText(estate.description)
         estateFormBinding.etRooms.setText(estate.rooms.toString().replace("5 et +", "5"), false)
-        estateFormBinding.etBathrooms.setText(Objects.requireNonNull(estate.bathrooms).toString().replace("4 et +", "4"), false)
-        estateFormBinding.etBedrooms.setText(Objects.requireNonNull(estate.bedrooms).toString().replace("5 et +", "5"), false)
+        estateFormBinding.etBathrooms.setText(estate.bathrooms.toString().replace("4 et +", "4"), false)
+        estateFormBinding.etBedrooms.setText(estate.bedrooms.toString().replace("5 et +", "5"), false)
         estateFormBinding.etGround.setText(estate.ground.toString())
         estateFormBinding.etPrice.setText(estate.price.toString())
         estateFormBinding.boxSchools.isChecked = estate.schools
@@ -180,12 +176,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.saleDate.setText(estate.upOfSaleDate)
         estateFormBinding.soldDate.setText(estate.soldDate)
         estateFormBinding.etAgent.setText(estate.agentName, false)
+        estateFormBinding.etAddress.setText(estate.locationEstate.address)
+        estateFormBinding.etCity.setText(estate.locationEstate.city.toString())
+        estateFormBinding.etPostalCode.setText(estate.locationEstate.zipCode.toString())
 
-        locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
-            estateFormBinding.etAddress.setText(it.address)
-            estateFormBinding.etCity.setText(it.city.toString())
-            estateFormBinding.etPostalCode.setText(it.zipCode.toString())
-        })
 
         if (estate.photoList.photoList.isNotEmpty()) {
             photo.photoList.clear()
@@ -547,13 +541,25 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     private fun saveEstates() {
+        var ground : Int = 0
+        location = Location(0,
+            0.0,
+            0.0,
+            estateFormBinding.etAddress.text.toString(),
+            estateFormBinding.etCity.text.toString(),
+            estateFormBinding.etPostalCode.text.toString())
+
+        if (estateFormBinding.etGround.text.toString().isNotEmpty()){
+            ground = estateFormBinding.etGround.text.toString().toInt()
+        }
+
          estate = Estate(estateFormBinding.etMandate.text.toString().toLong(),
             estateFormBinding.etEstate.text.toString(),
             Integer.parseInt(estateFormBinding.etSurface.text.toString()),
-            Integer.parseInt(estateFormBinding.etRooms.text.toString()),
-            Integer.parseInt(estateFormBinding.etBedrooms.text.toString()),
-            Integer.parseInt(estateFormBinding.etBathrooms.text.toString()),
-            Integer.parseInt(estateFormBinding.etGround.text.toString()),
+            Integer.parseInt(estateFormBinding.etRooms.text.toString().replace("5 et +", "5")),
+            Integer.parseInt(estateFormBinding.etBedrooms.text.toString().replace("5 et +", "5")),
+            Integer.parseInt(estateFormBinding.etBathrooms.text.toString().replace("4 et +", "4")),
+             ground,
             estateFormBinding.etPrice.text.toString().toDouble(),
             estateFormBinding.etDescription.text.toString(),
             estateFormBinding.boxSchools.isChecked,
@@ -566,7 +572,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             estateFormBinding.etAgent.text.toString(),
             photo,
             photoText,
-            video,0)
+            video,location)
 
         Log.d("saveEstate", "saveEstate$estate")
 
@@ -578,8 +584,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                         super.onDismissed(snackbar, event)
                         finish()
                     }
-                })
-                .show()
+                }).show()
         } else {
             executeHttpRequestWithRetrofit(this)
             Snackbar.make(activityAddBinding.root, "Your new Estate is updated", Snackbar.LENGTH_SHORT)
@@ -589,19 +594,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                         finish()
                     }
                 }).show()
-        }
-    }
-
-    private fun validateTextView(inputValue: TextInputLayout): String? {
-        val tmpValue = inputValue.editText?.text.toString()
-        return if (tmpValue.isEmpty()) {
-            inputValue.error = getText(R.string.require)
-            mError = true
-            null
-        } else {
-            mError = false
-            inputValue.error = null
-            tmpValue
         }
     }
 
@@ -626,19 +618,12 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     //RX Java http request for geocoding API
     private fun executeHttpRequestWithRetrofit(context: Context) {
         completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
-        location = Location(0,
-            0.0,
-            0.0,
-            estateFormBinding.etAddress.text.toString(),
-            estateFormBinding.etCity.text.toString(),
-            estateFormBinding.etPostalCode.text.toString(),
-            estateFormBinding.etMandate.text.toString().toLong())
             mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
             .subscribeWith(object : DisposableObserver<Geocoding?>() {
                 override fun onNext(geocoding: Geocoding) {
                     if (!geocoding.results.isNullOrEmpty()){
-                        location.latitude = geocoding.results[0].geometry.location.lat
-                        location.longitude = geocoding.results[0].geometry.location.lng
+                        estate.locationEstate.latitude = geocoding.results[0].geometry.location.lat
+                        estate.locationEstate.longitude = geocoding.results[0].geometry.location.lng
                     }else{
                         Toast.makeText(context,"Geocoding : Null or Empty",Toast.LENGTH_SHORT).show()
                     }
@@ -647,24 +632,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             })
 
         if (estateEdit == 0L){
-            locationViewModel.insertLocation(location)
+            estateViewModel.insertEstates(estate,this)
         }else{
-            locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
-                idLocation = it.id
-                location.id = idLocation
-                locationViewModel.updateLocation(location)
-            })
-
+            estateViewModel.updateEstate(estate)
         }
-        locationViewModel.getLocationById(estate.numMandat).observe(this, androidx.lifecycle.Observer {
-            estate.locationId = it.id
-            if (estateEdit == 0L){
-                estateViewModel.insertEstates(estate,this)
-            }else{
-                estateViewModel.updateEstate(estate)
-            }
-        })
-
 
         mCompositeDisposable.add(mDisposable as DisposableObserver<*>);
     }

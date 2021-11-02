@@ -36,62 +36,62 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
 
         if (estateType?.isNotEmpty() == true) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
                 containsCondition = true;
             }
-            queryString += " estateType=?";
-            args.add(estateType);
+            queryString += " estateType=?"
+            args.add(estateType)
         }
 
         if (city?.isNotEmpty() == true) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
-                queryString += " WHERE";
-                containsCondition = true;
+                queryString += " WHERE"
+                containsCondition = true
             }
-            queryString += " city=?";
-            args.add(city);
+            queryString += " city=?"
+            args.add(city)
         }
 
         if (minRooms != null && maxRooms != null && minRooms >= 0 && maxRooms > 0) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
                 queryString += " WHERE";
-                containsCondition = true;
+                containsCondition = true
             }
-            queryString += " rooms BETWEEN ? AND ?";
-            args.add(minRooms.toString());
-            args.add(maxRooms.toString());
+            queryString += "rooms BETWEEN ? AND ?"
+            args.add(minRooms.toString())
+            args.add(maxRooms.toString())
         }
         if (minSurface != null && maxSurface != null && minSurface >= 0 && maxSurface > 0) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
             }
-            queryString += " surface BETWEEN ? AND ?";
-            args.add(minSurface.toString());
-            args.add(maxSurface.toString());
+            queryString += " surface BETWEEN ? AND ?"
+            args.add(minSurface.toString())
+            args.add(maxSurface.toString())
         }
         if (minPrice != null && maxPrice != null && minPrice >= 0 && maxPrice > 0) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
             }
-            queryString += " price BETWEEN ? AND ?";
-            args.add(minPrice.toString());
-            args.add(maxPrice.toString());
+            queryString += " price BETWEEN ? AND ?"
+            args.add(minPrice.toString())
+            args.add(maxPrice.toString())
         }
         if (minUpOfSaleDate != null && maxOfSaleDate != null && minUpOfSaleDate >= 0 && maxOfSaleDate > 0) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
             }
             queryString += " upOfSaleDate BETWEEN ? AND ?";
             args.add(minUpOfSaleDate.toString())

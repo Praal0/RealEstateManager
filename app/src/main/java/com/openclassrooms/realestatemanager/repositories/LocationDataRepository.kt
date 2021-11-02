@@ -17,10 +17,6 @@ class LocationDataRepository@Inject constructor(
         return this.locationDao.getLocations()
     }
 
-    fun getLocationByID(locationId:Long) : LiveData<Location>{
-        return this.locationDao.getLocationById(locationId)
-    }
-
     /**
      * Create
      * @param location

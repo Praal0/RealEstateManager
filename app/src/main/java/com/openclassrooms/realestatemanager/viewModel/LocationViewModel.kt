@@ -38,8 +38,6 @@ class LocationViewModel @Inject constructor (private val locationDataSource: Loc
         }
     }
 
-    fun getLocationById(locationId: Long) : LiveData<Location>{
-        return locationDataSource.getLocationByID(locationId)
-    }
+
 
 }

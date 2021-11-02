@@ -11,6 +11,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import android.content.DialogInterface
 import android.os.Environment
 import androidx.activity.viewModels
+import com.google.android.material.textfield.TextInputLayout
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
@@ -24,12 +25,20 @@ open class BaseActivity : AppCompatActivity() {
 
     private val RC_CAMERA_AND_STORAGE_COARSELOCATION_FINELOCATION = 100
     private var newfile: File? = null
+    private var mError:Boolean = false
     private  val VIDEO_DIRECTORY : String = "/realEstateManager"
     private val CAM_AND_READ_EXTERNAL_STORAGE = arrayOf(
         Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
-
+    fun validateTextView(inputValue: TextInputLayout): Boolean {
+        val tmpValue = inputValue.editText?.text.toString()
+         if (tmpValue.isEmpty()) {
+            inputValue.error = getText(R.string.require)
+            mError = true
+        }
+        return mError
+    }
 
     fun saveVideoToInternalStorage( filePath: String) {
         try {

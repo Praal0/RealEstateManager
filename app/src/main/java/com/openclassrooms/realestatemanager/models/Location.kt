@@ -10,5 +10,4 @@ data class Location(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") va
                     var latitude : Double,
                     var address:String?,
                     var city:String?,
-                    var zipCode:String?,
-                    var estateId:Long)
+                    var zipCode:String?)
