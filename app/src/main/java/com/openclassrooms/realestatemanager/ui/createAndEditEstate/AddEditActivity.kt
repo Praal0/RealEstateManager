@@ -529,11 +529,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             validateTextView(estateFormBinding.inputRooms)
             validateTextView(estateFormBinding.inputBedrooms)
             validateTextView(estateFormBinding.inputBathrooms)
-            validateTextView(estateFormBinding.inputGround)
             validateTextView(estateFormBinding.inputPrice)
             validateTextView(estateFormBinding.inputDescription)
             validateTextView(estateFormBinding.inputAddress)
-            validateTextView(estateFormBinding.inputGround)
             validateTextView(estateFormBinding.inputPostalCode)
             validateTextView(estateFormBinding.inputCity)
             validateTextView(estateFormBinding.inputAgent)
@@ -635,7 +633,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             estateFormBinding.etCity.text.toString(),
             estateFormBinding.etPostalCode.text.toString(),
             estateFormBinding.etMandate.text.toString().toLong())
-        mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
+            mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
             .subscribeWith(object : DisposableObserver<Geocoding?>() {
                 override fun onNext(geocoding: Geocoding) {
                     if (!geocoding.results.isNullOrEmpty()){
