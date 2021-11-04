@@ -445,8 +445,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 if (resultCode == RESULT_OK) {
                     val contentURI = data.data
                     val selectedVideoPath: String? = contentURI?.let { getPath(it) }
-                    selectedVideoPath?.let { Log.d("path", it) }
-                    selectedVideoPath?.let { saveVideoToInternalStorage(it) }
+                    selectedVideoPath?.let {
+                        Log.d("path", it)
+                        saveVideoToInternalStorage(it)
+                    }
                     estateFormBinding.videoView.setVideoURI(contentURI)
                     estateFormBinding.videoView.visibility = View.VISIBLE
                     estateFormBinding.videoView.requestFocus()

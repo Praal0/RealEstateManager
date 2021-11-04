@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
@@ -55,10 +56,6 @@ class MainActivity : BaseActivity() {
      * @return
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        val intent: Intent = intent
-        val estateDetail = intent.getSerializableExtra("estate") as Estate?
-        idEstate = estateDetail?.numMandat ?: 0
         //Handle actions on menu items
         return when (item.itemId) {
             android.R.id.home -> {
@@ -67,11 +64,12 @@ class MainActivity : BaseActivity() {
             }
 
             R.id.edit_btn ->{
+                idEstate = estateViewModel.currentEstate
+
                 if (idEstate > 0) {
                     val editIntent = Intent(this, AddEditActivity::class.java)
-                    editIntent.putExtra("estate", idEstate)
+                    editIntent.putExtra("iDEstate", idEstate)
                     startActivity(editIntent)
-                    finish()
                 } else {
                     Snackbar.make(binding.root, "No estate selected", Snackbar.LENGTH_SHORT).show()
                 }

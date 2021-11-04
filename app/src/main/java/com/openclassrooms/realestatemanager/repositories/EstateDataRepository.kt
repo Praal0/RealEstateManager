@@ -6,12 +6,19 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.database.dao.EstateDAO
 import com.openclassrooms.realestatemanager.models.Estate
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
 
+class EstateDataRepository @Inject constructor(private val estateDAO: EstateDAO) {
 
-class EstateDataRepository @Inject constructor(
-    private val estateDAO: EstateDAO
-    ) {
+    var currentEstateIdFlow : Long = 0
+
+    fun setCurrentEstateId(estateId: Long) {
+        currentEstateIdFlow = estateId
+    }
+
     fun getEstates(): LiveData<List<Estate>> {
         return this.estateDAO.getEstates()
     }

@@ -59,6 +59,7 @@
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/menu-land/activity_main_menu.xml" value="0.3308943089430894" />
+        <entry key="app/src/main/res/menu-sw600dp-land/activity_main_menu.xml" value="0.2109375" />
         <entry key="app/src/main/res/menu/activity_main_menu.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/menu/description_menu.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.21197916666666666" />

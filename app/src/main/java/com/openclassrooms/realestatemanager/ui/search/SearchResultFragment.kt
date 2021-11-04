@@ -94,8 +94,7 @@ class SearchResultFragment : Fragment() {
 
         if (Objects.requireNonNull(estates).isEmpty()) {
             Snackbar.make(
-                fragmentSearchResultBinding.root, "No result found, please retry with another search", Snackbar.LENGTH_LONG)
-                .setAction("Return") { View.OnClickListener { activity?.finish() } }
+                fragmentSearchResultBinding.root, "No result found, please retry with another search", Snackbar.LENGTH_SHORT)
                 .show()
         }
     }

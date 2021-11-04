@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -72,6 +71,7 @@ class MasterFragment : Fragment() {
                 if (detailFragment?.isVisible == true) {
                     val estate: Estate = adapter.getEstateAt(position)
                     Log.d("bundleListFragment", "bundleFragment$estate")
+                    estateViewModel.selectItem(estate.numMandat)
                     detailFragment?.updateUiForTablet(estate)
                 } else {
                     //for phone format

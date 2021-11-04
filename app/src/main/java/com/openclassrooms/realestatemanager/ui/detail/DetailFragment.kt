@@ -25,9 +25,12 @@ import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import android.content.Intent
+import android.view.MenuItem
+import android.widget.MediaController
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 
 
 /**
@@ -102,6 +105,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {
                     binding.videoView.setVideoURI(Uri.parse(videoStr))
+                    binding.videoView.start()
                 }
             }else{
                 binding.videoView.visibility = INVISIBLE
@@ -136,6 +140,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+
     /**
      * For update UI for tablet
      *
@@ -168,7 +173,10 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {
                     binding.videoView.setVideoURI(Uri.parse(videoStr))
+                    binding.videoView.start()
                 }
+            }else{
+                binding.videoView.visibility = INVISIBLE
             }
             positionMarker(estate)
         }

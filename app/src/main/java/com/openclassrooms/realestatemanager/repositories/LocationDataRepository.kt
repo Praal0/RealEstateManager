@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.openclassrooms.realestatemanager.database.dao.LocationDao
-import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Location
 import javax.inject.Inject
 
