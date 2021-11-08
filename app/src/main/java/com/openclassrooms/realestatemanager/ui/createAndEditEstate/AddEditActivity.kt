@@ -94,8 +94,15 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
-        if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
 
+        // Create the observer which updates the UI.
+        val photoObserver = Observer<List<Uri>> { newName ->
+            // Update the UI, in this case, a TextView.
+            listPhoto = newName
+        }
+
+        estateViewModel.currentPhoto.observe(this,photoObserver)
+        if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
 
         val view: View = activityAddBinding.root
         setContentView(view)

@@ -182,6 +182,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             mapViewModel.getLocation()?.observe(this) { location ->
                 if (location != null) {
                     latLng = LatLng(location.lat, location.lng)
+                    mapViewModel.updateCurrentUserPosition(latLng)
                     map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
                     googleMap.uiSettings.isMyLocationButtonEnabled = true
                     mapViewModel.updateCurrentUserPosition(latLng)

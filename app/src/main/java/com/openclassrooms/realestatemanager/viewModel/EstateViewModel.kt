@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.viewModel
 
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EstateViewModel @Inject constructor (private val estateDataSource: EstateDataRepository): ViewModel() {
+
+    val currentPhoto: MutableLiveData<List<Uri>> by lazy {
+        MutableLiveData<List<Uri>>()
+    }
 
     // --------------------
     // ESTATES
