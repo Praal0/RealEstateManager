@@ -34,8 +34,6 @@ class MainActivity : BaseActivity() {
     private var idEstate: Long = 0
 
     val estateViewModel: EstateViewModel by viewModels()
-    val locationViewModel : LocationViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +63,6 @@ class MainActivity : BaseActivity() {
 
             R.id.edit_btn ->{
                 idEstate = estateViewModel.currentEstate
-
                 if (idEstate > 0) {
                     val editIntent = Intent(this, AddEditActivity::class.java)
                     editIntent.putExtra("iDEstate", idEstate)

@@ -50,7 +50,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var positionMarker: Marker
     private var estateDetailId : Long = 0
     private val estateEdit: Long = 0
-    private val myListPhoto : MutableLiveData<List<Uri?>> = MutableLiveData<List<Uri?>>()
+    private var listPhoto : MutableList<Uri> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,9 +98,10 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             binding.etAddress.isEnabled = false
             if (estate.photoList.photoList.isNotEmpty()) {
                 for (photoStr in estate.photoList.photoList) {
-                    //adapter.setPhotoList()
-                    //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+                    listPhoto.add(Uri.parse(photoStr))
                 }
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
             if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {
@@ -166,9 +167,10 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             binding.etAddress.isEnabled = false
             if (estate.photoList.photoList.isNotEmpty()) {
                 for (photoStr in estate.photoList.photoList) {
-                    //adapter.setPhotoList()
-                    //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+                    listPhoto.add(Uri.parse(photoStr))
                 }
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
             if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {

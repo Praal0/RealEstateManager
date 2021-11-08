@@ -27,6 +27,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
@@ -52,6 +53,10 @@ import io.reactivex.observers.DisposableObserver
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import com.openclassrooms.realestatemanager.utils.ItemClickSupport
+
+
+
 
 @AndroidEntryPoint
 class AddEditActivity : BaseActivity(),View.OnClickListener {
@@ -75,7 +80,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mDisposable: Disposable? = null
     private var completeAddress: String? = null
     private val idEstate: Long = 0
-    private var myList : MutableLiveData<List<Uri>> = MutableLiveData<List<Uri>>()
+    private var listPhoto : MutableList<Uri> = ArrayList()
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
     private val video = UriList()
@@ -89,8 +94,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
-
         if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
+
 
         val view: View = activityAddBinding.root
         setContentView(view)
@@ -103,11 +108,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         onClickVideoBtn()
         clickFabButton()
         clickSoldButon()
-
         //Set title toolbar
         setToolbar()
 
         setupRecyclerView()
+        configureOnClickRecyclerView()
 
         //For date picker
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
@@ -185,10 +190,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             photo.photoList.clear()
             photoText.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
-                //listPhoto.add((Uri.parse(photoStr)))
-                myList.value = listOf(Uri.parse(photoStr))
+                listPhoto.add((Uri.parse(photoStr)))
             }
-            adapter.setPhotoList(myList.value)
+            adapter.setPhotoList(listPhoto)
             adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             photo.photoList.addAll(estate.photoList.photoList)
         }
@@ -317,6 +321,25 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 return event.action == MotionEvent.ACTION_UP
             }
         ))
+    }
+
+
+    /**
+     * For delete photos and descriptions
+     */
+    private fun configureOnClickRecyclerView() {
+        ItemClickSupport.addTo(estateFormBinding.rvPhoto, R.layout.activity_add_photo_item)
+            .setOnItemClickListener { recyclerView: RecyclerView?, position: Int, v: View? ->
+                val estatePhoto = listPhoto[position].toString()
+                Log.d("estatePhoto", "estatePhoto$estatePhoto")
+                val estateDescription = photoText.photoDescription[position]
+                listPhoto.remove(Uri.parse(estatePhoto))
+                photo.photoList.remove(estatePhoto)
+                photoText.photoDescription.remove(estateDescription)
+                adapter.setPhotoList(listPhoto)
+                adapter.notifyItemRemoved(position)
+                adapter.notifyDataSetChanged()
+            }
     }
 
     /**
@@ -496,11 +519,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             .setNegativeButton("cancel") { dialog, _ -> dialog?.dismiss() }
             .setPositiveButton("ok") { dialog, which ->
                 val description: String = binding.editDescription.text.toString()
-                //myList.value (contentUri)
-                Log.e("Picture", "contentUri = ${myList.value.toString()}")
+                contentUri?.let { listPhoto.add(it) }
+                Log.e("Picture", "contentUri = $listPhoto")
                 photoText.photoDescription.add(description)
                 photo.photoList.add(contentUri.toString())
-                adapter.setPhotoList(myList.value)
+                adapter.setPhotoList(listPhoto)
             }
         builder.create()
         builder.show()

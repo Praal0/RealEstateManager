@@ -10,7 +10,6 @@ import com.openclassrooms.realestatemanager.database.dao.LocationDao
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Location
 
-
 @Database(entities = [Estate::class, Location::class], version = 1, exportSchema = false)
 @TypeConverters(UriListConverter::class, PhotoDescriptionConverter::class)
 abstract class RealEstateDatabase : RoomDatabase() {
@@ -29,7 +28,7 @@ abstract class RealEstateDatabase : RoomDatabase() {
                 synchronized(RealEstateDatabase::class.java) {
 
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        RealEstateDatabase::class.java, "EstateDatabase.db")
+                        RealEstateDatabase::class.java, "EstateDatabases.db")
                         .build()
                 }
             }

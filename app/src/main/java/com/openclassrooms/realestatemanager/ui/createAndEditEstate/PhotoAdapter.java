@@ -19,7 +19,6 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private RequestManager glide;
     private List<Uri> mPhotoList = new ArrayList<Uri>();
-    private MutableLiveData<List<Uri>> mPhotoLiveDate;
     private List<String> mPhotoDescription;
     private long estateEdit;
 
@@ -55,7 +54,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         Uri photoUri = Uri.EMPTY;
         String photoDescription = "";
 
-        photoUri = mPhotoLiveDate.getValue().get(position);
+        photoUri = mPhotoList.get(position);
         /*if (mPhotoList.size() > position) {
             photoUri = mPhotoList.get(position);
         }*/
