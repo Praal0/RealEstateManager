@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
@@ -28,20 +27,18 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMapsBinding
+import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import com.openclassrooms.realestatemanager.viewModel.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
-import pub.devrel.easypermissions.EasyPermissions
-import java.security.AccessController.getContext
 
 
 @AndroidEntryPoint
@@ -58,6 +55,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
     private val estateViewModel:EstateViewModel by viewModels()
     private val mapViewModel : MapViewModel by viewModels()
     private val mCompositeDisposable = CompositeDisposable()
+    private var marker : Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -216,35 +214,51 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
                         .subscribeWith(object : DisposableObserver<Geocoding?>() {
                             override fun onNext(geocoding: Geocoding) {
                                 if (!geocoding.results.isNullOrEmpty()){
-                                    locationList.locationEstate.latitude = geocoding.results[0].geometry.location.lat
-                                    locationList.locationEstate.longitude = geocoding.results[0].geometry.location.lng
-                                    estateViewModel.updateEstate(locationList)
-                                    latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
-                                    val marker = map?.addMarker(
-                                        MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                                    )
-                                    //marker?.tag = locationList.estateId
-                                    marker?.showInfoWindow()
-
+                                    updateEstate(locationList,geocoding)
                                 }else{
                                     Log.d("Geocoding","Geocoding : Null or Empty")
                                 }
-
                             }
                             override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }
                             override fun onComplete() {}
                         })
                 }else{
                     latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
-                    val marker = map?.addMarker(
-                        MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                    )
+                    if (locationList.sold){
+                        marker = map?.addMarker(
+                            MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        )
+                    }else{
+                        marker = map?.addMarker(
+                            MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        )
+                    }
                     marker?.tag = locationList.numMandat
                     marker?.showInfoWindow()
                 }
-
             }
         })
+    }
+
+    private fun updateEstate(locationList: Estate, geocoding: Geocoding) {
+        updateEstate(locationList, geocoding)
+        locationList.locationEstate.latitude = geocoding.results[0].geometry.location.lat
+        locationList.locationEstate.longitude = geocoding.results[0].geometry.location.lng
+        estateViewModel.updateEstate(locationList)
+        latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
+
+        if (locationList.sold){
+            marker = map?.addMarker(
+                MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            )
+        }else{
+            marker = map?.addMarker(
+                MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            )
+        }
+
+        //marker?.tag = locationList.estateId
+        marker?.showInfoWindow()
     }
 
     /**

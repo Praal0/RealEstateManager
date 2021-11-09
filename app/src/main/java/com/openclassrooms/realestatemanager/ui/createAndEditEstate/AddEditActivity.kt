@@ -55,9 +55,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
 
-
-
-
 @AndroidEntryPoint
 class AddEditActivity : BaseActivity(),View.OnClickListener {
     protected val PICK_IMAGE_CAMERA = 1
@@ -95,15 +92,15 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding = activityAddBinding.includeForm
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
 
-        // Create the observer which updates the UI.
-        val photoObserver = Observer<List<Uri>> { newName ->
-            // Update the UI, in this case, a TextView.
-            listPhoto = newName
-        }
-
-        estateViewModel.currentPhoto.observe(this,photoObserver)
         if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
 
+        estateViewModel.currentPhoto.observe(this){uriList ->
+            adapter.setPhotoList(uriList)
+        }
+
+        estateViewModel.currentPhotoText.observe(this){ stringList ->
+            adapter.setPhotoDescription(stringList)
+        }
         val view: View = activityAddBinding.root
         setContentView(view)
         methodRequiresTwoPermission()
@@ -117,7 +114,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         clickSoldButon()
         //Set title toolbar
         setToolbar()
-
         setupRecyclerView()
         configureOnClickRecyclerView()
 
@@ -197,11 +193,18 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             photo.photoList.clear()
             photoText.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
+
                 listPhoto.add((Uri.parse(photoStr)))
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+                photo.photoList.addAll(estate.photoList.photoList)
             }
-            adapter.setPhotoList(listPhoto)
-            adapter.setPhotoDescription(estate.photoDescription.photoDescription)
-            photo.photoList.addAll(estate.photoList.photoList)
+            if (estateViewModel.currentPhoto.value?.isNotEmpty() == true){
+                adapter.setPhotoList(estateViewModel.currentPhoto.value)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+                photo.photoList.addAll(estate.photoList.photoList)
+            }
+
         }
 
         if (estate.video.photoList.isNotEmpty()){
@@ -343,7 +346,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 listPhoto.remove(Uri.parse(estatePhoto))
                 photo.photoList.remove(estatePhoto)
                 photoText.photoDescription.remove(estateDescription)
-                adapter.setPhotoList(listPhoto)
+                //adapter.setPhotoList(listPhoto)
                 adapter.notifyItemRemoved(position)
                 adapter.notifyDataSetChanged()
             }
@@ -530,6 +533,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 Log.e("Picture", "contentUri = $listPhoto")
                 photoText.photoDescription.add(description)
                 photo.photoList.add(contentUri.toString())
+                estateViewModel.currentPhoto.postValue(listPhoto)
+                estateViewModel.currentPhotoText.postValue(photoText.photoDescription)
                 adapter.setPhotoList(listPhoto)
             }
         builder.create()

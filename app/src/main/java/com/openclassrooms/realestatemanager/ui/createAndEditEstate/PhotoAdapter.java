@@ -54,10 +54,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         Uri photoUri = Uri.EMPTY;
         String photoDescription = "";
 
-        photoUri = mPhotoList.get(position);
-        /*if (mPhotoList.size() > position) {
+        if (mPhotoList.size() > position) {
             photoUri = mPhotoList.get(position);
-        }*/
+        }
 
         if (mPhotoDescription.size() > position) {
             photoDescription = mPhotoDescription.get(position);
@@ -85,9 +84,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
      * @param photos
      */
     public void setPhotoList(List<Uri> photos) {
-        mPhotoList.clear();
-        mPhotoList.addAll(photos);
-        notifyDataSetChanged();
+            mPhotoList.clear();
+            mPhotoList.addAll(photos);
+            notifyDataSetChanged();
+
     }
 
     /**

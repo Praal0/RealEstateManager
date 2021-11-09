@@ -20,8 +20,12 @@ import javax.inject.Inject
 @HiltViewModel
 class EstateViewModel @Inject constructor (private val estateDataSource: EstateDataRepository): ViewModel() {
 
-    val currentPhoto: MutableLiveData<List<Uri>> by lazy {
-        MutableLiveData<List<Uri>>()
+    val currentPhoto: MutableLiveData<MutableList<Uri>> by lazy {
+        MutableLiveData<MutableList<Uri>>()
+    }
+
+    val currentPhotoText: MutableLiveData<MutableList<String>> by lazy {
+        MutableLiveData<MutableList<String>>()
     }
 
     // --------------------

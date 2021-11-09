@@ -67,4 +67,6 @@
     <string name="createEstate">Create Estate</string>
     <string name="editEstate">Edit Estate</string>
     <string name="result">Result</string>
+    <string name="sold">Sold</string>
+    <string name="available">Available</string>
 </resources>

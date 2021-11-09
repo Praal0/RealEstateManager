@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.viewModel
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -15,19 +16,21 @@ import javax.inject.Inject
 @HiltViewModel
 class MapViewModel@Inject constructor (private val mapRepository: MapRepository): ViewModel() {
 
-    private val perms = "Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION"
+    private val CAM_AND_READ_EXTERNAL_STORAGE = arrayOf(
+        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     private val currentUserPosition = MutableLiveData<LatLng>()
 
 
     @SuppressLint("MissingPermission")
     fun startLocationRequest(context: Context) {
-        if (EasyPermissions.hasPermissions(context, perms)) {
+        if (EasyPermissions.hasPermissions(context, *CAM_AND_READ_EXTERNAL_STORAGE)) {
             mapRepository.startLocationRequest()
         }
     }
 
-    fun getLocation(): LiveData<Location?>? {
+    fun getLocation(): LiveData<Location?> {
         return mapRepository.getLocationLiveData()
     }
 
