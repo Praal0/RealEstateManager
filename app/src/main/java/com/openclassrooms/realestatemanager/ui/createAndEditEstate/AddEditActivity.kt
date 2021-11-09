@@ -193,12 +193,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             photo.photoList.clear()
             photoText.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
-
                 listPhoto.add((Uri.parse(photoStr)))
-                adapter.setPhotoList(listPhoto)
-                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
                 photo.photoList.addAll(estate.photoList.photoList)
             }
+            estateViewModel.currentPhoto.postValue(listPhoto)
             if (estateViewModel.currentPhoto.value?.isNotEmpty() == true){
                 adapter.setPhotoList(estateViewModel.currentPhoto.value)
                 adapter.setPhotoDescription(estate.photoDescription.photoDescription)
