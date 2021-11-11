@@ -27,11 +27,15 @@ import java.util.*
 import android.content.Intent
 import android.view.MenuItem
 import android.widget.MediaController
+import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
+import com.openclassrooms.realestatemanager.utils.EstateManagerStream
+import io.reactivex.observers.DisposableObserver
 
 
 /**
@@ -52,6 +56,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private var estateDetailId : Long = 0
     private val estateEdit: Long = 0
     private var listPhoto : MutableList<Uri> = ArrayList()
+    private lateinit var latLng : LatLng
 
     companion object {
         fun newInstance() = DetailFragment()
@@ -180,8 +185,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         if (Utils.isInternetAvailable(this.context)) {
-            map = googleMap;
-            map.uiSettings.isMyLocationButtonEnabled = false;
+            map = googleMap
+            map.uiSettings.isMyLocationButtonEnabled = false
             map.uiSettings.isMapToolbarEnabled = false
 
             try {
@@ -203,13 +208,41 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
      */
     private fun positionMarker(estate: Estate) {
         if (Utils.isInternetAvailable(this.context)) {
-            map.clear()
-            val latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-            positionMarker = map.addMarker(MarkerOptions().position(latLng)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-            positionMarker.showInfoWindow()
-        }
+            if (estate.locationEstate.latitude == 0.0 && estate.locationEstate.longitude == 0.0){
+                val completeAddress = estate.locationEstate.address + estate.locationEstate.city+ estate.locationEstate.zipCode
+                EstateManagerStream.streamFetchGeocode(completeAddress)
+                    .subscribeWith(object : DisposableObserver<Geocoding?>() {
+                        override fun onNext(geocoding: Geocoding) {
+                            if (!geocoding.results.isNullOrEmpty()){
+                                updateEstate(estate,geocoding)
+                            }else{
+                                Log.d("Geocoding","Geocoding : Null or Empty")
+                            }
+                        }
+                        override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }
+                        override fun onComplete() {}
+                    })
+            }else{
+                latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                positionMarker = map.addMarker(MarkerOptions().position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                positionMarker.showInfoWindow()
+            }
 
+        }
+    }
+
+    private fun updateEstate(locationList: Estate, geocoding: Geocoding) {
+        locationList.locationEstate.latitude = geocoding.results[0].geometry.location.lat
+        locationList.locationEstate.longitude = geocoding.results[0].geometry.location.lng
+        viewModel.updateEstate(locationList)
+        latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
+
+        positionMarker = map.addMarker(
+                MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            )
+
+        positionMarker.showInfoWindow()
     }
 }

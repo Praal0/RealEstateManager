@@ -51,7 +51,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         //For photo description with photo
-        Uri photoUri = Uri.EMPTY;
+        Uri photoUri = null;
         String photoDescription = "";
 
         if (mPhotoList.size() > position) {

@@ -72,8 +72,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var mSoldDate: DatePickerDialog? = null
     private var estateEdit: Long = 0L
     private var mError = false
-    private var mDisposable: Disposable? = null
     private var completeAddress: String? = null
+    private var completeAddressSave: String? = null
     private val idEstate: Long = 0
     private var listPhoto : MutableList<Uri> = ArrayList()
     private var photoTextList = PhotoDescription()
@@ -167,6 +167,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     private fun updateUIFromEdit(estate: Estate) {
         estateFormBinding.etMandate.setText(estate.numMandat.toString())
+        estateFormBinding.etMandate.isEnabled = false
         estateFormBinding.etEstate.setText(estate.estateType)
         estateFormBinding.etSurface.setText(estate.surface.toString())
         estateFormBinding.etDescription.setText(estate.description)
@@ -526,8 +527,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 val description: String = binding.editDescription.text.toString()
                 contentUri?.let { listPhoto.add(it) }
                 Log.e("Picture", "contentUri = $listPhoto")
-                photoTextList.photoDescription.add(description)
                 photo.photoList.add(contentUri.toString())
+                photoTextList.photoDescription.add("description")
                 estateViewModel.currentPhoto.postValue(listPhoto)
                 estateViewModel.currentPhotoText.postValue(photoTextList.photoDescription)
                 adapter.setPhotoList(listPhoto,photoTextList.photoDescription)
@@ -548,7 +549,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 val desc = editText?.text.toString()
                 photoDescriptionList.add(desc)
             }
-
 
             validateTextView(estateFormBinding.inputMandate)
             validateTextView(estateFormBinding.inputEstate)
@@ -612,13 +612,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
         Log.d("saveEstate", "saveEstate$estate")
 
-        if (estateEdit == 0L) {
-            executeHttpRequestWithRetrofit(this)
-            finish()
-        } else {
-            executeHttpRequestWithRetrofit(this)
-            finish()
-        }
+        executeHttpRequestWithRetrofit()
+        finish()
+
     }
 
     private fun saleDateRequired() : Boolean{
@@ -640,28 +636,28 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     //RX Java http request for geocoding API
-    private fun executeHttpRequestWithRetrofit(context: Context) {
+    private fun executeHttpRequestWithRetrofit() {
         completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
-            mDisposable = EstateManagerStream.streamFetchGeocode(completeAddress)
+        EstateManagerStream.streamFetchGeocode(completeAddress)
             .subscribeWith(object : DisposableObserver<Geocoding?>() {
                 override fun onNext(geocoding: Geocoding) {
                     if (!geocoding.results.isNullOrEmpty()){
-                        estate.locationEstate.latitude = geocoding.results[0].geometry.location.lat
-                        estate.locationEstate.longitude = geocoding.results[0].geometry.location.lng
+                        location.latitude = geocoding.results[0].geometry.location.lat
+                        location.longitude = geocoding.results[0].geometry.location.lng
                     }else{
-                        Toast.makeText(context,"Geocoding : Null or Empty",Toast.LENGTH_SHORT).show()
+                        Log.d("Geocoding","Geocoding : Null or Empty")
                     }
                 }
-                override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }override fun onComplete() {}
+                override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }
+                override fun onComplete() {}
             })
+
 
         if (estateEdit == 0L){
             estateViewModel.insertEstates(estate,this)
         }else{
             estateViewModel.updateEstate(estate)
         }
-
-        mCompositeDisposable.add(mDisposable as DisposableObserver<*>);
     }
 
     // Dispose subscription

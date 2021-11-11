@@ -32,8 +32,8 @@ public class EstateDaoTest {
     private static UriList uriListTest = new UriList();
     private static PhotoDescription descriptionTest = new PhotoDescription();
 
-    private static Location LOCATION_HOUSE = new Location(1,0L,0L,"11 street de senter","Lyon","69000");
-    private static Location LOCATION_FLAT = new Location(1,0L,0L,"11 street de senter","Lyon","69000");
+    private static Location LOCATION_HOUSE = new Location(0L,0L,"11 street de senter","Lyon","69000");
+    private static Location LOCATION_FLAT = new Location(0L,0L,"11 street de senter","Lyon","69000");
 
     private static Estate ESTATE_HOUSE = new Estate(1L, "house", 200, 4, 2, 1, 200, 100000.00, "Très belle maison", true, false,
             false, true, true, "23/01/2021","", "Karine Danjard",uriListTest,descriptionTest,uriListTest,LOCATION_HOUSE);
