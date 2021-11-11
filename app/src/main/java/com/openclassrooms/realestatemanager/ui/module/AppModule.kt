@@ -5,9 +5,7 @@ import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase
 import com.openclassrooms.realestatemanager.database.dao.EstateDAO
-import com.openclassrooms.realestatemanager.database.dao.LocationDao
 import com.openclassrooms.realestatemanager.repositories.EstateDataRepository
-import com.openclassrooms.realestatemanager.repositories.LocationDataRepository
 import com.openclassrooms.realestatemanager.repositories.MapRepository
 import dagger.Module
 import dagger.Provides
@@ -33,16 +31,11 @@ object AppModule  : Application() {
     @Provides
     fun provideEstateDao(realEstateDatabase: RealEstateDatabase): EstateDAO = realEstateDatabase.estateDao()
 
-    @Provides
-    fun provideLocationDao(realEstateDatabase: RealEstateDatabase): LocationDao = realEstateDatabase.locationDao()
 
     @Singleton
     @Provides
     fun provideEstateRepository(localDataSource: EstateDAO) = EstateDataRepository(localDataSource)
 
-    @Singleton
-    @Provides
-    fun provideLocationRepository(localDataSource: LocationDao) = LocationDataRepository(localDataSource)
 
     @Singleton
     @Provides

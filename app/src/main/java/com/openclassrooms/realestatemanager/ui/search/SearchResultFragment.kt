@@ -18,9 +18,7 @@ import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.SearchEstate
 import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
-import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import com.openclassrooms.realestatemanager.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -35,7 +33,6 @@ class SearchResultFragment : Fragment() {
     private val photoLists = UriList()
     private lateinit var mAdapter: SearchResultAdapter
     private val searchViewModel: SearchViewModel by viewModels()
-    private val locationViewModel : LocationViewModel by viewModels()
     private var estateSearch: SearchEstate = SearchEstate()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -89,7 +86,7 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun updateEstateList(estates : List<Estate>) {
-        mAdapter.updateData(estates,locationViewModel,this)
+        mAdapter.updateData(estates,this)
             Log.d("updateListSearch", "updateListSearch$estates")
 
         if (Objects.requireNonNull(estates).isEmpty()) {

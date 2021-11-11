@@ -25,14 +25,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
@@ -45,7 +43,6 @@ import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -54,6 +51,7 @@ import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
+
 
 @AndroidEntryPoint
 class AddEditActivity : BaseActivity(),View.OnClickListener {
@@ -78,10 +76,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var completeAddress: String? = null
     private val idEstate: Long = 0
     private var listPhoto : MutableList<Uri> = ArrayList()
+    private var photoTextList = PhotoDescription()
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
     private val video = UriList()
-    private val photoText = PhotoDescription()
     private lateinit var cursor: Cursor
 
     private val estateViewModel: EstateViewModel by viewModels()
@@ -95,12 +93,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
 
         estateViewModel.currentPhoto.observe(this){uriList ->
-            adapter.setPhotoList(uriList)
+            estateViewModel.currentPhotoText.observe(this){ stringList ->
+                adapter.setPhotoList(uriList,stringList)
+            }
         }
 
-        estateViewModel.currentPhotoText.observe(this){ stringList ->
-            adapter.setPhotoDescription(stringList)
-        }
         val view: View = activityAddBinding.root
         setContentView(view)
         methodRequiresTwoPermission()
@@ -120,6 +117,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         //For date picker
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     }
+
+
 
     private fun clickSoldButon() {
         estateFormBinding.availableCheckbtn.setOnClickListener(View.OnClickListener {
@@ -158,7 +157,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = PhotoAdapter(Glide.with(this), photoText.photoDescription, estateEdit)
+        adapter = PhotoAdapter(Glide.with(this), photoTextList.photoDescription, estateEdit)
         val horizontalLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
         estateFormBinding.rvPhoto.adapter = adapter
@@ -191,15 +190,14 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
         if (estate.photoList.photoList.isNotEmpty()) {
             photo.photoList.clear()
-            photoText.photoDescription.clear()
+            photoTextList.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
                 listPhoto.add((Uri.parse(photoStr)))
                 photo.photoList.addAll(estate.photoList.photoList)
             }
             estateViewModel.currentPhoto.postValue(listPhoto)
             if (estateViewModel.currentPhoto.value?.isNotEmpty() == true){
-                adapter.setPhotoList(estateViewModel.currentPhoto.value)
-                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+                adapter.setPhotoList(estateViewModel.currentPhoto.value,estate.photoDescription.photoDescription)
                 photo.photoList.addAll(estate.photoList.photoList)
             }
 
@@ -340,11 +338,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             .setOnItemClickListener { recyclerView: RecyclerView?, position: Int, v: View? ->
                 val estatePhoto = listPhoto[position].toString()
                 Log.d("estatePhoto", "estatePhoto$estatePhoto")
-                val estateDescription = photoText.photoDescription[position]
+                val estateDescription = photoTextList.photoDescription[position]
                 listPhoto.remove(Uri.parse(estatePhoto))
                 photo.photoList.remove(estatePhoto)
-                photoText.photoDescription.remove(estateDescription)
-                //adapter.setPhotoList(listPhoto)
+                photoTextList.photoDescription.remove(estateDescription)
                 adapter.notifyItemRemoved(position)
                 adapter.notifyDataSetChanged()
             }
@@ -529,11 +526,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 val description: String = binding.editDescription.text.toString()
                 contentUri?.let { listPhoto.add(it) }
                 Log.e("Picture", "contentUri = $listPhoto")
-                photoText.photoDescription.add(description)
+                photoTextList.photoDescription.add(description)
                 photo.photoList.add(contentUri.toString())
                 estateViewModel.currentPhoto.postValue(listPhoto)
-                estateViewModel.currentPhotoText.postValue(photoText.photoDescription)
-                adapter.setPhotoList(listPhoto)
+                estateViewModel.currentPhotoText.postValue(photoTextList.photoDescription)
+                adapter.setPhotoList(listPhoto,photoTextList.photoDescription)
             }
         builder.create()
         builder.show()
@@ -546,11 +543,12 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.validateFabBtn.setOnClickListener {
             //For description photo in recyclerView
             val photoDescriptionList: ArrayList<String> = ArrayList()
-            for (i in photoText.photoDescription.indices) {
+            for (i in photoTextList.photoDescription.indices) {
                 val editText: AppCompatEditText? = activityAddBinding.includeForm.rvPhoto.layoutManager?.findViewByPosition(i)?.findViewById(R.id.photo_description)
                 val desc = editText?.text.toString()
                 photoDescriptionList.add(desc)
             }
+
 
             validateTextView(estateFormBinding.inputMandate)
             validateTextView(estateFormBinding.inputEstate)
@@ -568,7 +566,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             if (!soldDatedRequired()){ return@setOnClickListener }
             if (!saleDateRequired()){ return@setOnClickListener }
 
-            if (mError){ mError = false
+
+            if (mError){
+                mError = false
                 return@setOnClickListener
             }
             saveEstates()
@@ -577,7 +577,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     private fun saveEstates() {
         var ground : Int = 0
-        location = Location(0,
+        location = Location(
             0.0,
             0.0,
             estateFormBinding.etAddress.text.toString(),
@@ -587,6 +587,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         if (estateFormBinding.etGround.text.toString().isNotEmpty()){
             ground = estateFormBinding.etGround.text.toString().toInt()
         }
+
 
          estate = Estate(estateFormBinding.etMandate.text.toString().toLong(),
             estateFormBinding.etEstate.text.toString(),
@@ -606,29 +607,17 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             estateFormBinding.soldDate.text.toString(),
             estateFormBinding.etAgent.text.toString(),
             photo,
-            photoText,
+            photoTextList,
             video,location)
 
         Log.d("saveEstate", "saveEstate$estate")
 
         if (estateEdit == 0L) {
             executeHttpRequestWithRetrofit(this)
-            Snackbar.make(activityAddBinding.root, "Your new Estate is created", Snackbar.LENGTH_SHORT)
-                .addCallback(object : Snackbar.Callback() {
-                    override fun onDismissed(snackbar: Snackbar, event: Int) {
-                        super.onDismissed(snackbar, event)
-                        finish()
-                    }
-                }).show()
+            finish()
         } else {
             executeHttpRequestWithRetrofit(this)
-            Snackbar.make(activityAddBinding.root, "Your new Estate is updated", Snackbar.LENGTH_SHORT)
-                .addCallback(object : Snackbar.Callback() {
-                    override fun onDismissed(snackbar: Snackbar, event: Int) {
-                        super.onDismissed(snackbar, event)
-                        finish()
-                    }
-                }).show()
+            finish()
         }
     }
 

@@ -17,7 +17,6 @@ import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -28,8 +27,12 @@ class MasterFragment : Fragment() {
     private lateinit var adapter: MasterAdapter
     private  var detailFragment: DetailFragment? = null
     val estateViewModel: EstateViewModel by viewModels()
-    val locationViewModel : LocationViewModel by viewModels()
     private var estateList: List<Estate>? = null
+
+    companion object {
+        fun newInstance() = MasterFragment()
+    }
+
 
 
     override fun onCreateView(
@@ -89,6 +92,6 @@ class MasterFragment : Fragment() {
      * @param estates
      */
     private fun updateEstateList(estates: List<Estate>?) {
-        if (estates != null) adapter.updateData(estates,locationViewModel, Glide.with(this),this)
+        if (estates != null) adapter.updateData(estates, Glide.with(this),this)
     }
 }

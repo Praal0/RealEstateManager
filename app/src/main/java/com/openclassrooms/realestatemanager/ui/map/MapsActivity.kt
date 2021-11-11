@@ -241,7 +241,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
     }
 
     private fun updateEstate(locationList: Estate, geocoding: Geocoding) {
-        updateEstate(locationList, geocoding)
         locationList.locationEstate.latitude = geocoding.results[0].geometry.location.lat
         locationList.locationEstate.longitude = geocoding.results[0].geometry.location.lng
         estateViewModel.updateEstate(locationList)

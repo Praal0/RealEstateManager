@@ -29,8 +29,7 @@ data class Estate(@PrimaryKey(autoGenerate = true) var numMandat:Long,
                   var photoDescription : PhotoDescription,
                   var video:UriList,
                   @Embedded
-                  var locationEstate : Location
-                  ) : Serializable
+                  var locationEstate : Location) : Serializable
 
 
 

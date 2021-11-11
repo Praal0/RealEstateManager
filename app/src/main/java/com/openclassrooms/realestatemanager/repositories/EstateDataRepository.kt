@@ -32,12 +32,14 @@ class EstateDataRepository @Inject constructor(private val estateDAO: EstateDAO)
      * @param estate
      */
     // --- CREATE ---
-    suspend fun createEstate(estate: Estate) {
+    suspend fun createEstate(estate: Estate) : Boolean {
         try {
             estateDAO.insertEstate(estate)
+            return true
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
             Log.e("EstateDataRepository","Cannot Insert : $cause")
+            return false
         }
 
     }

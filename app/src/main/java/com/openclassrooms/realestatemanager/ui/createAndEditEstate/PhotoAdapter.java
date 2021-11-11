@@ -62,7 +62,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
             photoDescription = mPhotoDescription.get(position);
         }
         try {
-            holder.updateWithDetails(photoUri, this.glide, photoDescription, estateEdit);
+            holder.updateWithDetails(photoUri, this.glide, photoDescription);
         } catch (Exception e) {
             e.getMessage();
         }
@@ -79,25 +79,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     }
 
     /**
-     * for set photolist in adapter
+     * for set photolist & photoDescription in adapter
      *
      * @param photos
      */
-    public void setPhotoList(List<Uri> photos) {
+    public void setPhotoList(List<Uri> photos,List<String> photoDescription) {
             mPhotoList.clear();
+            mPhotoDescription.clear();
             mPhotoList.addAll(photos);
+            mPhotoDescription.addAll(photoDescription);
             notifyDataSetChanged();
 
-    }
-
-    /**
-     * For set photoDescription in adapter
-     *
-     * @param photoDescription
-     */
-    public void setPhotoDescription(List<String> photoDescription) {
-        mPhotoDescription.clear();
-        mPhotoDescription.addAll(photoDescription);
-        notifyDataSetChanged();
     }
 }

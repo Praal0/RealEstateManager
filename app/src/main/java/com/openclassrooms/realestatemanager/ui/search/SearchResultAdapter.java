@@ -11,9 +11,7 @@ import com.bumptech.glide.RequestManager;
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding;
 import com.openclassrooms.realestatemanager.models.Estate;
 import com.openclassrooms.realestatemanager.models.UriList;
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel;
 
-import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +21,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultViewHo
     private List<Estate> estateList;
     private RequestManager glide;
     private List<UriList> photoLists;
-    private LocationViewModel viewModel;
     private LifecycleOwner owner;
 
     /**
@@ -48,7 +45,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultViewHo
 
     @Override
     public void onBindViewHolder(@NonNull SearchResultViewHolder holder, int position) {
-        holder.updateWithEstate(this.estateList.get(position), this.glide,viewModel,owner);
+        holder.updateWithEstate(this.estateList.get(position), this.glide,owner);
     }
 
     @Override
@@ -64,10 +61,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultViewHo
      * For update estates list
      *
      * @param estateList
-     * @param locationViewModel
      */
-    public void updateData(List<Estate> estateList, LocationViewModel locationViewModel,LifecycleOwner owner ) {
-        viewModel = locationViewModel;
+    public void updateData(List<Estate> estateList,LifecycleOwner owner ) {
         this.estateList = estateList;
         this.notifyDataSetChanged();
     }
