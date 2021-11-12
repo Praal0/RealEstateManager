@@ -9,9 +9,10 @@ import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Location
 
 
-@Database(entities = [Estate::class], version = 1, exportSchema = false)
+@Database(entities = [(Estate::class)], version = 1, exportSchema = false)
 @TypeConverters(UriListConverter::class, PhotoDescriptionConverter::class)
 abstract class RealEstateDatabase : RoomDatabase() {
+
     // --- DAO ---
     abstract fun estateDao(): EstateDAO
 
@@ -26,13 +27,11 @@ abstract class RealEstateDatabase : RoomDatabase() {
                 synchronized(RealEstateDatabase::class.java) {
 
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        RealEstateDatabase::class.java, "EstateDatabases.db")
+                        RealEstateDatabase::class.java, "EstatesData.db")
                         .build()
                 }
             }
             return INSTANCE as RealEstateDatabase
         }
     }
-
-
 }

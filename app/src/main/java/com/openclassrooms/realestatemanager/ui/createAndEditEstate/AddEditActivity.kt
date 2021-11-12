@@ -51,6 +51,7 @@ import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
+import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
@@ -73,10 +74,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var estateEdit: Long = 0L
     private var mError = false
     private var completeAddress: String? = null
-    private var completeAddressSave: String? = null
+
     private val idEstate: Long = 0
     private var listPhoto : MutableList<Uri> = ArrayList()
-    private var photoTextList = PhotoDescription()
+    private var listDescription : MutableList<String> = ArrayList()
+    private val photoList : PhotoDescription = PhotoDescription()
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
     private val video = UriList()
@@ -157,7 +159,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = PhotoAdapter(Glide.with(this), photoTextList.photoDescription, estateEdit)
+        adapter = PhotoAdapter(Glide.with(this), photoList.photoDescription, estateEdit)
         val horizontalLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
         estateFormBinding.rvPhoto.adapter = adapter
@@ -190,18 +192,17 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
 
         if (estate.photoList.photoList.isNotEmpty()) {
+            listPhoto.clear()
             photo.photoList.clear()
-            photoTextList.photoDescription.clear()
+            photoList.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
                 listPhoto.add((Uri.parse(photoStr)))
-                photo.photoList.addAll(estate.photoList.photoList)
             }
             estateViewModel.currentPhoto.postValue(listPhoto)
-            if (estateViewModel.currentPhoto.value?.isNotEmpty() == true){
-                adapter.setPhotoList(estateViewModel.currentPhoto.value,estate.photoDescription.photoDescription)
-                photo.photoList.addAll(estate.photoList.photoList)
-            }
+            estateViewModel.currentPhotoText.postValue(estate.photoDescription.photoDescription)
 
+            adapter.setPhotoList(listPhoto,estate.photoDescription.photoDescription)
+            photo.photoList.addAll(estate.photoList.photoList)
         }
 
         if (estate.video.photoList.isNotEmpty()){
@@ -339,10 +340,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             .setOnItemClickListener { recyclerView: RecyclerView?, position: Int, v: View? ->
                 val estatePhoto = listPhoto[position].toString()
                 Log.d("estatePhoto", "estatePhoto$estatePhoto")
-                val estateDescription = photoTextList.photoDescription[position]
+                val estateDescription = photoList.photoDescription[position]
                 listPhoto.remove(Uri.parse(estatePhoto))
                 photo.photoList.remove(estatePhoto)
-                photoTextList.photoDescription.remove(estateDescription)
+                photoList.photoDescription.remove(estateDescription)
                 adapter.notifyItemRemoved(position)
                 adapter.notifyDataSetChanged()
             }
@@ -528,10 +529,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 contentUri?.let { listPhoto.add(it) }
                 Log.e("Picture", "contentUri = $listPhoto")
                 photo.photoList.add(contentUri.toString())
-                photoTextList.photoDescription.add("description")
+                listDescription.add(description)
+                photoList.photoDescription.add(description)
                 estateViewModel.currentPhoto.postValue(listPhoto)
-                estateViewModel.currentPhotoText.postValue(photoTextList.photoDescription)
-                adapter.setPhotoList(listPhoto,photoTextList.photoDescription)
+                estateViewModel.currentPhotoText.postValue(listDescription)
+                adapter.setPhotoList(listPhoto,listDescription)
             }
         builder.create()
         builder.show()
@@ -544,7 +546,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.validateFabBtn.setOnClickListener {
             //For description photo in recyclerView
             val photoDescriptionList: ArrayList<String> = ArrayList()
-            for (i in photoTextList.photoDescription.indices) {
+            for (i in photoList.photoDescription.indices) {
                 val editText: AppCompatEditText? = activityAddBinding.includeForm.rvPhoto.layoutManager?.findViewByPosition(i)?.findViewById(R.id.photo_description)
                 val desc = editText?.text.toString()
                 photoDescriptionList.add(desc)
@@ -607,7 +609,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             estateFormBinding.soldDate.text.toString(),
             estateFormBinding.etAgent.text.toString(),
             photo,
-            photoTextList,
+             photoList,
             video,location)
 
         Log.d("saveEstate", "saveEstate$estate")
