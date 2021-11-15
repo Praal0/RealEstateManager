@@ -39,7 +39,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
                 queryString += " AND"
             } else {
                 queryString += " WHERE"
-                containsCondition = true;
+                containsCondition = true
             }
             queryString += " estateType=?"
             args.add(estateType)
@@ -72,6 +72,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
                 queryString += " AND"
             } else {
                 queryString += " WHERE"
+                containsCondition = true;
             }
             queryString += " surface BETWEEN ? AND ?"
             args.add(minSurface.toString())
@@ -82,6 +83,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
                 queryString += " AND"
             } else {
                 queryString += " WHERE"
+                containsCondition = true;
             }
             queryString += " price BETWEEN ? AND ?"
             args.add(minPrice.toString())
@@ -92,6 +94,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
                 queryString += " AND"
             } else {
                 queryString += " WHERE"
+                containsCondition = true;
             }
             queryString += " upOfSaleDate BETWEEN ? AND ?";
             args.add(minUpOfSaleDate.toString())
@@ -102,6 +105,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
                 queryString += " AND"
             } else {
                 queryString += " WHERE"
+                containsCondition = true
             }
             queryString += " photoList <> ''"
         }
@@ -110,6 +114,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
                 queryString += " AND"
             } else {
                 queryString += " WHERE"
+                containsCondition = true;
             }
             queryString += " schools = 1"
         }
@@ -117,7 +122,8 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
             if (containsCondition) {
                 queryString += " AND";
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
+                containsCondition = true
             }
             queryString += " stores = 1";
         }
@@ -126,27 +132,31 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
             if (containsCondition) {
                 queryString += " AND";
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
+                containsCondition = true;
             }
             queryString += " park = 1";
         }
 
         if (restaurants == true) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
+                containsCondition = true
             }
-            queryString += " restaurants = 1";
+            queryString += " restaurants = 1"
+            containsCondition = true
         }
 
         if (sold.equals(true)) {
             if (containsCondition) {
-                queryString += " AND";
+                queryString += " AND"
             } else {
-                queryString += " WHERE";
+                queryString += " WHERE"
+                containsCondition = true
             }
-            queryString += " sold = 1";
+            queryString += " sold = 1"
         }
 
         Log.d("queryString", "queryString" + queryString);

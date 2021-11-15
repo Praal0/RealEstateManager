@@ -80,7 +80,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun configureRecyclerView() {
-        adapter = PhotoAdapter( Glide.with(this), photoText.photoDescription, estateEdit)
+        adapter = PhotoAdapter( Glide.with(this), photoText.photoDescription, true)
         val horizontalLayoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvPhoto.layoutManager = horizontalLayoutManager
         binding.rvPhoto.adapter = adapter

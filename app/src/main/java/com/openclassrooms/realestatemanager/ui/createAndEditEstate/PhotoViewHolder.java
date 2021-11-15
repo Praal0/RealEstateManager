@@ -29,12 +29,16 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder {
      * @param glide
      * @param photoDescription
      */
-    public void updateWithDetails(Uri photoList, RequestManager glide, String photoDescription) {
+    public void updateWithDetails(Uri photoList, RequestManager glide, String photoDescription,Boolean detail) {
         activityAddPhotoItemBinding.photoDescription.setText(photoDescription);
         activityAddPhotoItemBinding.deleteImage.setVisibility(View.VISIBLE);
         glide.load(photoList).apply(RequestOptions.centerCropTransform()).into(activityAddPhotoItemBinding.photoImage);
 
-        //for delete image display in Edit and Not in create
-        Objects.requireNonNull(activityAddPhotoItemBinding.deleteImage).setVisibility(View.VISIBLE);
+        if (detail){
+            Objects.requireNonNull(activityAddPhotoItemBinding.deleteImage).setVisibility(View.INVISIBLE);
+        }else{
+            Objects.requireNonNull(activityAddPhotoItemBinding.deleteImage).setVisibility(View.VISIBLE);
+        }
+
     }
 }

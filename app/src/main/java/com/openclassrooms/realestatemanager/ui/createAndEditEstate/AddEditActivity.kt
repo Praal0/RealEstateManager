@@ -18,7 +18,6 @@ import android.view.View.INVISIBLE
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.MediaController
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
@@ -30,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
@@ -44,14 +42,13 @@ import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.observers.DisposableObserver
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
+import io.reactivex.observers.DisposableObserver
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 
 @AndroidEntryPoint
@@ -61,7 +58,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     protected val PICK_VIDEO_CAMERA = 3
     protected val PICK_VIDEO_GALLERY = 4
 
-    private val mCompositeDisposable = CompositeDisposable()
     private lateinit var activityAddBinding: ActivityAddEditBinding
     private lateinit var estateFormBinding: EstateFormBinding
     private lateinit var toolbar : Toolbar
@@ -159,7 +155,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = PhotoAdapter(Glide.with(this), photoList.photoDescription, estateEdit)
+        adapter = PhotoAdapter(Glide.with(this), photoList.photoDescription, false)
         val horizontalLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         estateFormBinding.rvPhoto.layoutManager = horizontalLayoutManager
         estateFormBinding.rvPhoto.adapter = adapter
@@ -200,9 +196,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             }
             estateViewModel.currentPhoto.postValue(listPhoto)
             estateViewModel.currentPhotoText.postValue(estate.photoDescription.photoDescription)
-
-            adapter.setPhotoList(listPhoto,estate.photoDescription.photoDescription)
             photo.photoList.addAll(estate.photoList.photoList)
+            adapter.setPhotoList(listPhoto,estate.photoDescription.photoDescription)
+            adapter.notifyDataSetChanged()
         }
 
         if (estate.video.photoList.isNotEmpty()){
@@ -344,20 +340,13 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 listPhoto.remove(Uri.parse(estatePhoto))
                 photo.photoList.remove(estatePhoto)
                 photoList.photoDescription.remove(estateDescription)
+                estateViewModel.currentPhoto.postValue(listPhoto)
+                estateViewModel.currentPhotoText.postValue(photoList.photoDescription)
+
+                adapter.setPhotoList(listPhoto,photoList.photoDescription)
                 adapter.notifyItemRemoved(position)
                 adapter.notifyDataSetChanged()
             }
-    }
-
-    /**
-     * Click on delete Video
-     */
-    private fun onClickBtnDeleteVideo(){
-        estateFormBinding.deleteVideo.setOnClickListener {
-            video.photoList.clear()
-            estateFormBinding.videoView.visibility = INVISIBLE
-            estateFormBinding.deleteVideo.visibility = INVISIBLE
-        }
     }
 
     private fun onClickVideoBtn(){
@@ -383,6 +372,19 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         }
         builderVideo.show()
     }
+
+    /**
+     * Click on delete Video
+     */
+    private fun onClickBtnDeleteVideo(){
+        estateFormBinding.deleteVideo.setOnClickListener {
+            video.photoList.clear()
+            estateFormBinding.videoView.visibility = INVISIBLE
+            estateFormBinding.deleteVideo.visibility = INVISIBLE
+        }
+    }
+
+
 
     /**
      * Click on capture camera
@@ -533,6 +535,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 photoList.photoDescription.add(description)
                 estateViewModel.currentPhoto.postValue(listPhoto)
                 estateViewModel.currentPhotoText.postValue(listDescription)
+
                 adapter.setPhotoList(listPhoto,listDescription)
             }
         builder.create()
@@ -614,7 +617,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
         Log.d("saveEstate", "saveEstate$estate")
 
-        executeHttpRequestWithRetrofit()
+        executeInsert()
         finish()
 
     }
@@ -638,14 +641,14 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     }
 
     //RX Java http request for geocoding API
-    private fun executeHttpRequestWithRetrofit() {
-        completeAddress = estateFormBinding.etAddress.text.toString() + estateFormBinding.etCity.text.toString()+ estateFormBinding.etPostalCode.text.toString()
+    private fun executeInsert() {
+        completeAddress = estate.locationEstate.address + estate.locationEstate.city+ estate.locationEstate.zipCode
         EstateManagerStream.streamFetchGeocode(completeAddress)
-            .subscribeWith(object : DisposableObserver<Geocoding?>() {
+            .subscribeWith(object : DisposableObserver<Geocoding>() {
                 override fun onNext(geocoding: Geocoding) {
                     if (!geocoding.results.isNullOrEmpty()){
-                        location.latitude = geocoding.results[0].geometry.location.lat
-                        location.longitude = geocoding.results[0].geometry.location.lng
+                        estate.locationEstate.latitude = geocoding.results[0].geometry.location.lat
+                        estate.locationEstate.longitude = geocoding.results[0].geometry.location.lng
                     }else{
                         Log.d("Geocoding","Geocoding : Null or Empty")
                     }
@@ -653,22 +656,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }
                 override fun onComplete() {}
             })
-
-
         if (estateEdit == 0L){
             estateViewModel.insertEstates(estate,this)
         }else{
             estateViewModel.updateEstate(estate)
         }
-    }
-
-    // Dispose subscription
-    private fun disposeWhenDestroy() {
-        mCompositeDisposable.clear()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        disposeWhenDestroy()
     }
 }

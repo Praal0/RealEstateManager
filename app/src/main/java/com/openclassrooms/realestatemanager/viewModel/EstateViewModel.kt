@@ -3,18 +3,21 @@ package com.openclassrooms.realestatemanager.viewModel
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.common.io.Files.map
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.models.Estate
+import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
 import com.openclassrooms.realestatemanager.repositories.EstateDataRepository
 import com.openclassrooms.realestatemanager.ui.notification.Notification.sendNotification
+import com.openclassrooms.realestatemanager.utils.EstateManagerStream
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.observers.DisposableObserver
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

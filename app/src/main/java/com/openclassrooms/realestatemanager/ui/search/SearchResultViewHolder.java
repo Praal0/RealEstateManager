@@ -37,7 +37,7 @@ public class SearchResultViewHolder extends RecyclerView.ViewHolder {
             }
             //for photo
             if (!estate.getPhotoList().getPhotoList().isEmpty()) {
-                glide.load(estate.getPhotoList().getPhotoList().get(0)).into(fragmentMasterItemBinding.listPhoto);
+                glide.load(estate.getPhotoList().getPhotoList().get(0)).apply(RequestOptions.centerCropTransform()).into(fragmentMasterItemBinding.listPhoto);
             } else {
                 glide.load(R.drawable.no_image).apply(RequestOptions.centerCropTransform()).into(fragmentMasterItemBinding.listPhoto);
             }

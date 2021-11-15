@@ -20,19 +20,19 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private RequestManager glide;
     private List<Uri> mPhotoList = new ArrayList<Uri>();
     private List<String> mPhotoDescription;
-    private long estateEdit;
+    private boolean detail;
 
     /**
      * Constructor
      *
      * @param glide
      * @param photoDescription
-     * @param estateEdit
+     * @param detail
      */
-    public PhotoAdapter( RequestManager glide, ArrayList<String> photoDescription, long estateEdit) {
+    public PhotoAdapter( RequestManager glide, ArrayList<String> photoDescription, boolean detail) {
         this.glide = glide;
         this.mPhotoDescription = photoDescription;
-        this.estateEdit = estateEdit;
+        this.detail = detail;
     }
 
     @NonNull
@@ -62,7 +62,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
             photoDescription = mPhotoDescription.get(position);
         }
         try {
-            holder.updateWithDetails(photoUri, this.glide, photoDescription);
+            holder.updateWithDetails(photoUri, this.glide, photoDescription,detail);
         } catch (Exception e) {
             e.getMessage();
         }
