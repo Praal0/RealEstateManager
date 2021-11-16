@@ -119,7 +119,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 for (photoStr in estate.photoList.photoList) {
                     listPhoto.add(Uri.parse(photoStr))
                 }
-                adapter.setPhotoList(listPhoto,estate.photoDescription.photoDescription)
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
             if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {
@@ -163,7 +164,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 for (photoStr in estate.photoList.photoList) {
                     listPhoto.add(Uri.parse(photoStr))
                 }
-                adapter.setPhotoList(listPhoto,estate.photoDescription.photoDescription)
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
             if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {

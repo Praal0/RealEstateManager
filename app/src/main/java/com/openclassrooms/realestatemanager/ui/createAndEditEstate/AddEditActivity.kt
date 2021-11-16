@@ -91,9 +91,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
 
         estateViewModel.currentPhoto.observe(this){uriList ->
-            estateViewModel.currentPhotoText.observe(this){ stringList ->
-                adapter.setPhotoList(uriList,stringList)
-            }
+            adapter.setPhotoList(uriList)
+        }
+
+        estateViewModel.currentPhotoText.observe(this){ stringList ->
+            adapter.setPhotoDescription(stringList)
         }
 
         val view: View = activityAddBinding.root
@@ -197,7 +199,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             estateViewModel.currentPhoto.postValue(listPhoto)
             estateViewModel.currentPhotoText.postValue(estate.photoDescription.photoDescription)
             photo.photoList.addAll(estate.photoList.photoList)
-            adapter.setPhotoList(listPhoto,estate.photoDescription.photoDescription)
+            adapter.setPhotoList(listPhoto)
+            adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             adapter.notifyDataSetChanged()
         }
 
@@ -338,12 +341,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 Log.d("estatePhoto", "estatePhoto$estatePhoto")
                 val estateDescription = photoList.photoDescription[position]
                 listPhoto.remove(Uri.parse(estatePhoto))
+                
                 photo.photoList.remove(estatePhoto)
                 photoList.photoDescription.remove(estateDescription)
-                estateViewModel.currentPhoto.postValue(listPhoto)
-                estateViewModel.currentPhotoText.postValue(photoList.photoDescription)
-
-                adapter.setPhotoList(listPhoto,photoList.photoDescription)
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estatePhoto)
                 adapter.notifyItemRemoved(position)
                 adapter.notifyDataSetChanged()
             }
@@ -536,7 +538,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 estateViewModel.currentPhoto.postValue(listPhoto)
                 estateViewModel.currentPhotoText.postValue(listDescription)
 
-                adapter.setPhotoList(listPhoto,listDescription)
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(listDescription)
             }
         builder.create()
         builder.show()

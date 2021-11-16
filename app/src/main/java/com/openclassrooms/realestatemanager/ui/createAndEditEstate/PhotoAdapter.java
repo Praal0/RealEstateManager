@@ -83,12 +83,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
      *
      * @param photos
      */
-    public void setPhotoList(List<Uri> photos,List<String> photoDescription) {
+    public void setPhotoList(List<Uri> photos) {
             mPhotoList.clear();
-            mPhotoDescription.clear();
             mPhotoList.addAll(photos);
-            mPhotoDescription.addAll(photoDescription);
             notifyDataSetChanged();
 
     }
+
+    public void setPhotoDescription(List<String> photoDescription){
+        mPhotoDescription.clear();
+        mPhotoDescription.addAll(photoDescription);
+        notifyDataSetChanged();
+    }
+
+
 }
