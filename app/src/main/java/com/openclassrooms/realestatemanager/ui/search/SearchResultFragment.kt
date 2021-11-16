@@ -18,9 +18,7 @@ import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.SearchEstate
 import com.openclassrooms.realestatemanager.models.UriList
 import com.openclassrooms.realestatemanager.ui.detail.DetailActivity
-import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
 import com.openclassrooms.realestatemanager.utils.ItemClickSupport
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import com.openclassrooms.realestatemanager.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -35,16 +33,13 @@ class SearchResultFragment : Fragment() {
     private val photoLists = UriList()
     private lateinit var mAdapter: SearchResultAdapter
     private val searchViewModel: SearchViewModel by viewModels()
-    private val locationViewModel : LocationViewModel by viewModels()
     private var estateSearch: SearchEstate = SearchEstate()
-    private var detailFragment: DetailFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         fragmentSearchResultBinding = FragmentSearchResultBinding.inflate(inflater, container, false)
         val view: View = fragmentSearchResultBinding.root
-
         configureViewModel()
         configureRecyclerView()
         configureOnClickRecyclerView()
@@ -87,23 +82,17 @@ class SearchResultFragment : Fragment() {
                 intent.putExtra("estate", estate.numMandat)
                 Log.d("bundleRV", "estate$estate")
                 startActivity(intent)
-
             }
     }
 
     private fun updateEstateList(estates : List<Estate>) {
-        mAdapter.updateData(estates,locationViewModel,this)
+        mAdapter.updateData(estates,this)
             Log.d("updateListSearch", "updateListSearch$estates")
 
         if (Objects.requireNonNull(estates).isEmpty()) {
             Snackbar.make(
-                fragmentSearchResultBinding.root, "No result found, please retry with another search", Snackbar.LENGTH_LONG)
-                .setAction("Return") { View.OnClickListener { activity?.finish() } }
+                fragmentSearchResultBinding.root, "No result found, please retry with another search", Snackbar.LENGTH_SHORT)
                 .show()
         }
-
-        
     }
-
-
 }

@@ -1,8 +1,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
-    android:layout_width="wrap_content"
-    android:layout_height="120dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:elevation="7dp"
     android:orientation="horizontal"
@@ -10,66 +10,70 @@
     app:cardBackgroundColor="#E2E3DD"
     app:cardCornerRadius="10dp">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fragment_list_item"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:scaleType="centerCrop">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/list_photo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="8dp"
             android:contentDescription="homePhoto"
-            android:scaleType="center" />
+            android:scaleType="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/estateType"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/list_photo"
             android:gravity="top"
             android:textAllCaps="true"
             android:textColor="#711515"
             android:textSize="@dimen/size_textView_Estate"
-            android:textStyle="bold|italic" />
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toStartOf="@+id/list_photo_sold"
+            app:layout_constraintStart_toEndOf="@+id/list_photo"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/city"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/estateType"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/list_photo"
-            android:textAllCaps="true"
-            android:textSize="@dimen/size_textView_City"
-            android:textStyle="italic" />
+            android:textSize="@dimen/size_textView_price"
+            android:textStyle="italic|bold"
+            app:layout_constraintEnd_toStartOf="@+id/list_photo_sold"
+            app:layout_constraintStart_toEndOf="@+id/list_photo"
+            app:layout_constraintTop_toBottomOf="@+id/estateType" />
 
         <TextView
             android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/city"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/list_photo"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
             android:textColor="#DA13D7"
-            android:textSize="@dimen/size_textView_price"
-            android:textStyle="italic|bold" />
+            android:textStyle="italic|bold"
+            app:layout_constraintEnd_toEndOf="@+id/city"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/list_photo"
+            app:layout_constraintTop_toBottomOf="@+id/city" />
 
         <ImageView
             android:id="@+id/list_photo_sold"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="30dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
 
-            android:layout_toEndOf="@+id/price"
-            android:contentDescription="soldPhoto" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="soldPhoto"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/estateType"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

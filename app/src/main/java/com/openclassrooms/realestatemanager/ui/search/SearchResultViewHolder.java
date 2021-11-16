@@ -1,10 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.search;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
@@ -12,12 +9,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding;
 import com.openclassrooms.realestatemanager.models.Estate;
-import com.openclassrooms.realestatemanager.models.Location;
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel;
-
-import java.security.acl.Owner;
-import java.util.Locale;
-import java.util.Objects;
 
 public class SearchResultViewHolder extends RecyclerView.ViewHolder {
 
@@ -28,18 +19,12 @@ public class SearchResultViewHolder extends RecyclerView.ViewHolder {
         this.fragmentMasterItemBinding = FragmentMasterItemBinding;
     }
 
-    public void updateWithEstate(Estate estate, RequestManager glide, LocationViewModel locationViewModel, LifecycleOwner owner) {
+    public void updateWithEstate(Estate estate, RequestManager glide, LifecycleOwner owner) {
         if(estate != null) {
             // for Estate type
            fragmentMasterItemBinding.estateType.setText(estate.getEstateType());
 
-           // For city
-            locationViewModel.getLocationById(estate.getNumMandat()).observe(owner, new Observer<Location>() {
-                @Override
-                public void onChanged(Location location) {
-                    fragmentMasterItemBinding.city.setText(location.getCity());
-                }
-            });
+           fragmentMasterItemBinding.city.setText(estate.getLocationEstate().getCity());
 
             //for price
             if (estate.getPrice() != null) {
@@ -52,7 +37,7 @@ public class SearchResultViewHolder extends RecyclerView.ViewHolder {
             }
             //for photo
             if (!estate.getPhotoList().getPhotoList().isEmpty()) {
-                glide.load(estate.getPhotoList().getPhotoList().get(0)).into(fragmentMasterItemBinding.listPhoto);
+                glide.load(estate.getPhotoList().getPhotoList().get(0)).apply(RequestOptions.centerCropTransform()).into(fragmentMasterItemBinding.listPhoto);
             } else {
                 glide.load(R.drawable.no_image).apply(RequestOptions.centerCropTransform()).into(fragmentMasterItemBinding.listPhoto);
             }

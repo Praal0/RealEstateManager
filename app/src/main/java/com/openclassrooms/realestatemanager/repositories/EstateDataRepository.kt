@@ -6,12 +6,19 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.database.dao.EstateDAO
 import com.openclassrooms.realestatemanager.models.Estate
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
 
+class EstateDataRepository @Inject constructor(private val estateDAO: EstateDAO) {
 
-class EstateDataRepository @Inject constructor(
-    private val estateDAO: EstateDAO
-    ) {
+    var currentEstateIdFlow : Long = 0
+
+    fun setCurrentEstateId(estateId: Long) {
+        currentEstateIdFlow = estateId
+    }
+
     fun getEstates(): LiveData<List<Estate>> {
         return this.estateDAO.getEstates()
     }
@@ -25,12 +32,14 @@ class EstateDataRepository @Inject constructor(
      * @param estate
      */
     // --- CREATE ---
-    suspend fun createEstate(estate: Estate) {
+    suspend fun createEstate(estate: Estate) : Boolean {
         try {
             estateDAO.insertEstate(estate)
+            return true
         } catch (cause: Throwable) {
             // If anything throws an exception, inform the caller
             Log.e("EstateDataRepository","Cannot Insert : $cause")
+            return false
         }
 
     }

@@ -32,7 +32,7 @@
         <entry key="app/src/main/res/layout-sw600dp-land/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout-sw600dp-land/activity_search.xml" value="0.46608140462889064" />
         <entry key="app/src/main/res/layout-sw600dp-land/estate_form.xml" value="0.33" />
-        <entry key="app/src/main/res/layout-sw600dp-land/fragment_master_item.xml" value="0.5" />
+        <entry key="app/src/main/res/layout-sw600dp-land/fragment_master_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout-sw600dp/activity_add_photo_item.xml" value="1.0" />
         <entry key="app/src/main/res/layout-sw600dp/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout-sw600dp/activity_search.xml" value="0.158984375" />
@@ -45,12 +45,12 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.24055666003976142" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_master.xml" value="0.1763888888888889" />
-        <entry key="app/src/main/res/layout/activity_search.xml" value="0.4833729216152019" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.67" />
         <entry key="app/src/main/res/layout/activity_search_result.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/dropdown_menu_popup_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/estate_form.xml" value="0.2983050847457627" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.19791666666666666" />
-        <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.2958748221906117" />
         <entry key="app/src/main/res/layout/fragment_maps.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/layout/fragment_master.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/layout/fragment_master_item.xml" value="0.37604166666666666" />
@@ -59,6 +59,7 @@
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/menu-land/activity_main_menu.xml" value="0.3308943089430894" />
+        <entry key="app/src/main/res/menu-sw600dp-land/activity_main_menu.xml" value="0.2109375" />
         <entry key="app/src/main/res/menu/activity_main_menu.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/menu/description_menu.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.21197916666666666" />

@@ -16,7 +16,7 @@ object Notification {
     private const val NOTIFICATION_ID = 2007
     private const val NOTIFICATION_TAG = "Real Estate Manager"
 
-    fun sendNotification(context: Context) {
+    fun sendNotification(context: Context,message : String ) {
 
         // 1 - Create an Intent that will be shown when user will click on the Notification
         val intent = Intent(context, AddEditActivity::class.java)
@@ -25,7 +25,7 @@ object Notification {
         // 2 - Create a Style for the Notification
         val inboxStyle = NotificationCompat.InboxStyle()
         inboxStyle.setBigContentTitle(context.getString(R.string.new_property))
-        inboxStyle.addLine(context.getString(R.string.the_new_property_has_been_successfully_created))
+        inboxStyle.addLine(message)
 
         // 3 - Create a Channel (Android 8)
         val channelId = context.getString(R.string.default_notification_channel_id)
@@ -34,7 +34,7 @@ object Notification {
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_check)
             .setContentTitle(context.getString(R.string.new_property))
-            .setContentText(context.getString(R.string.the_new_property_has_been_successfully_created))
+            .setContentText(message)
             .setAutoCancel(true)
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
             .setContentIntent(pendingIntent)

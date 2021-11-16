@@ -75,7 +75,7 @@ class DetailActivity : BaseActivity() {
         //Create new main fragment
         detailFragment = DetailFragment()
         //Add it to FrameLayout container
-        supportFragmentManager.beginTransaction().add(R.id.detail_fragment_frameLayout, detailFragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.detail_fragment_frameLayout, detailFragment).commit()
     }
 
     override fun onResume() {

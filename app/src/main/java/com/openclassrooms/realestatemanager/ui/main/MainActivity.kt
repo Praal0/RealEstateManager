@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
-import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.ui.baseActivity.BaseActivity
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
 import com.openclassrooms.realestatemanager.ui.detail.DetailFragment
@@ -18,7 +17,6 @@ import com.openclassrooms.realestatemanager.ui.map.MapsActivity
 import com.openclassrooms.realestatemanager.ui.master.MasterFragment
 import com.openclassrooms.realestatemanager.ui.search.SearchActivity
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -27,14 +25,13 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toolbar : Toolbar
-    private var masterFragment: MasterFragment = MasterFragment()
-    private var detailFragment: DetailFragment = DetailFragment()
+    private var masterFragment: MasterFragment? = null
+    private var detailFragment: DetailFragment? = null
+
 
     private var idEstate: Long = 0
 
     val estateViewModel: EstateViewModel by viewModels()
-    val locationViewModel : LocationViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,10 +52,6 @@ class MainActivity : BaseActivity() {
      * @return
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        val intent: Intent = intent
-        val estateDetail = intent.getSerializableExtra("estate") as Estate?
-        idEstate = estateDetail?.numMandat ?: 0
         //Handle actions on menu items
         return when (item.itemId) {
             android.R.id.home -> {
@@ -67,11 +60,11 @@ class MainActivity : BaseActivity() {
             }
 
             R.id.edit_btn ->{
+                idEstate = estateViewModel.currentEstate
                 if (idEstate > 0) {
                     val editIntent = Intent(this, AddEditActivity::class.java)
-                    editIntent.putExtra("estate", idEstate)
+                    editIntent.putExtra("iDEstate", idEstate)
                     startActivity(editIntent)
-                    finish()
                 } else {
                     Snackbar.make(binding.root, "No estate selected", Snackbar.LENGTH_SHORT).show()
                 }
@@ -114,20 +107,22 @@ class MainActivity : BaseActivity() {
      */
     private fun configureAndShowListFragment() {
         //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
-        masterFragment = MasterFragment()
-        supportFragmentManager.beginTransaction().add(R.id.list_master_frameLayout, masterFragment).commit()
+
+        if (masterFragment == null){
+            masterFragment = MasterFragment.newInstance()
+        }
+        masterFragment?.let {supportFragmentManager.beginTransaction().replace(R.id.list_master_frameLayout, it).commit()}
     }
 
     private fun configureAndShowDetailFragment(){
         //Get FragmentManager (Support) and Try to find existing instance of fragment in FrameLayout container
         if (findViewById<View?>(R.id.detail_fragment_frameLayout) != null) {
             //Create new main fragment
-            detailFragment = DetailFragment()
-
+            if (detailFragment == null){
+                detailFragment = DetailFragment.newInstance()
+            }
             //Add it to FrameLayout container
-            supportFragmentManager.beginTransaction()
-                .add(R.id.detail_fragment_frameLayout, detailFragment)
-                .commit()
+            detailFragment?.let { supportFragmentManager.beginTransaction().replace(R.id.detail_fragment_frameLayout, it).commit() }
         }
     }
 }

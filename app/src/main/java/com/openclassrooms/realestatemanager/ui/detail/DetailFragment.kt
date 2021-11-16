@@ -10,10 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.ViewGroup
-import android.widget.MediaController
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
@@ -24,14 +22,20 @@ import com.openclassrooms.realestatemanager.models.PhotoDescription
 import com.openclassrooms.realestatemanager.ui.createAndEditEstate.PhotoAdapter
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
-import com.openclassrooms.realestatemanager.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import android.content.Intent
+import android.view.MenuItem
+import android.widget.MediaController
+import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.models.Estate
-import java.lang.String
+import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
+import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
+import com.openclassrooms.realestatemanager.ui.master.MasterFragment
+import com.openclassrooms.realestatemanager.utils.EstateManagerStream
+import io.reactivex.observers.DisposableObserver
 
 
 /**
@@ -44,7 +48,6 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentDetailBinding
     private val viewModel: EstateViewModel by viewModels()
-    private val locationViewModel : LocationViewModel by viewModels()
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
     private lateinit var adapter: PhotoAdapter
@@ -52,12 +55,18 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var positionMarker: Marker
     private var estateDetailId : Long = 0
     private val estateEdit: Long = 0
-    private val myListPhoto : MutableLiveData<List<Uri?>> = MutableLiveData<List<Uri?>>()
+    private var listPhoto : MutableList<Uri> = ArrayList()
+    private lateinit var latLng : LatLng
+
+    companion object {
+        fun newInstance() = DetailFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
         binding = FragmentDetailBinding.inflate(inflater, container, false)
+        mapView = binding.mapView
         val view: View = binding.root
 
         configureRecyclerView()
@@ -65,14 +74,13 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         //for lite map
         val options = GoogleMapOptions()
         options.liteMode(true)
-        mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
         return view
     }
 
     private fun configureRecyclerView() {
-        adapter = PhotoAdapter( Glide.with(this), photoText.photoDescription, estateEdit)
+        adapter = PhotoAdapter( Glide.with(this), photoText.photoDescription, true)
         val horizontalLayoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvPhoto.layoutManager = horizontalLayoutManager
         binding.rvPhoto.adapter = adapter
@@ -85,8 +93,6 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun updateUi(estate: Estate?) {
         if (estate != null) {
-            binding.etMandate.setText(estate.numMandat.toString())
-            binding.etMandate.isEnabled = false
             binding.etSurface.setText(Objects.requireNonNull(estate.surface).toString())
             binding.etSurface.isEnabled = false
             binding.etDescription.setText(estate.description)
@@ -97,20 +103,79 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             binding.etBathrooms.isEnabled = false
             binding.etBedrooms.setText((estate.bedrooms).toString())
             binding.etBedrooms.isEnabled = false
+            binding.etAddress.setText(estate.locationEstate.address)
             binding.etAddress.isEnabled = false
+            binding.etCity.setText(estate.locationEstate.city)
+            binding.etCity.isEnabled = false
+            binding.etPostalCode.setText(estate.locationEstate.zipCode)
+            binding.etPostalCode.isEnabled = false
+            if (estate.sold) {
+                binding.etSold.setText(R.string.sold)
+            }else{
+                binding.etSold.setText(R.string.available)
+            }
+
             if (estate.photoList.photoList.isNotEmpty()) {
                 for (photoStr in estate.photoList.photoList) {
-                    //adapter.setPhotoList()
-                    //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+                    listPhoto.add(Uri.parse(photoStr))
                 }
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
             if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
                 for (videoStr in estate.video.photoList) {
                     binding.videoView.setVideoURI(Uri.parse(videoStr))
+                    binding.videoView.start()
                 }
             }else{
                 binding.videoView.visibility = INVISIBLE
             }
+            positionMarker(estate)
+        }
+    }
+
+    /**
+     * For update UI for tablet
+     *
+     * @param estate
+     */
+    @SuppressLint("SetTextI18n")
+    fun updateUiForTablet(estate: Estate?) {
+        binding.detailLayout.visibility = View.VISIBLE
+        if (estate != null) {
+            estateDetailId = estate.numMandat
+            binding.etSurface.setText(estate.surface.toString())
+            binding.etSurface.isEnabled = false
+            binding.etDescription.setText(estate.description)
+            binding.etDescription.isEnabled = false
+            binding.etRooms.setText(Objects.requireNonNull(estate.rooms).toString())
+            binding.etRooms.isEnabled = false
+            binding.etBathrooms.setText((estate.bathrooms).toString())
+            binding.etBathrooms.isEnabled = false
+            binding.etBedrooms.setText((estate.bedrooms).toString())
+            binding.etBedrooms.isEnabled = false
+            binding.etAddress.setText(estate.locationEstate.address)
+            binding.etAddress.isEnabled = false
+            binding.etCity.setText(estate.locationEstate.city)
+            binding.etCity.isEnabled = false
+            binding.etPostalCode.setText(estate.locationEstate.zipCode)
+            binding.etPostalCode.isEnabled = false
+            if (estate.photoList.photoList.isNotEmpty()) {
+                for (photoStr in estate.photoList.photoList) {
+                    listPhoto.add(Uri.parse(photoStr))
+                }
+                adapter.setPhotoList(listPhoto)
+                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+            }
+            if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
+                for (videoStr in estate.video.photoList) {
+                    binding.videoView.setVideoURI(Uri.parse(videoStr))
+                    binding.videoView.start()
+                }
+            }else{
+                binding.videoView.visibility = INVISIBLE
+            }
+            positionMarker(estate)
         }
     }
 
@@ -122,8 +187,8 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         if (Utils.isInternetAvailable(this.context)) {
-            map = googleMap;
-            map.uiSettings.isMyLocationButtonEnabled = false;
+            map = googleMap
+            map.uiSettings.isMyLocationButtonEnabled = false
             map.uiSettings.isMapToolbarEnabled = false
 
             try {
@@ -138,68 +203,48 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         } else {
             Snackbar.make(binding.root, "No internet available", Snackbar.LENGTH_SHORT).show()
         }
-        positionMarker()
     }
 
     /**
-     * For update UI for tablet
-     *
-     * @param estate
+     * Position marker in map
      */
-    @SuppressLint("SetTextI18n")
-    fun updateUiForTablet(estate: Estate?) {
-        binding.detailLayout.visibility = View.VISIBLE
-        if (estate != null) {
-            estateDetailId = estate.numMandat
-            binding.etMandate.setText(estate.numMandat.toString())
-            binding.etMandate.isEnabled = false
-            binding.etSurface.setText(Objects.requireNonNull(estate.surface).toString())
-            binding.etSurface.isEnabled = false
-            binding.etDescription.setText(estate.description)
-            binding.etDescription.isEnabled = false
-            binding.etRooms.setText(Objects.requireNonNull(estate.rooms).toString())
-            binding.etRooms.isEnabled = false
-            binding.etBathrooms.setText((estate.bathrooms).toString())
-            binding.etBathrooms.isEnabled = false
-            binding.etBedrooms.setText((estate.bedrooms).toString())
-            binding.etBedrooms.isEnabled = false
-            binding.etAddress.isEnabled = false
-            if (estate.photoList.photoList.isNotEmpty()) {
-                for (photoStr in estate.photoList.photoList) {
-                    //adapter.setPhotoList()
-                    //adapter.setPhotoDescription(estate.photoDescription.photoDescription)
-                }
+    private fun positionMarker(estate: Estate) {
+        if (Utils.isInternetAvailable(this.context)) {
+            if (estate.locationEstate.latitude == 0.0 && estate.locationEstate.longitude == 0.0){
+                val completeAddress = estate.locationEstate.address + estate.locationEstate.city+ estate.locationEstate.zipCode
+                EstateManagerStream.streamFetchGeocode(completeAddress)
+                    .subscribeWith(object : DisposableObserver<Geocoding?>() {
+                        override fun onNext(geocoding: Geocoding) {
+                            if (!geocoding.results.isNullOrEmpty()){
+                                updateEstate(estate,geocoding)
+                            }else{
+                                Log.d("Geocoding","Geocoding : Null or Empty")
+                            }
+                        }
+                        override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }
+                        override fun onComplete() {}
+                    })
+            }else{
+                latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                positionMarker = map.addMarker(MarkerOptions().position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                positionMarker.showInfoWindow()
             }
-            if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
-                for (videoStr in estate.video.photoList) {
-                    binding.videoView.setVideoURI(Uri.parse(videoStr))
-                }
-            }
-            positionMarker()
+
         }
     }
 
-    private fun positionMarker() {
-        estateDetailId.let { it ->
-            locationViewModel.getLocationById(it).observe(viewLifecycleOwner, Observer {
-                if (it !=null){
-                    binding.etAddress.setText(it.address)
-                    binding.etCity.setText(it.city)
-                    binding.etPostalCode.setText(it.zipCode)
-                    if (Utils.isInternetAvailable(this.context)) {
-                        map.clear()
-                        val latLng = LatLng(it.latitude, it.longitude)
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-                        positionMarker = map.addMarker(MarkerOptions().position(latLng)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-                        positionMarker.showInfoWindow()
+    private fun updateEstate(locationList: Estate, geocoding: Geocoding) {
+        locationList.locationEstate.latitude = geocoding.results[0].geometry.location.lat
+        locationList.locationEstate.longitude = geocoding.results[0].geometry.location.lng
+        viewModel.updateEstate(locationList)
+        latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
 
-                    }
-                }
-            })
-        }
+        positionMarker = map.addMarker(
+                MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            )
+
+        positionMarker.showInfoWindow()
     }
-
-
-
 }

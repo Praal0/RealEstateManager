@@ -19,21 +19,20 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private RequestManager glide;
     private List<Uri> mPhotoList = new ArrayList<Uri>();
-    private MutableLiveData<List<Uri>> mPhotoLiveDate;
     private List<String> mPhotoDescription;
-    private long estateEdit;
+    private boolean detail;
 
     /**
      * Constructor
      *
      * @param glide
      * @param photoDescription
-     * @param estateEdit
+     * @param detail
      */
-    public PhotoAdapter( RequestManager glide, ArrayList<String> photoDescription, long estateEdit) {
+    public PhotoAdapter( RequestManager glide, ArrayList<String> photoDescription, boolean detail) {
         this.glide = glide;
         this.mPhotoDescription = photoDescription;
-        this.estateEdit = estateEdit;
+        this.detail = detail;
     }
 
     @NonNull
@@ -52,19 +51,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         //For photo description with photo
-        Uri photoUri = Uri.EMPTY;
+        Uri photoUri = null;
         String photoDescription = "";
 
-        photoUri = mPhotoLiveDate.getValue().get(position);
-        /*if (mPhotoList.size() > position) {
+        if (mPhotoList.size() > position) {
             photoUri = mPhotoList.get(position);
-        }*/
+        }
 
         if (mPhotoDescription.size() > position) {
             photoDescription = mPhotoDescription.get(position);
         }
         try {
-            holder.updateWithDetails(photoUri, this.glide, photoDescription, estateEdit);
+            holder.updateWithDetails(photoUri, this.glide, photoDescription,detail);
         } catch (Exception e) {
             e.getMessage();
         }
@@ -81,24 +79,22 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     }
 
     /**
-     * for set photolist in adapter
+     * for set photolist & photoDescription in adapter
      *
      * @param photos
      */
     public void setPhotoList(List<Uri> photos) {
-        mPhotoList.clear();
-        mPhotoList.addAll(photos);
-        notifyDataSetChanged();
+            mPhotoList.clear();
+            mPhotoList.addAll(photos);
+            notifyDataSetChanged();
+
     }
 
-    /**
-     * For set photoDescription in adapter
-     *
-     * @param photoDescription
-     */
-    public void setPhotoDescription(List<String> photoDescription) {
+    public void setPhotoDescription(List<String> photoDescription){
         mPhotoDescription.clear();
         mPhotoDescription.addAll(photoDescription);
         notifyDataSetChanged();
     }
+
+
 }
