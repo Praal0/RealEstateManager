@@ -60,7 +60,7 @@ class MainActivity : BaseActivity() {
             }
 
             R.id.edit_btn ->{
-                idEstate = estateViewModel.currentEstate
+                idEstate = estateViewModel.currentEstateId
                 if (idEstate > 0) {
                     val editIntent = Intent(this, AddEditActivity::class.java)
                     editIntent.putExtra("iDEstate", idEstate)

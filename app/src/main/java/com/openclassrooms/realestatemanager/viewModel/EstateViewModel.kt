@@ -24,17 +24,45 @@ import javax.inject.Inject
 @HiltViewModel
 class EstateViewModel @Inject constructor (private val estateDataSource: EstateDataRepository): ViewModel() {
 
-    val currentPhoto: MutableLiveData<MutableList<Uri>> by lazy {
-        MutableLiveData<MutableList<Uri>>()
+    val currentEstateId = estateDataSource.currentEstateIdFlow
+
+    private var listPhoto : MutableList<Uri> = ArrayList()
+    private var listDescription : MutableList<String> = ArrayList()
+
+    var currentPhoto = MutableLiveData<MutableList<Uri>>()
+    init{
+        listPhoto.clear()
+        currentPhoto.value = ArrayList()
     }
 
-    val currentPhotoText: MutableLiveData<MutableList<String>> by lazy {
-        MutableLiveData<MutableList<String>>()
+    var currentPhotoText = MutableLiveData<MutableList<String>>()
+    init{
+        currentPhotoText.value = ArrayList()
+        listDescription.clear()
+    }
+
+    val  currentEstate : MutableLiveData<Estate> by lazy {
+        MutableLiveData<Estate>()
     }
 
     // --------------------
     // ESTATES
     // --------------------
+
+
+    fun setCurrentPhoto(uri : Uri) {
+        listPhoto.add(uri)
+        currentPhoto.value = listPhoto
+    }
+
+    fun setCurrentPhotoDescription(description : String) {
+        listDescription.add(description)
+        currentPhotoText.value = listDescription
+    }
+
+    fun setCurrentEstate(estate: Estate){
+        currentEstate.value = estate
+    }
 
     fun insertEstates(estate: Estate,context: Context) {
         viewModelScope.launch {
@@ -67,6 +95,6 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
         return estateDataSource.getEstateByID(estateId)
     }
 
-    val currentEstate = estateDataSource.currentEstateIdFlow
+
 
 }

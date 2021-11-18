@@ -210,41 +210,17 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
      */
     private fun positionMarker(estate: Estate) {
         if (Utils.isInternetAvailable(this.context)) {
-            if (estate.locationEstate.latitude == 0.0 && estate.locationEstate.longitude == 0.0){
-                val completeAddress = estate.locationEstate.address + estate.locationEstate.city+ estate.locationEstate.zipCode
-                EstateManagerStream.streamFetchGeocode(completeAddress)
-                    .subscribeWith(object : DisposableObserver<Geocoding?>() {
-                        override fun onNext(geocoding: Geocoding) {
-                            if (!geocoding.results.isNullOrEmpty()){
-                                updateEstate(estate,geocoding)
-                            }else{
-                                Log.d("Geocoding","Geocoding : Null or Empty")
-                            }
-                        }
-                        override fun onError(@NonNull e: Throwable) { Log.e("Geocoding","Error insert",e) }
-                        override fun onComplete() {}
-                    })
-            }else{
-                latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-                positionMarker = map.addMarker(MarkerOptions().position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+            latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+            positionMarker = map.addMarker(MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
                 positionMarker.showInfoWindow()
-            }
+            latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
 
-        }
-    }
-
-    private fun updateEstate(locationList: Estate, geocoding: Geocoding) {
-        locationList.locationEstate.latitude = geocoding.results[0].geometry.location.lat
-        locationList.locationEstate.longitude = geocoding.results[0].geometry.location.lng
-        viewModel.updateEstate(locationList)
-        latLng = LatLng(locationList.locationEstate.latitude, locationList.locationEstate.longitude)
-
-        positionMarker = map.addMarker(
+            positionMarker = map.addMarker(
                 MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
             )
 
-        positionMarker.showInfoWindow()
+            positionMarker.showInfoWindow()
+        }
     }
 }
