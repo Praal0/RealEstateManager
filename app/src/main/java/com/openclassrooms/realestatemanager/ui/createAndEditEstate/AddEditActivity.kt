@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.*
 import android.content.ContentValues.TAG
+import android.content.pm.ActivityInfo
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
@@ -85,6 +86,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
@@ -112,9 +114,11 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         onClickVideoBtn()
         clickFabButton()
         clickSoldButon()
+
         //Set title toolbar
         setToolbar()
         setupRecyclerView()
+        configureOnClickRecyclerView()
 
         //For date picker
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
@@ -152,6 +156,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 return true
             }
         }
@@ -343,20 +348,20 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     /**
      * For delete photos and descriptions
      */
-    /*private fun configureOnClickRecyclerView() {
+    private fun configureOnClickRecyclerView() {
         ItemClickSupport.addTo(estateFormBinding.rvPhoto, R.layout.activity_add_photo_item)
             .setOnItemClickListener { recyclerView: RecyclerView?, position: Int, v: View? ->
-                val estatePhoto = estateViewModel.currentPhoto.value?.get(position)
+                val estatePhoto = listPhoto[position]
                 val estateDescription = photoList.photoDescription[position]
-                listPhoto.remove(Uri.parse(estatePhoto))
-                photo.photoList.remove(estatePhoto)
+                listPhoto.remove(Uri.parse(estatePhoto.toString()))
+                photo.photoList.remove(estatePhoto.toString())
                 photoList.photoDescription.remove(estateDescription)
                 adapter.setPhotoList(listPhoto)
                 Log.d("estatePhoto", "estatePhoto$estatePhoto, estateDescription$estateDescription")
                 adapter.notifyItemRemoved(position)
                 adapter.notifyDataSetChanged()
             }
-    }*/
+    }
 
     private fun onClickVideoBtn(){
         estateFormBinding.cameraBtn.setOnClickListener {
@@ -536,14 +541,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             .setNegativeButton("cancel") { dialog, _ -> dialog?.dismiss() }
             .setPositiveButton("ok") { dialog, which ->
                 val description: String = binding.editDescription.text.toString()
-                listPhoto.add(Uri.parse(contentUri.toString()))
-                listDescription.add(description)
+                contentUri?.let { listPhoto.add(it) }
                 photo.photoList.add(contentUri.toString())
                 photoList.photoDescription.add(description)
-                contentUri?.let { estateViewModel.setCurrentPhoto(it)}
-                estateViewModel.setCurrentPhotoDescription(description)
-                adapter.setPhotoList(estateViewModel.currentPhoto.value)
-                adapter.setPhotoDescription(estateViewModel.currentPhotoText.value)
+                adapter.setPhotoList(listPhoto);
 
             }
         builder.create()
