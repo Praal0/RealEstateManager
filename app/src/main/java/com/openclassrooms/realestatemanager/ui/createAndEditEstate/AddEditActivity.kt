@@ -92,17 +92,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
 
         if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
-
-
-        estateViewModel.currentPhoto.observe(this){uriList ->
-            adapter.setPhotoList(uriList)
-        }
-
-        estateViewModel.currentPhotoText.observe(this){ stringList ->
-            adapter.setPhotoDescription(stringList)
-        }
-
-
+        
         val view: View = activityAddBinding.root
         setContentView(view)
         methodRequiresTwoPermission()
