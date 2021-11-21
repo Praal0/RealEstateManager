@@ -75,7 +75,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
     private var listPhoto : MutableList<Uri> = ArrayList()
 
     private val idEstate: Long = 0
-    private var listDescription : MutableList<String> = ArrayList()
     private val photoList : PhotoDescription = PhotoDescription()
     private lateinit var adapter: PhotoAdapter
     private val photo = UriList()
@@ -187,19 +186,16 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.etPostalCode.setText(estateViewModel.currentEstate.value?.locationEstate?.zipCode.toString())
 
 
-        if (estateViewModel.currentPhoto.value?.isEmpty() == true){
+        if (!estate.photoList.photoList.isEmpty()) {
+            listPhoto.clear()
             photo.photoList.clear()
             photoList.photoDescription.clear()
             for (photoStr in estate.photoList.photoList) {
-                listPhoto.add((Uri.parse(photoStr)))
-                estateViewModel.setCurrentPhoto(Uri.parse(photoStr))
+                listPhoto.add(Uri.parse(photoStr))
             }
-        }else{
-            photo.photoList.clear()
-            photoList.photoDescription.clear()
-            for (photoStr in estateViewModel.currentPhoto.value!!){
-                listPhoto.add((Uri.parse(photoStr.toString())))
-            }
+            adapter.setPhotoList(listPhoto)
+            adapter.setPhotoDescription(estate.photoDescription.photoDescription)
+            photo.photoList.addAll(estate.photoList.photoList)
         }
 
 
