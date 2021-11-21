@@ -85,7 +85,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
