@@ -39,7 +39,6 @@ public class EstateContentProviderTest {
 
     @Before
     public void setUp() {
-        InstrumentationRegistry.getInstrumentation().getTargetContext().deleteDatabase("RealEstatesData.db");
         Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(), RealEstateDatabase.class)
                 .allowMainThreadQueries()
                 .build();
@@ -48,10 +47,9 @@ public class EstateContentProviderTest {
 
     @Test
     public void getEstateWhenNoEstateInserted() {
-        final Cursor cursor =
-                mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider.URI_ESTATE, mandateNumberID),
+        final Cursor cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider.URI_ESTATE, mandateNumberID),
                         null, null, null, null);
-        assertEquals(cursor,null);
+        assertEquals(cursor,notNullValue());
         assertEquals(cursor.getCount(), 0);
         cursor.close();
     }
@@ -72,7 +70,6 @@ public class EstateContentProviderTest {
 
     private ContentValues generateEstate() {
         final ContentValues values = new ContentValues();
-
         values.put("estateType", "House");
         values.put("surface", 100);
         values.put("rooms", 3);

@@ -18,6 +18,12 @@ android {
         buildConfigField("String", "API_KEY", OC_P9_Google_Maps_Sdk_key)
         resValue 'string', 'google_map_key', OC_P9_Google_Maps_Sdk_key
 
+        testOptions {
+            unitTests {
+                includeAndroidResources = true
+            }
+        }
+
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_11
             targetCompatibility = JavaVersion.VERSION_11
