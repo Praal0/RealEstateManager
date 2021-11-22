@@ -85,7 +85,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
         estateFormBinding.relativeLayoutForm?.requestFocus()
@@ -146,7 +145,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 return true
             }
         }
@@ -533,7 +531,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 photo.photoList.add(contentUri.toString())
                 photoList.photoDescription.add(description)
                 adapter.setPhotoList(listPhoto);
-
             }
         builder.create()
         builder.show()

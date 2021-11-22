@@ -26,21 +26,6 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
 
     val currentEstateId = estateDataSource.currentEstateIdFlow
 
-    private var listPhoto : MutableList<Uri> = ArrayList()
-    private var listDescription : MutableList<String> = ArrayList()
-
-    var currentPhoto = MutableLiveData<MutableList<Uri>>()
-    init{
-        listPhoto.clear()
-        currentPhoto.value = ArrayList()
-    }
-
-    var currentPhotoText = MutableLiveData<MutableList<String>>()
-    init{
-        currentPhotoText.value = ArrayList()
-        listDescription.clear()
-    }
-
     val  currentEstate : MutableLiveData<Estate> by lazy {
         MutableLiveData<Estate>()
     }
@@ -49,16 +34,6 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
     // ESTATES
     // --------------------
 
-
-    fun setCurrentPhoto(uri : Uri) {
-        listPhoto.add(uri)
-        currentPhoto.value = listPhoto
-    }
-
-    fun setCurrentPhotoDescription(description : String) {
-        listDescription.add(description)
-        currentPhotoText.value = listDescription
-    }
 
     fun setCurrentEstate(estate: Estate){
         currentEstate.value = estate

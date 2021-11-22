@@ -41,21 +41,28 @@
             android:name=".ui.search.SearchActivity"
             android:exported="true" />
 
+        <!-- For photos -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.openclassrooms.realestatemanager.provider"
+            android:authorities="com.openclassrooms.realestatemanager.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
-        </provider> <!-- For ContentProvider -->
+        </provider>
+        <!-- For ContentProvider -->
+        <provider
+            android:authorities="com.openclassrooms.realestatemanager.provider"
+            android:name=".provider.EstateContentProvider"
+            android:exported="true"/>
         <activity
             android:name=".ui.map.MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".ui.createAndEditEstate.AddEditActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".ui.detail.DetailActivity"
