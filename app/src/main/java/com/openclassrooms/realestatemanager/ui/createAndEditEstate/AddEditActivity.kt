@@ -88,6 +88,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         activityAddBinding = ActivityAddEditBinding.inflate(layoutInflater)
         estateFormBinding = activityAddBinding.includeForm
+        estateFormBinding.relativeLayoutForm?.requestFocus()
         estateEdit = intent.getLongExtra("iDEstate", idEstate)
 
         if(estateEdit==0L) { estateFormBinding.deleteVideo.visibility = INVISIBLE }
@@ -166,6 +167,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.etMandate.setText(estateViewModel.currentEstate.value?.numMandat.toString())
         estateFormBinding.etMandate.isEnabled = false
         estateFormBinding.etEstate.setText(estateViewModel.currentEstate.value?.estateType.toString())
+        estateFormBinding.etEstate.setAdapter(factoryAdapter(R.array.ESTATES))
         estateFormBinding.etSurface.setText(estateViewModel.currentEstate.value?.surface.toString())
         estateFormBinding.etDescription.setText(estateViewModel.currentEstate.value?.description.toString())
         estateFormBinding.etRooms.setText(estateViewModel.currentEstate.value?.rooms.toString().replace("5 et +", "5"), false)
