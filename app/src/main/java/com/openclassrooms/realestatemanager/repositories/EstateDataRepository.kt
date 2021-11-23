@@ -59,6 +59,8 @@ class EstateDataRepository @Inject constructor(private val estateDAO: EstateDAO)
         }
     }
 
+
+
     /**
      * For Search
      * @param queryString

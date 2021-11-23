@@ -23,12 +23,6 @@ interface EstateDAO {
     @Query("SELECT * FROM Estate WHERE numMandat = :mandateNumberID")
     fun getEstate(mandateNumberID: Long): LiveData<Estate>
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertEstate(estate: Estate) : Long
-
-    @Update
-    suspend fun updateEstate(estate: Estate): Int
-
     @RawQuery(observedEntities = [Estate::class])
     fun getSearchEstate(query: SupportSQLiteQuery): LiveData<List<Estate>>
 
@@ -36,12 +30,13 @@ interface EstateDAO {
     @Query("SELECT * FROM Estate WHERE numMandat = :mandateNumberID")
     fun getEstateWithCursor(mandateNumberID: Long): Cursor?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertEstateTest(estateHouse: Estate) : Long
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertEstate(estate: Estate) : Long
 
     @Update
-    fun updateEstateProvider(estate: Estate): Int
+    suspend fun updateEstate(estate: Estate): Int
+
 
     @Query("DELETE FROM Estate WHERE numMandat = :mandateNumberID")
-    fun deleteItemProvider(mandateNumberID: Long): Int
+    suspend fun deleteItem(mandateNumberID: Long): Int
 }
