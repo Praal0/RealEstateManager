@@ -128,6 +128,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         toolbar = estateFormBinding.includedToolbarAdd.simpleToolbar
         estateFormBinding.deleteVideo.visibility = INVISIBLE
         estateFormBinding.videoView.visibility = INVISIBLE
+        estateFormBinding.saleDate.setText(Utils.getTodayDate())
     }
 
     private fun setToolbar() {

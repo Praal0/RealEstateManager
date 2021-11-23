@@ -61,31 +61,4 @@ public class Utils {
         NetworkInfo networkInfo = Objects.requireNonNull(connMgr).getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
-
-    /**
-     * Convert Lonf to string
-     * @param dateLong
-     * @return
-     */
-    public static String longDateToString(long dateLong) {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        return dateFormat.format(dateLong);
-    }
-
-    /**
-     * Verify if we have screen tablet or phone screen
-     * @param context
-     * @return
-     */
-    public static boolean isTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-
-
-
-
-
 }

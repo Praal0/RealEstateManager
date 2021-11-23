@@ -1,9 +1,10 @@
 package com.openclassrooms.realestatemanager
 
-import com.openclassrooms.realestatemanager.utils.Utils.convertDollarToEuro
-import com.openclassrooms.realestatemanager.utils.Utils.convertEurosToDollar
+import com.openclassrooms.realestatemanager.utils.Utils.*
 import org.junit.Assert
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.*
 
 class UtilTest {
 
@@ -20,5 +21,14 @@ class UtilTest {
         val dollars: Int = convertEurosToDollar(euros)
         Assert.assertEquals(95, dollars)
     }
+
+   @Test
+   fun getTodayDateTest(){
+       val sdf = SimpleDateFormat("dd/M/yyyy")
+       val currentDateTest = sdf.format(Date())
+       val date = getTodayDate()
+       Assert.assertEquals(currentDateTest, date)
+   }
+
 
 }
