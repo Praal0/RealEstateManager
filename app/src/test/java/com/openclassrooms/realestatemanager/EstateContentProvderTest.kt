@@ -41,13 +41,11 @@ class EstateContentProvderTest {
 
     @Test
     fun getItemsWhenNoItemInserted(){
-        runBlockingTest {
-            val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID_2),
+        val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID_2),
                 null,null,null,null)
-            assertNotNull(cursor)
-            cursor?.let { assertEquals(0, it.count) }
-            cursor?.close()
-        }
+        cursor?.let { assertEquals(0, it.count) }
+        cursor?.close()
+
     }
 
 
@@ -58,7 +56,6 @@ class EstateContentProvderTest {
         // TEST
         val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID),
             null,null,null,null)
-        assertNotNull(cursor)
         if (cursor != null) {
             assertEquals(1,cursor.count)
             assertEquals(true,cursor.moveToFirst())
