@@ -62,7 +62,4 @@ class EstateViewModel @Inject constructor (private val estateDataSource: EstateD
     fun getEstateById(estateId: Long) : LiveData<Estate>{
         return estateDataSource.getEstateByID(estateId)
     }
-
-
-
 }

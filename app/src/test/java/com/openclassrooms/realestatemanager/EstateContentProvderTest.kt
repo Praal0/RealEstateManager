@@ -11,6 +11,8 @@ import com.openclassrooms.realestatemanager.database.RealEstateDatabase
 import com.openclassrooms.realestatemanager.provider.EstateContentProvider
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,11 +41,13 @@ class EstateContentProvderTest {
 
     @Test
     fun getItemsWhenNoItemInserted(){
-        val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID_2),
-            null,null,null,null)
-        assertNotNull(cursor)
-        cursor?.let { assertEquals(0, it.count) }
-        cursor?.close()
+        runBlockingTest {
+            val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID_2),
+                null,null,null,null)
+            assertNotNull(cursor)
+            cursor?.let { assertEquals(0, it.count) }
+            cursor?.close()
+        }
     }
 
 
