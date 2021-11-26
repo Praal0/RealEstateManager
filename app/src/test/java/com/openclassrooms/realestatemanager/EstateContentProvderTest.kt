@@ -3,10 +3,12 @@ package com.openclassrooms.realestatemanager
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
+import android.net.Uri
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase
+import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.provider.EstateContentProvider
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
@@ -25,6 +27,10 @@ class EstateContentProvderTest {
     private val ESTATE_ID:Long = 1
     private val ESTATE_ID_2:Long = 9999
 
+    val AUTHORITY = "com.openclassrooms.realestatemanager.provider"
+    val TABLE_NAME = Estate::class.java.simpleName
+    val URI_ITEM = Uri.parse("content://$AUTHORITY/$TABLE_NAME")
+
 
     @Before
     fun setUp() {
@@ -36,21 +42,20 @@ class EstateContentProvderTest {
 
     @Test
     fun getItemsWhenNoItemInserted(){
-        val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID_2),
+        val cursor = mContentResolver.query(ContentUris.withAppendedId(URI_ITEM, ESTATE_ID_2),
                 null,null,null,null)
         assertNotNull(cursor)
         cursor?.let { assertEquals(0, it.count) }
         cursor?.close()
-
     }
 
 
     @Test
     fun insertAndGetItem(){
         // ADDING DEMO ESTATE
-        mContentResolver.insert(EstateContentProvider().URI_ESTATE, generateEstate())
+        mContentResolver.insert(EstateContentProvider().URI_ITEM, generateEstate())
         // TEST
-        val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID),
+        val cursor = mContentResolver.query(ContentUris.withAppendedId(URI_ITEM, ESTATE_ID),
             null,null,null,null)
         assertEquals(1, cursor?.count)
         assertEquals(true, cursor?.moveToFirst())

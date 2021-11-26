@@ -3,41 +3,48 @@ package com.openclassrooms.realestatemanager.provider
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
+import com.openclassrooms.realestatemanager.database.RealEstateDatabase
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase.Companion.getInstance
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Estate.Companion.fromContentValues
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 
 class EstateContentProvider : ContentProvider() {
 
-    // FOR DATA
-    var AUTHORITY = "com.openclassrooms.realestatemanager.provider"
-    var TABLE_NAME: String = Estate::class.java.simpleName
-    var URI_ESTATE = Uri.parse("content://$AUTHORITY/$TABLE_NAME")
+    val AUTHORITY = "com.openclassrooms.realestatemanager.provider"
+    val TABLE_NAME: String = "estate"
+    val URI_ITEM = Uri.parse("content://$AUTHORITY/$TABLE_NAME")
 
     override fun onCreate(): Boolean { return true }
 
     override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
-        val cursor : Cursor
-        runBlocking{
+        if (context != null) {
+            val cursor : Cursor
             val index:Long = ContentUris.parseId(uri)
             cursor = getInstance(context!!).estateDao().getEstateWithCursor(index)
             cursor.setNotificationUri(context!!.contentResolver,uri)
             Log.e("Cursor","Cursor")
-        }
-        return cursor
-    }
+            cursor.setNotificationUri(context!!.contentResolver, uri)
+            return cursor
 
-    override fun getType(uri: Uri): String { return "vnd.android.cursor.estate/$AUTHORITY.$TABLE_NAME"}
+        }
+
+        throw java.lang.IllegalArgumentException("Failed to query row for uri $uri")
+    }
+    
+    override fun getType(uri: Uri): String {
+        return "vnd.android.cursor.item/" + AUTHORITY + "." + TABLE_NAME}
 
     override fun insert(uri: Uri, values: ContentValues?): Uri {
         if (context != null && values != null){
             Log.e("EstateContentProvider","ContentValues : $values")
-            val index = getInstance(context!!).estateDao().insertEstateTest((fromContentValues(values)))
+            val index = getInstance(context!!).estateDao().insertEstate((fromContentValues(values)))
             if (index != 0L){
                 context!!.contentResolver.notifyChange(uri,null)
                 return ContentUris.withAppendedId(uri,index)

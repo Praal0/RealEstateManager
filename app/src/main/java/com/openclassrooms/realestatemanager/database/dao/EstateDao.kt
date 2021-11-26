@@ -28,7 +28,7 @@ interface EstateDAO {
 
     //For ContentProvider
     @Query("SELECT * FROM Estate  WHERE numMandat = :index")
-     fun getEstateWithCursor(index:Long): Cursor
+    fun getEstateWithCursor(index:Long): Cursor
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertEstate(estate: Estate) : Long
