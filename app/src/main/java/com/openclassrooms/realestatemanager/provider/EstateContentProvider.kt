@@ -6,8 +6,6 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.viewModelScope
-import com.openclassrooms.realestatemanager.database.RealEstateDatabase
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase.Companion.getInstance
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.models.Estate.Companion.fromContentValues
@@ -23,18 +21,15 @@ class EstateContentProvider : ContentProvider() {
 
     override fun onCreate(): Boolean { return true }
 
-    override fun query(uri: Uri, projection: Array<out String>?, selection: String?,
-                       selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
-        if (context != null){
-            val cursor : Cursor
-            runBlocking {
-                val index:Long = ContentUris.parseId(uri)
-                cursor = getInstance(context!!).estateDao().getEstateWithCursor(index)
-                cursor.setNotificationUri(context!!.contentResolver,uri)
-            }
-            return cursor
+    override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
+        val cursor : Cursor
+        runBlocking{
+            val index:Long = ContentUris.parseId(uri)
+            cursor = getInstance(context!!).estateDao().getEstateWithCursor(index)
+            cursor.setNotificationUri(context!!.contentResolver,uri)
+            Log.e("Cursor","Cursor")
         }
-        throw IllegalArgumentException("Failed to query row from uri$uri")
+        return cursor
     }
 
     override fun getType(uri: Uri): String { return "vnd.android.cursor.estate/$AUTHORITY.$TABLE_NAME"}
@@ -42,7 +37,7 @@ class EstateContentProvider : ContentProvider() {
     override fun insert(uri: Uri, values: ContentValues?): Uri {
         if (context != null && values != null){
             Log.e("EstateContentProvider","ContentValues : $values")
-            val index = RealEstateDatabase.getInstance(context!!).estateDao().insertEstateTest((fromContentValues(values)))
+            val index = getInstance(context!!).estateDao().insertEstateTest((fromContentValues(values)))
             if (index != 0L){
                 context!!.contentResolver.notifyChange(uri,null)
                 return ContentUris.withAppendedId(uri,index)

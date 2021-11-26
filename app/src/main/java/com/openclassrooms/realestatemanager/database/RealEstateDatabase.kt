@@ -27,7 +27,7 @@ abstract class RealEstateDatabase : RoomDatabase() {
                 synchronized(RealEstateDatabase::class.java) {
 
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        RealEstateDatabase::class.java, "RealEstatesData.db")
+                        RealEstateDatabase::class.java, "RealEstateDatabase.db")
                         .build()
                 }
             }

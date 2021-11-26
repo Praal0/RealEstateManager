@@ -1,4 +1,4 @@
-package realestatemanager;
+package com.openclassrooms.realestatemanager;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;

@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.textfield.TextInputLayout
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditBinding
 import com.openclassrooms.realestatemanager.databinding.EstateFormBinding
@@ -563,15 +564,17 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             validateTextView(estateFormBinding.inputCity)
             validateTextView(estateFormBinding.inputAgent)
 
-            if (!soldDatedRequired()){ return@setOnClickListener }
-            if (!saleDateRequired()){ return@setOnClickListener }
 
+            if (!soldDatedRequired()){ mError = true }
+            if (!saleDateRequired()){ mError = true }
 
             if (mError){
                 mError = false
                 return@setOnClickListener
+            }else{
+                saveEstates()
             }
-            saveEstates()
+
         }
     }
 
@@ -629,6 +632,14 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             return false
         }
         return true
+    }
+
+    fun validateTextView(inputValue: TextInputLayout){
+        val tmpValue = inputValue.editText?.text.toString()
+        if (tmpValue.isEmpty()) {
+            inputValue.error = getText(R.string.require)
+            mError = true
+        }
     }
 
     //RX Java http request for geocoding API

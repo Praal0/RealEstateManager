@@ -19,23 +19,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
 import com.openclassrooms.realestatemanager.models.PhotoDescription
-import com.openclassrooms.realestatemanager.ui.createAndEditEstate.PhotoAdapter
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.viewModel.EstateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import android.content.Intent
-import android.view.MenuItem
-import android.widget.MediaController
-import androidx.annotation.NonNull
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.models.Estate
-import com.openclassrooms.realestatemanager.models.geocodingAPI.Geocoding
-import com.openclassrooms.realestatemanager.ui.createAndEditEstate.AddEditActivity
-import com.openclassrooms.realestatemanager.ui.master.MasterFragment
-import com.openclassrooms.realestatemanager.utils.EstateManagerStream
-import io.reactivex.observers.DisposableObserver
+import com.openclassrooms.realestatemanager.ui.createAndEditEstate.PhotoAdapter
 
 
 /**

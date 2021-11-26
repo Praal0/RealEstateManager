@@ -22,7 +22,6 @@ import org.robolectric.shadows.ShadowNetworkInfo;
 import java.util.Objects;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {Build.VERSION_CODES.O_MR1})
 public class NetWorkTest {
     private ConnectivityManager connectivityManager;
     private ShadowNetworkInfo shadowOfActiveNetworkInfo;

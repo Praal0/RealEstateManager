@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
-import android.os.Build
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -11,15 +10,11 @@ import com.openclassrooms.realestatemanager.database.RealEstateDatabase
 import com.openclassrooms.realestatemanager.provider.EstateContentProvider
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 
 
-@Config(sdk = [Build.VERSION_CODES.O_MR1])
 @RunWith(AndroidJUnit4::class)
 class EstateContentProvderTest {
 
@@ -33,7 +28,7 @@ class EstateContentProvderTest {
 
     @Before
     fun setUp() {
-        Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().context, RealEstateDatabase::class.java)
+        Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().context,RealEstateDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         mContentResolver = InstrumentationRegistry.getInstrumentation().context.contentResolver
@@ -43,6 +38,7 @@ class EstateContentProvderTest {
     fun getItemsWhenNoItemInserted(){
         val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID_2),
                 null,null,null,null)
+        assertNotNull(cursor)
         cursor?.let { assertEquals(0, it.count) }
         cursor?.close()
 
@@ -56,11 +52,10 @@ class EstateContentProvderTest {
         // TEST
         val cursor = mContentResolver.query(ContentUris.withAppendedId(EstateContentProvider().URI_ESTATE, ESTATE_ID),
             null,null,null,null)
-        if (cursor != null) {
-            assertEquals(1,cursor.count)
-            assertEquals(true,cursor.moveToFirst())
-            assertEquals("House",cursor.getString(cursor.getColumnIndexOrThrow("estateType")))
-        }
+        assertEquals(1, cursor?.count)
+        assertEquals(true, cursor?.moveToFirst())
+        assertEquals("House", cursor?.getString(cursor.getColumnIndexOrThrow("estateType")))
+
 
     }
 

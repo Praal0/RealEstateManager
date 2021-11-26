@@ -62,7 +62,7 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".ui.createAndEditEstate.AddEditActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="locked"
             android:exported="true" />
         <activity
             android:name=".ui.detail.DetailActivity"

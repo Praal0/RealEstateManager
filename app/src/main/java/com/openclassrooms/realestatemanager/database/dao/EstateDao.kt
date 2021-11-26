@@ -27,8 +27,8 @@ interface EstateDAO {
     fun getSearchEstate(query: SupportSQLiteQuery): LiveData<List<Estate>>
 
     //For ContentProvider
-    @Query("SELECT Estate.* FROM Estate  WHERE Estate.numMandat = :index")
-    fun getEstateWithCursor(index:Long): Cursor
+    @Query("SELECT * FROM Estate  WHERE numMandat = :index")
+     fun getEstateWithCursor(index:Long): Cursor
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertEstate(estate: Estate) : Long
