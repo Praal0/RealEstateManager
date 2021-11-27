@@ -41,10 +41,11 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <!-- For ContentProvider -->
         <provider
-            android:name="com.openclassrooms.realestatemanager.provider.EstateContentProvider"
-            android:authorities="com.openclassrooms.realestatemanager.provider.data"
-            android:exported="true" />
+            android:authorities="com.openclassrooms.realestatemanager.provider"
+            android:name=".provider.EstateContentProvider"
+            android:exported="true"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

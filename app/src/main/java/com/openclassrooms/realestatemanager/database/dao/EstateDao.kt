@@ -2,14 +2,7 @@ package com.openclassrooms.realestatemanager.database.dao
 
 import android.database.Cursor
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import androidx.room.OnConflictStrategy
-import androidx.room.RawQuery
-
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.models.Estate
 
@@ -26,9 +19,10 @@ interface EstateDAO {
     @RawQuery(observedEntities = [Estate::class])
     fun getSearchEstate(query: SupportSQLiteQuery): LiveData<List<Estate>>
 
+
     //For ContentProvider
     @Query("SELECT * FROM Estate  WHERE numMandat = :index")
-    fun getEstateWithCursor(index:Long): Cursor
+    abstract fun getEstateWithCursor(index:Long): Cursor
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertEstate(estate: Estate) : Long

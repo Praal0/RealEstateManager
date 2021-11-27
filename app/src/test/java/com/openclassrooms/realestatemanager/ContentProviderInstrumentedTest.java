@@ -16,6 +16,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase;
 import com.openclassrooms.realestatemanager.models.Estate;
+import com.openclassrooms.realestatemanager.provider.EstateContentProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -86,12 +87,11 @@ public class ContentProviderInstrumentedTest {
         }
     }
 
-
-
     @Test
     public void getAgentById(){
         final Cursor cursor = mContentResolver.query(ContentUris.withAppendedId(URI_ITEM, AGENT_ID),
                 null, null, null, null);
+        logCursor(cursor);
         assertNotNull(cursor);
     }
 
