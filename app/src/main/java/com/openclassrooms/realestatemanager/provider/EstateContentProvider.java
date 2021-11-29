@@ -12,10 +12,13 @@ import androidx.annotation.Nullable;
 import com.openclassrooms.realestatemanager.database.RealEstateDatabase;
 import com.openclassrooms.realestatemanager.models.Estate;
 
+import java.util.Locale;
+import java.util.Objects;
+
 public class EstateContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "com.openclassrooms.realestatemanager.provider";
-    public static final String TABLE_NAME = Estate.class.getSimpleName();
+    public static final String TABLE_NAME = Estate.class.getSimpleName().toLowerCase(Locale.ROOT);
     public static final Uri URI_ESTATE = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 
     /**
@@ -67,10 +70,15 @@ public class EstateContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        if (getContext() != null) {
-
+        if (getContext() != null){
+            final long id = RealEstateDatabase.Companion.getInstance(getContext()).estateDao().insertEstateTest(Estate.Companion.fromContentValues(contentValues));
+            if (id != 0){
+                getContext().getContentResolver().notifyChange(uri, null);
+                return ContentUris.withAppendedId(uri, id);
+            }
         }
-        throw new IllegalArgumentException("Failed to insert row into" + uri);
+
+        throw new IllegalArgumentException("Failed to insert row into " + uri);
     }
 
     /**
@@ -83,9 +91,9 @@ public class EstateContentProvider extends ContentProvider {
      */
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        if (getContext() != null) {
+        if (getContext() != null){
         }
-        throw new IllegalArgumentException("Failed to delete row into" + uri);
+        throw new IllegalArgumentException("Failed to delete row into " + uri);
     }
 
     /**
@@ -99,9 +107,9 @@ public class EstateContentProvider extends ContentProvider {
      */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        if (getContext() != null) {
+        if (getContext() != null){
 
         }
-        throw new IllegalArgumentException("Failed to update row into" + uri);
+        throw new IllegalArgumentException("Failed to update row into " + uri);
     }
 }

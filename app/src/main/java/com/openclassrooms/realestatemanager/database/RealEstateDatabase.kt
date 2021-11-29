@@ -28,6 +28,7 @@ abstract class RealEstateDatabase : RoomDatabase() {
 
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
                         RealEstateDatabase::class.java, "RealEstateDatabase.db")
+                        .allowMainThreadQueries()
                         .build()
                 }
             }
