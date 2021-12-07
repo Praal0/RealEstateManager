@@ -28,6 +28,7 @@ class DetailActivity : BaseActivity() {
 
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var detailFragment: DetailFragment
+    private val viewModel: EstateViewModel by viewModels()
     private lateinit var toolbar : Toolbar
     private  var estateId : Long  = 0
     private var estate: Estate? = null
