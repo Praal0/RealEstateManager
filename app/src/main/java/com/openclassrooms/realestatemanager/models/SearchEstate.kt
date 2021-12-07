@@ -12,6 +12,8 @@ data class SearchEstate(var estateType: String?,
                         var maxPrice:Double?,
                         var minUpOfSaleDate: String?,
                         var maxOfSaleDate:String?,
+                        var minSoldDate : String?,
+                        var maxSoldDate : String?,
                         var photos:Boolean,
                         var schools:Boolean,
                         var stores:Boolean,
@@ -21,6 +23,7 @@ data class SearchEstate(var estateType: String?,
 
 
 ) : Serializable {
-    constructor() : this("", "",null,null,null,null,null, null,null, null,
-        false, false,false,false,false,false)
+    constructor() : this("", "",null,null,null,null,null,
+        null,null, null,null,null, false, false,
+        false,false,false,false)
 }

@@ -376,13 +376,69 @@
             android:text="Sold"
             android:textSize="12sp" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_soldDateMin"
+            android:layout_width="138dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/available_box"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            app:boxStrokeColor="@color/colorAccent"
+            app:startIconDrawable="@drawable/baseline_date_range_black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_soldDateMin"
+                android:layout_width="135dp"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:hint="Min Sold Date"
+                android:inputType="date"
+                android:paddingBottom="8dp"
+                android:singleLine="true"
+                android:textSize="12sp"
+                tools:ignore="TouchTargetSizeCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_soldDateMax"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/input_soldDateMin"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="30dp"
+            android:layout_toEndOf="@+id/input_soldDateMin"
+            app:boxStrokeColor="@color/colorAccent"
+            app:startIconDrawable="@drawable/baseline_date_range_black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_soldDateMax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:hint="Max Sale Date"
+                android:inputType="date"
+                android:paddingBottom="8dp"
+                android:singleLine="true"
+                android:textSize="12sp"
+                tools:ignore="TouchTargetSizeCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/validate_fab_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/box_restaurants"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="15dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginTop="66dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="81dp"
             android:clickable="true"
             android:contentDescription="validate_btn"
             android:elevation="15dp"

@@ -20,10 +20,13 @@ import java.util.*
 class SearchActivity : AppCompatActivity(), View.OnClickListener{
     private lateinit var  activitySearchBinding: ActivitySearchBinding
     private var mUpOfSaleDateMinDialog: DatePickerDialog? = null
+    private var mUpOfSaleDateMaxDialog: DatePickerDialog? = null
+    private var mUpOfSoldDateMinDialog: DatePickerDialog? = null
+    private var mUpOfSoldDateMaxDialog: DatePickerDialog? = null
     private var mDateFormat: SimpleDateFormat? = null
     private lateinit var  estateSearch: SearchEstate
     private lateinit var toolbar : androidx.appcompat.widget.Toolbar
-    private var mUpOfSaleDateMaxDialog: DatePickerDialog? = null
+
     private var estateType: String? = null
     private var city: String? = null
     private var minRooms = 0
@@ -34,6 +37,8 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
     private var maxPrice = 0.0
     private var minUpOfSaleDate: String = ""
     private var maxUpOfSaleDate: String = ""
+    private var minSoldDate: String = ""
+    private var maxSoldDate: String = ""
     private var photoSearch = false
     private var schoolsSearch = false
     private var parkSearch = false
@@ -49,12 +54,15 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
         setContentView(view)
         dropDownAdapters()
         this.setDateField()
+        this.setDateSoldField()
         this.setToolbar()
 
         //For date picker
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
         onClickValidateBtn()
     }
+
+
 
     private fun setToolbar() {
         toolbar = activitySearchBinding.includedToolbarAdd.simpleToolbar
@@ -136,12 +144,49 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
         )
     }
 
+    private fun setDateSoldField() {
+        activitySearchBinding.etSoldDateMin.setOnClickListener(this)
+        activitySearchBinding.etSoldDateMax.setOnClickListener(this)
+
+        //For up of sold date min
+        val newCalendar = Calendar.getInstance()
+        mUpOfSoldDateMinDialog = DatePickerDialog(
+            this,
+            { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                val newDate = Calendar.getInstance()
+                newDate[year, monthOfYear] = dayOfMonth
+                activitySearchBinding.etUpOfSaleDateMini.setText(mDateFormat!!.format(newDate.time))
+            },
+            newCalendar[Calendar.YEAR],
+            newCalendar[Calendar.MONTH],
+            newCalendar[Calendar.DAY_OF_MONTH]
+        )
+        //For up of sold date max
+        mUpOfSoldDateMaxDialog = DatePickerDialog(
+            this,
+            { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                val newDate = Calendar.getInstance()
+                newDate[year, monthOfYear] = dayOfMonth
+                activitySearchBinding.etUpOfSaleDateMaxi.setText(mDateFormat!!.format(newDate.time))
+            },
+            newCalendar[Calendar.YEAR],
+            newCalendar[Calendar.MONTH],
+            newCalendar[Calendar.DAY_OF_MONTH]
+        )
+    }
 
     override fun onClick(v: View?) {
         if (v == activitySearchBinding.etUpOfSaleDateMini) {
             mUpOfSaleDateMinDialog?.show()
             mUpOfSaleDateMinDialog?.datePicker?.maxDate = (Calendar.getInstance().timeInMillis)
         } else if (v == activitySearchBinding.etUpOfSaleDateMaxi) {
+            mUpOfSaleDateMaxDialog?.show()
+            mUpOfSaleDateMaxDialog?.datePicker?.maxDate = Calendar.getInstance().timeInMillis
+        }
+        if (v == activitySearchBinding.etSoldDateMin) {
+            mUpOfSaleDateMinDialog?.show()
+            mUpOfSaleDateMinDialog?.datePicker?.maxDate = (Calendar.getInstance().timeInMillis)
+        } else if (v == activitySearchBinding.etSoldDateMax) {
             mUpOfSaleDateMaxDialog?.show()
             mUpOfSaleDateMaxDialog?.datePicker?.maxDate = Calendar.getInstance().timeInMillis
         }
@@ -205,6 +250,16 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
             maxUpOfSaleDate = activitySearchBinding.etUpOfSaleDateMaxi.text.toString()
             estateSearch.maxOfSaleDate = maxUpOfSaleDate
         }
+
+        if (activitySearchBinding.etSoldDateMin.text.toString().isNotEmpty()) {
+            minSoldDate = activitySearchBinding.etSoldDateMin.text.toString()
+            estateSearch.minSoldDate = minSoldDate
+        }
+        if (activitySearchBinding.etSoldDateMax.text.toString().isNotEmpty()) {
+            maxSoldDate = activitySearchBinding.etSoldDateMax.text.toString()
+            estateSearch.maxSoldDate = maxSoldDate
+        }
+
         if (activitySearchBinding.photosBox.isChecked) {
             photoSearch = activitySearchBinding.photosBox.isChecked
             estateSearch.photos = photoSearch

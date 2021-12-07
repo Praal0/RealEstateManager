@@ -21,6 +21,8 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
         maxPrice: Double?,
         minUpOfSaleDate: Long?,
         maxOfSaleDate: Long?,
+        minSoldDate : Long?,
+        maxSoldDate : Long?,
         photos: Boolean,
         schools: Boolean,
         stores: Boolean,
@@ -100,6 +102,17 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
             args.add(minUpOfSaleDate.toString())
             args.add(maxOfSaleDate.toString())
         }
+        if (minSoldDate != null && maxSoldDate != null && minSoldDate >= 0 && maxSoldDate > 0) {
+            if (containsCondition) {
+                queryString += " AND"
+            } else {
+                queryString += " WHERE"
+                containsCondition = true;
+            }
+            queryString += " soldDate BETWEEN ? AND ?";
+            args.add(minUpOfSaleDate.toString())
+            args.add(maxOfSaleDate.toString())
+        }
         if (photos) {
             if (containsCondition) {
                 queryString += " AND"
@@ -138,7 +151,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
             queryString += " park = 1";
         }
 
-        if (restaurants == true) {
+        if (restaurants) {
             if (containsCondition) {
                 queryString += " AND"
             } else {
