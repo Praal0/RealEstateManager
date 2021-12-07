@@ -19,10 +19,10 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
         maxSurface: Int?,
         minPrice: Double?,
         maxPrice: Double?,
-        minUpOfSaleDate: Long?,
-        maxOfSaleDate: Long?,
-        minSoldDate : Long?,
-        maxSoldDate : Long?,
+        minUpOfSaleDate: String?,
+        maxOfSaleDate: String?,
+        minSoldDate : String?,
+        maxSoldDate : String?,
         photos: Boolean,
         schools: Boolean,
         stores: Boolean,
@@ -91,7 +91,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
             args.add(minPrice.toString())
             args.add(maxPrice.toString())
         }
-        if (minUpOfSaleDate != null && maxOfSaleDate != null && minUpOfSaleDate >= 0 && maxOfSaleDate > 0) {
+        if (minUpOfSaleDate != null && maxOfSaleDate != null ) {
             if (containsCondition) {
                 queryString += " AND"
             } else {
@@ -102,7 +102,7 @@ class SearchViewModel @Inject constructor (private val estateDataSource: EstateD
             args.add(minUpOfSaleDate.toString())
             args.add(maxOfSaleDate.toString())
         }
-        if (minSoldDate != null && maxSoldDate != null && minSoldDate >= 0 && maxSoldDate > 0) {
+        if (minSoldDate != null && maxSoldDate != null) {
             if (containsCondition) {
                 queryString += " AND"
             } else {

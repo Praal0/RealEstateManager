@@ -56,8 +56,8 @@ class SearchResultFragment : Fragment() {
         //for observe data
         this.searchViewModel.searchEstate(estateSearch.estateType, estateSearch.city, estateSearch.minRooms, estateSearch.maxRooms,
             estateSearch.minSurface, estateSearch.maxSurface, estateSearch.minPrice, estateSearch.maxPrice,
-            estateSearch.minUpOfSaleDate?.toLong(), estateSearch.maxOfSaleDate?.toLong(),
-            estateSearch.minSoldDate?.toLong(), estateSearch.maxSoldDate?.toLong(), estateSearch.photos,
+            estateSearch.minUpOfSaleDate, estateSearch.maxOfSaleDate,
+            estateSearch.minSoldDate, estateSearch.maxSoldDate, estateSearch.photos,
             estateSearch.schools, estateSearch.stores, estateSearch.park, estateSearch.restaurants,
             estateSearch.sold).observe(viewLifecycleOwner, this::updateEstateList)
     }

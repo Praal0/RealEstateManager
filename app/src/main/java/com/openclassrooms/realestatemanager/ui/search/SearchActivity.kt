@@ -155,7 +155,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
             { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                 val newDate = Calendar.getInstance()
                 newDate[year, monthOfYear] = dayOfMonth
-                activitySearchBinding.etUpOfSaleDateMini.setText(mDateFormat!!.format(newDate.time))
+                activitySearchBinding.etSoldDateMin.setText(mDateFormat!!.format(newDate.time))
             },
             newCalendar[Calendar.YEAR],
             newCalendar[Calendar.MONTH],
@@ -167,7 +167,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
             { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                 val newDate = Calendar.getInstance()
                 newDate[year, monthOfYear] = dayOfMonth
-                activitySearchBinding.etUpOfSaleDateMaxi.setText(mDateFormat!!.format(newDate.time))
+                activitySearchBinding.etSoldDateMax.setText(mDateFormat!!.format(newDate.time))
             },
             newCalendar[Calendar.YEAR],
             newCalendar[Calendar.MONTH],
@@ -184,11 +184,11 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
             mUpOfSaleDateMaxDialog?.datePicker?.maxDate = Calendar.getInstance().timeInMillis
         }
         if (v == activitySearchBinding.etSoldDateMin) {
-            mUpOfSaleDateMinDialog?.show()
-            mUpOfSaleDateMinDialog?.datePicker?.maxDate = (Calendar.getInstance().timeInMillis)
+            mUpOfSoldDateMinDialog?.show()
+            mUpOfSoldDateMinDialog?.datePicker?.maxDate = (Calendar.getInstance().timeInMillis)
         } else if (v == activitySearchBinding.etSoldDateMax) {
-            mUpOfSaleDateMaxDialog?.show()
-            mUpOfSaleDateMaxDialog?.datePicker?.maxDate = Calendar.getInstance().timeInMillis
+            mUpOfSoldDateMaxDialog?.show()
+            mUpOfSoldDateMaxDialog?.datePicker?.maxDate = Calendar.getInstance().timeInMillis
         }
     }
 
