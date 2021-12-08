@@ -1,20 +1,16 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
-import com.google.common.primitives.UnsignedBytes.toInt
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBinding
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.utils.Utils
-import okhttp3.internal.Util
 import java.text.NumberFormat
 import java.util.Locale.*
 
@@ -85,8 +81,8 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding,privat
             itemBinding.listPhotoSold.setImageResource(0)
         }
         //for photo
-        if(estate.photoList.photoList.isNotEmpty()) {
-            glide.load(estate.photoList.photoList[0]).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
+        if(estate.photoList.uriList.isNotEmpty()) {
+            glide.load(estate.photoList.uriList[0]).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
         }else {
             glide.load(R.drawable.no_image).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
 

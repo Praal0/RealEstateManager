@@ -29,7 +29,7 @@ class UriListConverter {
             return string
         }
 
-        photoList.photoList.forEach {
+        photoList.uriList.forEach {
             string += "$it,"
         }
         return string

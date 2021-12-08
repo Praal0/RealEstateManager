@@ -79,7 +79,6 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         estateDetailId = intent.getLongExtra("estate",0)
         binding.detailLayout.visibility = if (estateDetailId != 0L) View.VISIBLE else View.GONE
         viewModel.getEstateById(this.estateDetailId).observe(viewLifecycleOwner, this::updateUi)
-
     }
 
     private fun updateUi(estate: Estate?) {
@@ -106,18 +105,18 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
                 binding.etSold.setText(R.string.available)
             }
 
-            if (estate.photoList.photoList.isNotEmpty()) {
-                for (photoStr in estate.photoList.photoList) {
+            if (estate.photoList.uriList.isNotEmpty()) {
+                for (photoStr in estate.photoList.uriList) {
                     listPhoto.add(Uri.parse(photoStr))
                 }
                 adapter.setPhotoList(listPhoto)
                 adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
-            if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
-                for (videoStr in estate.video.photoList) {
-                    binding.videoView.setVideoURI(Uri.parse(videoStr))
-                    binding.videoView.start()
-                }
+            if (estate.video.uriList.isNotEmpty() && estate.video.uriList.size > 0) {
+                    for (videoStr in estate.video.uriList) {
+                        binding.videoView.setVideoURI(Uri.parse(videoStr))
+                        binding.videoView.start()
+                    }
             }else{
                 binding.videoView.visibility = INVISIBLE
             }
@@ -151,15 +150,15 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             binding.etCity.isEnabled = false
             binding.etPostalCode.setText(estate.locationEstate.zipCode)
             binding.etPostalCode.isEnabled = false
-            if (estate.photoList.photoList.isNotEmpty()) {
-                for (photoStr in estate.photoList.photoList) {
+            if (estate.photoList.uriList.isNotEmpty()) {
+                for (photoStr in estate.photoList.uriList) {
                     listPhoto.add(Uri.parse(photoStr))
                 }
                 adapter.setPhotoList(listPhoto)
                 adapter.setPhotoDescription(estate.photoDescription.photoDescription)
             }
-            if (estate.video.photoList.isNotEmpty() && estate.video.photoList.size > 0) {
-                for (videoStr in estate.video.photoList) {
+            if (estate.video.uriList.isNotEmpty() && estate.video.uriList.size > 0) {
+                for (videoStr in estate.video.uriList) {
                     binding.videoView.setVideoURI(Uri.parse(videoStr))
                     binding.videoView.start()
                 }

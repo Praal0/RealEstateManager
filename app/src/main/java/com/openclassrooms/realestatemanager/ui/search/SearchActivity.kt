@@ -159,8 +159,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
             },
             newCalendar[Calendar.YEAR],
             newCalendar[Calendar.MONTH],
-            newCalendar[Calendar.DAY_OF_MONTH]
-        )
+            newCalendar[Calendar.DAY_OF_MONTH])
         //For up of sold date max
         mUpOfSoldDateMaxDialog = DatePickerDialog(
             this,
@@ -202,7 +201,6 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener{
                 fabIntent = Intent(applicationContext, SearchResultActivity::class.java)
                 fabIntent.putExtra("estateSearch", estateSearch)
                 startActivity(fabIntent)
-                Log.d("SaveSearch", "saveSearch$estateSearch")
             }
         }
     }

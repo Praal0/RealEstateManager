@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.*
 import android.content.ContentValues.TAG
-import android.content.pm.ActivityInfo
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
@@ -51,7 +50,6 @@ import com.openclassrooms.realestatemanager.utils.ItemClickSupport
 import com.openclassrooms.realestatemanager.utils.Utils
 import io.reactivex.observers.DisposableObserver
 import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
 
 
 @AndroidEntryPoint
@@ -188,16 +186,16 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         estateFormBinding.etPostalCode.setText(estateViewModel.currentEstate.value?.locationEstate?.zipCode.toString())
 
 
-        if (!estate.photoList.photoList.isEmpty()) {
+        if (estateViewModel.currentEstate.value?.photoList?.uriList?.isNotEmpty() == true) {
             listPhoto.clear()
-            photo.photoList.clear()
+            photo.uriList.clear()
             photoList.photoDescription.clear()
-            for (photoStr in estate.photoList.photoList) {
+            for (photoStr in estate.photoList.uriList) {
                 listPhoto.add(Uri.parse(photoStr))
             }
             adapter.setPhotoList(listPhoto)
             adapter.setPhotoDescription(estate.photoDescription.photoDescription)
-            photo.photoList.addAll(estate.photoList.photoList)
+            photo.uriList.addAll(estate.photoList.uriList)
         }
 
 
@@ -206,8 +204,8 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         adapter.notifyDataSetChanged()
 
 
-        if (estateViewModel.currentEstate.value?.video?.photoList?.isNotEmpty() == true){
-            for (videoStr in estate.video.photoList) {
+        if (estateViewModel.currentEstate.value?.video?.uriList?.isNotEmpty() == true){
+            for (videoStr in estate.video.uriList) {
                 estateFormBinding.deleteVideo.visibility = View.VISIBLE
                 estateFormBinding.videoView.visibility = View.VISIBLE
                 estateFormBinding.videoView.setVideoURI(Uri.parse(videoStr))
@@ -342,12 +340,10 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 val estatePhoto = listPhoto[position]
                 val estateDescription = photoList.photoDescription[position]
                 listPhoto.remove(Uri.parse(estatePhoto.toString()))
-                photo.photoList.remove(estatePhoto.toString())
+                photo.uriList.remove(estatePhoto.toString())
                 photoList.photoDescription.remove(estateDescription)
                 adapter.setPhotoList(listPhoto)
-                Log.d("estatePhoto", "estatePhoto$estatePhoto, estateDescription$estateDescription")
                 adapter.notifyItemRemoved(position)
-                adapter.notifyDataSetChanged()
             }
     }
 
@@ -380,7 +376,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
      */
     private fun onClickBtnDeleteVideo(){
         estateFormBinding.deleteVideo.setOnClickListener {
-            video.photoList.clear()
+            video.uriList.clear()
             estateFormBinding.videoView.visibility = INVISIBLE
             estateFormBinding.deleteVideo.visibility = INVISIBLE
         }
@@ -433,7 +429,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     val contentUri = data.data
                     val timeStamp = SimpleDateFormat("ddMMyyyy", Locale.FRANCE).format(Date())
                     val imageFileName = "JPEG" + timeStamp + "." + getFileExt(contentUri)
-                    Log.d("Test uri gallery", "onActivityResult : Gallery Image Uri:$imageFileName")
 
                     //For save image in internal storage
                     var fOut: FileOutputStream? = null
@@ -471,7 +466,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     estateFormBinding.videoView.setMediaController(mediaController)
                     mediaController.setAnchorView(estateFormBinding.videoView)
                     estateFormBinding.videoView.start()
-                    video.photoList.add(contentURI.toString())
+                    video.uriList.add(contentURI.toString())
                 }
             }
             if (requestCode == PICK_VIDEO_GALLERY && data != null && data.data != null) {
@@ -479,7 +474,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     val contentURI = data.data
                     val selectedVideoPath: String? = contentURI?.let { getPath(it) }
                     selectedVideoPath?.let {
-                        Log.d("path", it)
                         saveVideoToInternalStorage(it)
                     }
                     estateFormBinding.videoView.setVideoURI(contentURI)
@@ -491,7 +485,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     estateFormBinding.videoView.start()
                     estateFormBinding.videoView.visibility = View.VISIBLE
                     estateFormBinding.deleteVideo.visibility = View.VISIBLE
-                    selectedVideoPath?.let { video.photoList.add(it) }
+                    selectedVideoPath?.let { video.uriList.add(it) }
                 }
             }
     }
@@ -530,7 +524,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
             .setPositiveButton("ok") { dialog, which ->
                 val description: String = binding.editDescription.text.toString()
                 contentUri?.let { listPhoto.add(it) }
-                photo.photoList.add(contentUri.toString())
+                photo.uriList.add(contentUri.toString())
                 photoList.photoDescription.add(description)
                 adapter.setPhotoList(listPhoto);
             }

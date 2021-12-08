@@ -52,7 +52,6 @@ class SearchResultFragment : Fragment() {
     private fun configureViewModel() {
         val intent = Intent(activity?.intent)
         estateSearch = (intent.getSerializableExtra("estateSearch") as SearchEstate)
-        Log.d("estateSearch", estateSearch.toString())
         //for observe data
         this.searchViewModel.searchEstate(estateSearch.estateType, estateSearch.city, estateSearch.minRooms, estateSearch.maxRooms,
             estateSearch.minSurface, estateSearch.maxSurface, estateSearch.minPrice, estateSearch.maxPrice,
@@ -81,14 +80,12 @@ class SearchResultFragment : Fragment() {
                 val estate = mAdapter.getEstates(position)
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("estate", estate.numMandat)
-                Log.d("bundleRV", "estate$estate")
                 startActivity(intent)
             }
     }
 
     private fun updateEstateList(estates : List<Estate>) {
         mAdapter.updateData(estates,this)
-            Log.d("updateListSearch", "updateListSearch$estates")
 
         if (Objects.requireNonNull(estates).isEmpty()) {
             Snackbar.make(

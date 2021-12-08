@@ -101,7 +101,6 @@ class DetailActivity : BaseActivity() {
     private fun updateDetailUiForFragment() {
         val intentTablet = Objects.requireNonNull(this).intent
         estateId = intentTablet.getLongExtra("estate",0)
-        Log.d("estateDetail", "estateDetail$estate")
     }
 
 

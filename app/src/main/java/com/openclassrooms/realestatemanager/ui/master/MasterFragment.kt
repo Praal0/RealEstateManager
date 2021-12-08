@@ -73,7 +73,6 @@ class MasterFragment : Fragment() {
                 //for tablet format
                 if (detailFragment?.isVisible == true) {
                     val estate: Estate = adapter.getEstateAt(position)
-                    Log.d("bundleListFragment", "bundleFragment$estate")
                     estateViewModel.selectItem(estate.numMandat)
                     detailFragment?.updateUiForTablet(estate)
                 } else {
@@ -81,7 +80,6 @@ class MasterFragment : Fragment() {
                     val estate: Estate = adapter.getEstateAt(position)
                     val intent = Intent(context, DetailActivity::class.java)
                     intent.putExtra("estate", estate.numMandat)
-                    Log.d("bundleRV", "estate$estate")
                     startActivity(intent)
                 }
             }

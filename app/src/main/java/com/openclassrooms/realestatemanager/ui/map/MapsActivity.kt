@@ -98,20 +98,16 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
             return
         }
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        ) {
-            locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 10f, this)
-            Log.e("GPSProvider", "testGPS")
-        } else if (locationManager!!.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
-            locationManager!!.requestLocationUpdates(
-                LocationManager.PASSIVE_PROVIDER, 15000L, 10f, this
-            )
-            Log.e("PassiveProvider", "testPassive")
-        } else if (locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            locationManager!!.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 15000L, 10f, this
-            )
-            Log.e("NetWorkProvider", "testNetwork")
+        locationManager?.let {
+            if (it.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                it.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 10f, this)
+            }
+            if (it.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+                it.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 15000L, 10f, this)
+            }
+            if (it.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                it.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000L, 10f, this)
+            }
         }
     }
 
@@ -149,7 +145,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
         val mLatitude = location.latitude
         val mLongitude = location.longitude
         val googleLocation = LatLng(mLatitude, mLongitude)
-        map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(googleLocation, 16f))
+        map?.let { it.moveCamera(CameraUpdateFactory.newLatLngZoom(googleLocation, 16f))}
         mPosition = "$mLatitude,$mLongitude"
         Log.d("TestLatLng", mPosition)
     }
@@ -173,21 +169,23 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
                 return
             }
             //Request location updates:
-            map!!.isMyLocationEnabled = true
-            map!!.uiSettings.isCompassEnabled = true
-            map!!.uiSettings.isMyLocationButtonEnabled = true
-            mapViewModel.startLocationRequest(this)
-            mapViewModel.getLocation()?.observe(this) { location ->
+            map?.let {
+                it.isMyLocationEnabled = true
+                it.uiSettings.isCompassEnabled = true
+                it.uiSettings.isMyLocationButtonEnabled = true
+                mapViewModel.startLocationRequest(this)
+                mapViewModel.getLocation().observe(this) { location ->
                 if (location != null) {
                     latLng = LatLng(location.lat, location.lng)
                     mapViewModel.updateCurrentUserPosition(latLng)
-                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
                     googleMap.uiSettings.isMyLocationButtonEnabled = true
                     mapViewModel.updateCurrentUserPosition(latLng)
                 }
             }
-            map!!.uiSettings.isRotateGesturesEnabled = true
-            googleMap.setOnMarkerClickListener(this);
+                it.uiSettings.isRotateGesturesEnabled = true
+                googleMap.setOnMarkerClickListener(this)
+            }
             try {
                 // Customise the styling of the base map using a JSON object defined
                 // in a raw resource file.
