@@ -33,8 +33,6 @@ class MasterFragment : Fragment() {
         fun newInstance() = MasterFragment()
     }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

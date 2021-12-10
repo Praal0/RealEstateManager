@@ -253,8 +253,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback,LocationListener,OnMarke
                 MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
             )
         }
-
-        //marker?.tag = locationList.estateId
         marker?.showInfoWindow()
     }
 

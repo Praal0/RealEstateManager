@@ -413,12 +413,9 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                 val takenImage = data?.extras?.get("data") as Bitmap
                 val bytes = ByteArrayOutputStream()
                 takenImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-                val path = MediaStore.Images.Media.insertImage(
-                    this.contentResolver,
-                    takenImage,
+                val path = MediaStore.Images.Media.insertImage(this.contentResolver, takenImage,
                     System.currentTimeMillis().toString(),
-                    null
-                )
+                    null)
                 val image = Uri.parse(path.toString())
                 openDialog(image)
             }

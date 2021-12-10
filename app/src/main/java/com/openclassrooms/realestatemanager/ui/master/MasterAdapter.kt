@@ -18,13 +18,9 @@ import java.util.Locale.*
 
 class MasterAdapter(estateList : List<Estate>, glide : RequestManager) :RecyclerView.Adapter<MasterViewHolder>() {
 
-
     private lateinit var owner: LifecycleOwner
-
     private var items = ArrayList<Estate>()
     private var glide : RequestManager = glide
-
-
 
     /**
      * For update estate list
@@ -52,7 +48,6 @@ class MasterAdapter(estateList : List<Estate>, glide : RequestManager) :Recycler
         holder.itemView.setOnClickListener {
             notifyDataSetChanged()
         }
-
     }
 
     override fun getItemCount(): Int = items.size

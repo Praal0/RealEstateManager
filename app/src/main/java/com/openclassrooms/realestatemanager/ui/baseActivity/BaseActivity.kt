@@ -20,7 +20,6 @@ open class BaseActivity : AppCompatActivity() {
 
     private val RC_CAMERA_AND_STORAGE_COARSELOCATION_FINELOCATION = 100
     private var newfile: File? = null
-    private var mError:Boolean = false
     private  val VIDEO_DIRECTORY : String = "/realEstateManager"
     private val CAM_AND_READ_EXTERNAL_STORAGE = arrayOf(
         Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,

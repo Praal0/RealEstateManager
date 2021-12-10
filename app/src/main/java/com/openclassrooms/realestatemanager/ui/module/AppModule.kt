@@ -31,11 +31,9 @@ object AppModule  : Application() {
     @Provides
     fun provideEstateDao(realEstateDatabase: RealEstateDatabase): EstateDAO = realEstateDatabase.estateDao()
 
-
     @Singleton
     @Provides
     fun provideEstateRepository(localDataSource: EstateDAO) = EstateDataRepository(localDataSource)
-
 
     @Singleton
     @Provides
