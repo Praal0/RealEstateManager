@@ -74,7 +74,8 @@ class MasterFragment : Fragment() {
                 if (detailFragment?.isVisible == true) {
                     val estate: Estate = adapter.getEstateAt(position)
                     estateViewModel.selectItem(estate.numMandat)
-                    detailFragment?.updateUiForTablet(estate)
+                    detailFragment?.tablet = true
+                    detailFragment?.updateUi(estate)
                 } else {
                     //for phone format
                     val estate: Estate = adapter.getEstateAt(position)

@@ -1,6 +1,8 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.annotation.SuppressLint
+import android.media.Image
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -82,7 +84,8 @@ class MasterViewHolder(private val itemBinding: FragmentMasterItemBinding,privat
         }
         //for photo
         if(estate.photoList.uriList.isNotEmpty()) {
-            glide.load(estate.photoList.uriList[0]).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
+            val image: String = estate.photoList.uriList[0]
+            glide.load(image).apply(RequestOptions().centerCrop()).into(itemBinding.listPhoto)
         }else {
             glide.load(R.drawable.no_image).apply(RequestOptions.centerCropTransform()).into(itemBinding.listPhoto)
 

@@ -45,9 +45,9 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     private val photoText = PhotoDescription()
     private lateinit var positionMarker: Marker
     private var estateDetailId : Long = 0
-    private val estateEdit: Long = 0
     private var listPhoto : MutableList<Uri> = ArrayList()
     private lateinit var latLng : LatLng
+    var tablet : Boolean = false
 
     companion object {
         fun newInstance() = DetailFragment()
@@ -81,8 +81,12 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         viewModel.getEstateById(this.estateDetailId).observe(viewLifecycleOwner, this::updateUi)
     }
 
-    private fun updateUi(estate: Estate?) {
+    fun updateUi(estate: Estate?) {
+        if (tablet){
+            binding.detailLayout.visibility = View.VISIBLE
+        }
         if (estate != null) {
+            estateDetailId = estate.numMandat
             binding.etSurface.setText(Objects.requireNonNull(estate.surface).toString())
             binding.etSurface.isEnabled = false
             binding.etDescription.setText(estate.description)
@@ -124,51 +128,6 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    /**
-     * For update UI for tablet
-     *
-     * @param estate
-     */
-    @SuppressLint("SetTextI18n")
-    fun updateUiForTablet(estate: Estate?) {
-        binding.detailLayout.visibility = View.VISIBLE
-        if (estate != null) {
-            estateDetailId = estate.numMandat
-            binding.etSurface.setText(estate.surface.toString())
-            binding.etSurface.isEnabled = false
-            binding.etDescription.setText(estate.description)
-            binding.etDescription.isEnabled = false
-            binding.etRooms.setText(Objects.requireNonNull(estate.rooms).toString())
-            binding.etRooms.isEnabled = false
-            binding.etBathrooms.setText((estate.bathrooms).toString())
-            binding.etBathrooms.isEnabled = false
-            binding.etBedrooms.setText((estate.bedrooms).toString())
-            binding.etBedrooms.isEnabled = false
-            binding.etAddress.setText(estate.locationEstate.address)
-            binding.etAddress.isEnabled = false
-            binding.etCity.setText(estate.locationEstate.city)
-            binding.etCity.isEnabled = false
-            binding.etPostalCode.setText(estate.locationEstate.zipCode)
-            binding.etPostalCode.isEnabled = false
-            if (estate.photoList.uriList.isNotEmpty()) {
-                for (photoStr in estate.photoList.uriList) {
-                    listPhoto.add(Uri.parse(photoStr))
-                }
-                adapter.setPhotoList(listPhoto)
-                adapter.setPhotoDescription(estate.photoDescription.photoDescription)
-            }
-            if (estate.video.uriList.isNotEmpty() && estate.video.uriList.size > 0) {
-                for (videoStr in estate.video.uriList) {
-                    binding.videoView.setVideoURI(Uri.parse(videoStr))
-                    binding.videoView.start()
-                }
-            }else{
-                binding.videoView.visibility = INVISIBLE
-            }
-            positionMarker(estate)
-        }
-    }
-
     override fun onResume() {
         mapView.onResume()
         super.onResume()
@@ -203,13 +162,9 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
             positionMarker = map.addMarker(MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-                positionMarker.showInfoWindow()
+            positionMarker.showInfoWindow()
             latLng = LatLng(estate.locationEstate.latitude, estate.locationEstate.longitude)
-
-            positionMarker = map.addMarker(
-                MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-            )
-
+            positionMarker = map.addMarker(MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
             positionMarker.showInfoWindow()
         }
     }

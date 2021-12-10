@@ -112,8 +112,6 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
         mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     }
 
-
-
     private fun clickSoldButon() {
         estateFormBinding.availableCheckbtn.setOnClickListener(View.OnClickListener {
             if  (!estateFormBinding.availableCheckbtn.isChecked){
@@ -431,7 +429,7 @@ class AddEditActivity : BaseActivity(),View.OnClickListener {
                     val imageFileName = "JPEG" + timeStamp + "." + getFileExt(contentUri)
 
                     //For save image in internal storage
-                    var fOut: FileOutputStream? = null
+                     var fOut: FileOutputStream? = null
                     try {
                         fOut = openFileOutput("imageGallery", MODE_PRIVATE)
                     } catch (e: FileNotFoundException) {
