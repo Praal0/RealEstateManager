@@ -1,8 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.master
 
 import android.annotation.SuppressLint
-import android.media.Image
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -14,7 +12,8 @@ import com.openclassrooms.realestatemanager.databinding.FragmentMasterItemBindin
 import com.openclassrooms.realestatemanager.models.Estate
 import com.openclassrooms.realestatemanager.utils.Utils
 import java.text.NumberFormat
-import java.util.Locale.*
+import java.util.Locale.FRANCE
+import java.util.Locale.getDefault
 
 class MasterAdapter(estateList : List<Estate>, glide : RequestManager) :RecyclerView.Adapter<MasterViewHolder>() {
 
